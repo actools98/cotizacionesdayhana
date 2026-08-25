@@ -1,0 +1,23 @@
+{
+  "name": "actols-quotes",
+  "version": "1.0.0",
+  "description": "Cotizador interno B2B - Actols",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.5.31",
+    "sortablejs": "^1.15.2",
+    "sqlite": "^5.0.1",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}
