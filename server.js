@@ -37,16 +37,25 @@ async function initDb() {
     )
   `);
 
-  // Tabla módulos
+  // Tabla módulos con detalle
   await db.exec(`
     CREATE TABLE IF NOT EXISTS modules (
       id TEXT PRIMARY KEY,
       description TEXT NOT NULL,
       price INTEGER NOT NULL,
+      detail TEXT,
       category_id TEXT REFERENCES categories(id),
       sort_order INTEGER DEFAULT 0
     )
   `);
+
+  // Migración: agregar columna detail si no existe (para bases existentes)
+  try {
+    await db.exec(`ALTER TABLE modules ADD COLUMN detail TEXT`);
+    console.log('✅ Columna detail agregada a modules');
+  } catch (e) {
+    // La columna ya existe
+  }
 
   // Tabla portafolios
   await db.exec(`
@@ -83,11 +92,11 @@ async function initDb() {
       defaults = JSON.parse(fs.readFileSync(defaultPath, 'utf8'));
     } else {
       defaults = [
-        { id: 'mod-1', description: 'Costo base de operación', price: 600000 },
-        { id: 'mod-2', description: 'Servicio de consultoría básica', price: 350000 },
-        { id: 'mod-3', description: 'Implementación de software', price: 1200000 },
-        { id: 'mod-4', description: 'Capacitación presencial', price: 450000 },
-        { id: 'mod-5', description: 'Soporte técnico mensual', price: 280000 }
+        { id: 'mod-1', description: 'Costo base de operación', price: 600000, detail: 'Costo fijo mensual por operación base.' },
+        { id: 'mod-2', description: 'Servicio de consultoría básica', price: 350000, detail: 'Asesoría inicial y diagnóstico.' },
+        { id: 'mod-3', description: 'Implementación de software', price: 1200000, detail: 'Instalación y configuración del sistema.' },
+        { id: 'mod-4', description: 'Capacitación presencial', price: 450000, detail: 'Entrenamiento de 8 horas para el equipo.' },
+        { id: 'mod-5', description: 'Soporte técnico mensual', price: 280000, detail: 'Soporte remoto ilimitado durante un mes.' }
       ];
     }
     const firstCat = await db.get('SELECT id FROM categories ORDER BY sort_order LIMIT 1');
@@ -95,8 +104,8 @@ async function initDb() {
       for (let i = 0; i < defaults.length; i++) {
         const m = defaults[i];
         await db.run(
-          'INSERT INTO modules (id, description, price, category_id, sort_order) VALUES (?, ?, ?, ?, ?)',
-          [m.id, m.description, m.price, firstCat.id, i]
+          'INSERT INTO modules (id, description, price, detail, category_id, sort_order) VALUES (?, ?, ?, ?, ?, ?)',
+          [m.id, m.description, m.price, m.detail || null, firstCat.id, i]
         );
       }
       console.log('📦 Módulos por defecto cargados');
@@ -148,7 +157,6 @@ app.put('/api/categories/:id', async (req, res) => {
 app.delete('/api/categories/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    // Mover módulos a la primera categoría
     const defaultCat = await db.get('SELECT id FROM categories ORDER BY sort_order LIMIT 1');
     if (defaultCat) {
       await db.run('UPDATE modules SET category_id = ? WHERE category_id = ?', [defaultCat.id, id]);
@@ -175,7 +183,7 @@ app.patch('/api/categories/reorder', async (req, res) => {
   }
 });
 
-// ---- Rutas para módulos ----
+// ---- Rutas para módulos (con detail) ----
 app.get('/api/modules', async (req, res) => {
   try {
     const modules = await db.all(`
@@ -191,9 +199,9 @@ app.get('/api/modules', async (req, res) => {
 });
 
 app.post('/api/modules', async (req, res) => {
-  const { description, price, category_id } = req.body;
+  const { description, price, category_id, detail } = req.body;
   if (!description || price === undefined) {
-    return res.status(400).json({ error: 'Faltan campos' });
+    return res.status(400).json({ error: 'Faltan campos obligatorios' });
   }
   try {
     const id = `mod-${Date.now()}`;
@@ -206,8 +214,8 @@ app.post('/api/modules', async (req, res) => {
     const order = (maxOrder?.max ?? -1) + 1;
 
     await db.run(
-      'INSERT INTO modules (id, description, price, category_id, sort_order) VALUES (?, ?, ?, ?, ?)',
-      [id, description, price, catId, order]
+      'INSERT INTO modules (id, description, price, detail, category_id, sort_order) VALUES (?, ?, ?, ?, ?, ?)',
+      [id, description, price, detail || null, catId, order]
     );
     const newModule = await db.get('SELECT * FROM modules WHERE id = ?', [id]);
     res.status(201).json(newModule);
@@ -218,12 +226,15 @@ app.post('/api/modules', async (req, res) => {
 
 app.put('/api/modules/:id', async (req, res) => {
   const { id } = req.params;
-  const { description, price, category_id } = req.body;
+  const { description, price, category_id, detail } = req.body;
   if (!description || price === undefined) {
-    return res.status(400).json({ error: 'Faltan campos' });
+    return res.status(400).json({ error: 'Faltan campos obligatorios' });
   }
   try {
-    await db.run('UPDATE modules SET description = ?, price = ?, category_id = ? WHERE id = ?', [description, price, category_id, id]);
+    await db.run(
+      'UPDATE modules SET description = ?, price = ?, category_id = ?, detail = ? WHERE id = ?',
+      [description, price, category_id, detail || null, id]
+    );
     const updated = await db.get('SELECT * FROM modules WHERE id = ?', [id]);
     res.json(updated);
   } catch (e) {
@@ -304,12 +315,10 @@ app.delete('/api/portfolios/:id', async (req, res) => {
   }
 });
 
-// Para cualquier otra ruta, enviar index.html
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
-// Iniciar servidor
 await initDb();
 app.listen(PORT, () => {
   console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
