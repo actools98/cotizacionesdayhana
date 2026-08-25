@@ -1,26 +1,32 @@
 /* ============================================================
+   Tipografías — Tema "Tachana Beauty" (editorial, elegante)
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap');
+
+/* ============================================================
    Design Tokens (Tema Oscuro)
    ============================================================ */
 :root {
-  --color-bg-main: #0F172A;        /* Slate 900 */
-  --color-bg-surface: #1E293B;     /* Slate 800 */
-  --color-text-primary: #F1F5F9;   /* Slate 100 */
-  --color-text-secondary: #94A3B8; /* Slate 400 */
-  --color-border: #334155;         /* Slate 700 */
+  --color-bg-main: #121110;        /* Negro cálido, casi carbón */
+  --color-bg-surface: #1A1816;     /* Superficie ligeramente más clara */
+  --color-text-primary: #F3EEE7;   /* Blanco hueso / crema */
+  --color-text-secondary: #A79A8C; /* Taupe / beige apagado */
+  --color-border: #383430;         /* Línea sutil cálida */
 
-  --color-primary: #818CF8;        /* Indigo 400 */
-  --color-primary-hover: #6366F1;  /* Indigo 500 */
-  --color-primary-muted: #1E1B4B;  /* Indigo 950 */
-  --color-success: #34D399;        /* Emerald 400 */
-  --color-danger: #F87171;         /* Red 400 */
+  --color-primary: #C9A876;        /* Dorado champán */
+  --color-primary-hover: #DCC08F;  /* Champán más claro (hover) */
+  --color-primary-muted: #262019;  /* Fondo dorado muy tenue */
+  --color-success: #9CAE8B;        /* Verde salvia apagado */
+  --color-danger: #C17B63;         /* Terracota apagado */
 
-  --font-sans: 'Inter', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: 'Cormorant Garamond', 'Georgia', serif;
+  --font-display: 'Playfair Display', 'Georgia', serif;
+  --font-mono: 'Cormorant Garamond', 'Georgia', serif;
 
-  --text-h1: 2rem;
+  --text-h1: 2.1rem;
   --text-h2: 1.5rem;
-  --text-body: 1rem;
-  --text-small: 0.875rem;
+  --text-body: 1.05rem;
+  --text-small: 0.9rem;
 
   --space-xs: 0.5rem;
   --space-sm: 1rem;
@@ -28,10 +34,10 @@
   --space-lg: 2rem;
   --space-xl: 3rem;
 
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --shadow-card: 0 4px 6px -1px rgba(0,0,0,0.3), 0 2px 4px -1px rgba(0,0,0,0.2);
-  --shadow-floating: 0 10px 15px -3px rgba(0,0,0,0.4), 0 4px 6px -2px rgba(0,0,0,0.2);
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --shadow-card: none;
+  --shadow-floating: 0 12px 28px -6px rgba(0,0,0,0.55);
 }
 
 /* ============================================================
@@ -1426,4 +1432,352 @@ dialog::backdrop {
   .add-portfolio-form-inline .btn {
     width: 100%;
   }
+}
+
+/* ============================================================
+   TEMA "TACHANA BEAUTY" — Editorial oscuro, serif, líneas finas
+   (overrides visuales; no toca estructura ni funcionalidad)
+   ============================================================ */
+
+body {
+  background-color: var(--color-bg-main);
+  background-image: radial-gradient(circle at 15% 0%, rgba(201,168,118,0.05), transparent 45%);
+}
+
+/* --- Header / Logo estilo "PRICE LIST" --- */
+header {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-md);
+}
+
+.logo h1 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  font-size: 1.9rem;
+  color: var(--color-text-primary);
+}
+
+.logo .badge {
+  font-family: var(--font-sans);
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--color-primary);
+  background: transparent;
+  border: 1px solid var(--color-primary);
+  border-radius: 20px;
+}
+
+/* --- Selects y toggles del header --- */
+.btn-toggle {
+  background: transparent;
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  border-radius: var(--radius-sm);
+}
+.btn-toggle:hover {
+  background: var(--color-primary);
+  color: var(--color-bg-main);
+  transform: none;
+}
+.btn-toggle.active {
+  background: var(--color-primary);
+  color: var(--color-bg-main);
+  border-color: var(--color-primary);
+}
+.btn-toggle.active:hover {
+  filter: none;
+  background: var(--color-primary-hover);
+}
+
+#currency-select {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-sm);
+}
+#currency-select:hover {
+  border-color: var(--color-primary);
+}
+
+/* --- Encabezados de categoría estilo "Colaboraciones" --- */
+.category-header {
+  border-bottom: 1px solid var(--color-border);
+  border-top: 1px solid var(--color-border);
+  padding: var(--space-xs) 0;
+}
+
+.category-header h3 {
+  font-family: var(--font-sans);
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: var(--color-text-primary);
+}
+
+/* --- Filas de módulos: lista plana con línea, no tarjeta con sombra --- */
+.module-card {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+  box-shadow: none;
+  padding: var(--space-sm) var(--space-xs);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.module-card:hover {
+  background-color: rgba(201,168,118,0.04);
+  border-color: var(--color-border);
+}
+
+.module-card:has(input:checked) {
+  background-color: var(--color-primary-muted);
+  border-color: var(--color-primary);
+}
+
+.module-card input[type="checkbox"] {
+  accent-color: var(--color-primary);
+}
+
+.module-card .module-label {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 1.1rem;
+  letter-spacing: 0.01em;
+  color: var(--color-text-primary);
+}
+
+.module-card .module-price {
+  font-family: var(--font-sans);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.module-card:has(input:checked) .module-price {
+  color: var(--color-primary);
+}
+
+.module-card.admin-mode {
+  background: transparent;
+}
+
+/* --- Tarjeta de total (Summary) --- */
+.summary-card,
+.portfolios-card {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: none;
+  border-radius: var(--radius-md);
+}
+
+.summary-title {
+  font-family: var(--font-sans);
+  font-style: italic;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0.06em;
+  color: var(--color-text-secondary);
+}
+
+.total-amount {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--color-primary);
+  font-size: 2.6rem;
+}
+
+.portfolio-item {
+  background: var(--color-bg-main);
+  border-color: var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.pf-name-btn {
+  font-family: var(--font-sans);
+  font-style: italic;
+  color: var(--color-primary);
+}
+.pf-name-btn:hover {
+  color: var(--color-primary-hover);
+}
+
+/* --- Botones generales: contorno dorado, versalitas espaciadas --- */
+.btn {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  border-radius: var(--radius-sm);
+}
+
+.btn-primary {
+  background: transparent;
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+}
+.btn-primary:hover {
+  background: var(--color-primary);
+  color: var(--color-bg-main);
+  transform: none;
+}
+
+.btn-success {
+  background: transparent;
+  border: 1px solid var(--color-success);
+  color: var(--color-success);
+}
+.btn-success:hover {
+  background: var(--color-success);
+  color: var(--color-bg-main);
+  filter: none;
+  transform: none;
+}
+
+.btn-danger {
+  background: transparent;
+  border: 1px solid var(--color-danger);
+  color: var(--color-danger);
+}
+.btn-danger:hover {
+  background: var(--color-danger);
+  color: var(--color-bg-main);
+  filter: none;
+  transform: none;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+.btn-secondary:hover {
+  border-color: var(--color-text-primary);
+  color: var(--color-text-primary);
+  background: transparent;
+}
+
+.btn-rates {
+  font-family: var(--font-sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+.btn-rates:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* --- Formularios (inputs, selects) --- */
+#category-controls,
+#add-module-form {
+  background: var(--color-bg-surface);
+  border-color: var(--color-border);
+}
+
+#category-controls input,
+#add-module-form input,
+#add-module-form select,
+.add-portfolio-form input,
+.add-portfolio-form-inline input,
+.pf-edit-form input,
+#client-dialog .form-group input,
+#rates-dialog .form-group input {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg-main);
+  border-color: var(--color-border);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-sm);
+}
+#category-controls input:focus,
+#add-module-form input:focus,
+#add-module-form select:focus,
+.add-portfolio-form input:focus,
+#client-dialog .form-group input:focus,
+#rates-dialog .form-group input:focus {
+  border-color: var(--color-primary);
+}
+
+#add-module-form .btn {
+  background: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  color: var(--color-bg-main);
+}
+#add-module-form .btn:hover {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+  filter: none;
+}
+
+/* --- Diálogos / modales --- */
+dialog,
+#client-dialog {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-top: 2px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-floating);
+}
+
+.dialog-header h2,
+#client-dialog h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--color-text-primary);
+}
+
+#client-dialog .form-group label,
+#rates-dialog .form-group label {
+  font-family: var(--font-sans);
+  font-style: italic;
+  letter-spacing: 0.02em;
+}
+
+/* --- Menú contextual de portafolios --- */
+.pf-context-menu {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+}
+.pf-context-menu .pf-menu-item {
+  font-family: var(--font-sans);
+}
+.pf-context-menu .pf-menu-item:hover {
+  background: var(--color-primary-muted);
+  color: var(--color-primary);
+}
+
+.pf-action-btn {
+  background: transparent;
+  border-color: var(--color-border);
+  font-family: var(--font-sans);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+}
+.pf-action-btn:hover {
+  background: var(--color-primary-muted);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  box-shadow: none;
+}
+
+/* --- Footer --- */
+.app-footer {
+  font-family: var(--font-sans);
+  font-style: italic;
+  letter-spacing: 0.04em;
+  color: var(--color-text-secondary);
+  border-top: 1px solid var(--color-border);
 }
