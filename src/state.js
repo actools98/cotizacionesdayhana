@@ -9,11 +9,11 @@ export async function getModules() {
   return res.json();
 }
 
-export async function addModule(description, price, category_id = null) {
+export async function addModule(description, price, category_id = null, detail = null) {
   const res = await fetch(`${API_URL}/modules`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ description, price: Number(price), category_id })
+    body: JSON.stringify({ description, price: Number(price), category_id, detail })
   });
   if (!res.ok) throw new Error('Error al agregar módulo');
   return res.json();
@@ -25,11 +25,11 @@ export async function deleteModule(id) {
   return true;
 }
 
-export async function editModule(id, description, price, category_id = null) {
+export async function editModule(id, description, price, category_id = null, detail = null) {
   const res = await fetch(`${API_URL}/modules/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ description, price: Number(price), category_id })
+    body: JSON.stringify({ description, price: Number(price), category_id, detail })
   });
   if (!res.ok) throw new Error('Error al editar módulo');
   return res.json();
