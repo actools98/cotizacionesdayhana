@@ -12,7 +12,7 @@
 </head>
 <body>
 
-  <!-- MODAL DE LOGIN (superpuesto) -->
+  <!-- MODAL DE LOGIN -->
   <div id="login-overlay" style="position:fixed; inset:0; background:rgba(15,23,42,0.85); backdrop-filter:blur(4px); z-index:9999; display:flex; align-items:center; justify-content:center; flex-direction:column;">
     <div style="background:var(--color-bg-surface); padding:var(--space-lg); border-radius:var(--radius-md); max-width:400px; width:90%; box-shadow:var(--shadow-floating); text-align:center;">
       <h2 style="margin-bottom:var(--space-sm); color:var(--color-text-primary);">Acceso restringido</h2>
@@ -23,10 +23,9 @@
     </div>
   </div>
 
-  <!-- Contenedor principal de la app (oculto hasta login) -->
+  <!-- Contenedor principal -->
   <div id="app-wrapper" style="display:none;">
     <div class="app-container">
-      <!-- Header con botón de cerrar sesión -->
       <header>
         <div class="header-left">
           <div class="logo">
@@ -49,7 +48,6 @@
         </div>
       </header>
 
-      <!-- Grid principal -->
       <div class="content-grid">
         <main id="modules-container">
           <!-- Renderizado dinámico -->
@@ -69,26 +67,27 @@
         </aside>
       </div>
 
-      <!-- Contenedor para agregar módulo (modo edición) -->
+      <!-- Formulario para agregar módulo (con detalle) -->
       <div id="add-module-container" style="display: none; margin-top: var(--space-md);">
         <form id="add-module-form">
-          <input type="text" id="module-desc" placeholder="Descripción" required />
+          <input type="text" id="module-desc" placeholder="Nombre del servicio" required />
           <input type="number" id="module-price" placeholder="Precio (COP)" required />
           <select id="module-category-select">
             <!-- Se llenará con JS -->
           </select>
+          <textarea id="module-detail" rows="3" placeholder="Detalle del servicio (opcional)"></textarea>
           <button type="submit" class="btn">Agregar</button>
         </form>
       </div>
 
-      <!-- Footer -->
       <footer class="app-footer">
         <p>powered by actols</p>
       </footer>
     </div>
   </div>
 
-  <!-- Diálogos (cotización, portafolios, tasas) -->
+  <!-- Diálogos -->
+  <!-- Cotización -->
   <dialog id="client-dialog">
     <form method="dialog">
       <h3>Datos de la Cotización</h3>
@@ -107,6 +106,34 @@
     </form>
   </dialog>
 
+  <!-- Diálogo para editar módulo (con detalle) -->
+  <dialog id="edit-module-dialog">
+    <form method="dialog">
+      <h3>Editar módulo</h3>
+      <div class="form-group">
+        <label for="edit-module-name">Nombre</label>
+        <input type="text" id="edit-module-name" required />
+      </div>
+      <div class="form-group">
+        <label for="edit-module-price">Precio (COP)</label>
+        <input type="number" id="edit-module-price" required />
+      </div>
+      <div class="form-group">
+        <label for="edit-module-category">Categoría</label>
+        <select id="edit-module-category"></select>
+      </div>
+      <div class="form-group">
+        <label for="edit-module-detail">Detalle</label>
+        <textarea id="edit-module-detail" rows="4"></textarea>
+      </div>
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-secondary" id="edit-module-cancel">Cancelar</button>
+        <button type="submit" class="btn btn-primary" id="edit-module-save">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Portafolios -->
   <dialog id="portfolios-dialog">
     <div class="dialog-header">
       <h2>Portafolios</h2>
@@ -117,6 +144,7 @@
     </div>
   </dialog>
 
+  <!-- Tasas -->
   <dialog id="rates-dialog">
     <div class="dialog-header">
       <h2>Ajustar tasas de cambio</h2>
