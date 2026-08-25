@@ -1,17 +1,18 @@
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import { getSelectedModules } from './quoteCalculator.js';
 import { convertCurrency } from './currencyConverter.js';
 import { formatCurrency } from '../utils/formatters.js';
 
-export async function generateQuotePDF(clientName, productName, checkedIds, currency, totalCOP, modules) {
+export async function generateQuotePDF(clientName, productName, selectedModules, currency, totalCOP) {
   const doc = new jsPDF('p', 'mm', 'a4');
   const pageWidth = doc.internal.pageSize.getWidth();
 
+  // Título
   doc.setFontSize(22);
   doc.setFont('helvetica', 'bold');
   doc.text('Cotización - actols', pageWidth / 2, 20, { align: 'center' });
 
+  // Datos del cliente
   doc.setFontSize(12);
   doc.setFont('helvetica', 'normal');
   doc.text(`Cliente: ${clientName}`, 14, 35);
@@ -19,34 +20,58 @@ export async function generateQuotePDF(clientName, productName, checkedIds, curr
   const today = new Date().toLocaleDateString('es-CO');
   doc.text(`Fecha: ${today}`, 14, 49);
 
-  const selected = getSelectedModules(checkedIds, modules);
-  const tableRows = selected.map(mod => {
-    const priceConverted = convertCurrency(mod.price, currency);
-    const priceFormatted = formatCurrency(priceConverted, currency);
-    return [mod.description, priceFormatted];
+  // Listado de servicios
+  let y = 56;
+  const lineHeight = 5;
+  const margin = 14;
+  const maxWidth = pageWidth - 2 * margin;
+
+  selectedModules.forEach((mod, index) => {
+    const priceFormatted = formatCurrency(convertCurrency(mod.price, currency), currency);
+
+    // Nombre del servicio (negrita)
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Servicio: ${mod.description}`, margin, y);
+    // Precio alineado a la derecha
+    doc.setFont('helvetica', 'normal');
+    const priceX = pageWidth - margin - doc.getTextWidth(priceFormatted);
+    doc.text(priceFormatted, priceX, y);
+    y += lineHeight + 2;
+
+    // Detalle (si existe)
+    if (mod.detail) {
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'italic');
+      const detailLines = doc.splitTextToSize(mod.detail, maxWidth);
+      doc.text(detailLines, margin, y);
+      y += detailLines.length * lineHeight + 4;
+    } else {
+      y += 4;
+    }
+
+    // Línea separadora
+    doc.setDrawColor(200);
+    doc.line(margin, y, pageWidth - margin, y);
+    y += 6;
   });
 
+  // Total
   const totalConverted = convertCurrency(totalCOP, currency);
   const totalFormatted = formatCurrency(totalConverted, currency);
+  doc.setFontSize(14);
+  doc.setFont('helvetica', 'bold');
+  doc.text(`Total: ${totalFormatted}`, pageWidth - margin, y, { align: 'right' });
+  y += 10;
 
-  doc.autoTable({
-    startY: 56,
-    head: [['Descripción', 'Precio']],
-    body: tableRows,
-    foot: [['Total', totalFormatted]],
-    theme: 'striped',
-    styles: { fontSize: 10 },
-    headStyles: { fillColor: [79, 70, 229] },
-    footStyles: { fillColor: [240, 240, 240], textColor: [15, 23, 42], fontStyle: 'bold' },
-    margin: { left: 14, right: 14 },
-  });
-
-  const finalY = doc.lastAutoTable.finalY + 10;
+  // Pie de página
   doc.setFontSize(10);
   doc.setTextColor(100);
-  doc.text('Esta cotización es válida por 30 días.', 14, finalY);
-  doc.text('powered by actols', 14, finalY + 7);
+  doc.setFont('helvetica', 'normal');
+  doc.text('Esta cotización es válida por 30 días.', margin, y);
+  doc.text('powered by actols', margin, y + 7);
 
+  // Guardar PDF
   const fileName = `Cotizacion_${clientName.replace(/\s+/g, '_')}.pdf`;
   doc.save(fileName);
 }
