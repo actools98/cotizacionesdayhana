@@ -1,32 +1,32 @@
 /* ============================================================
-   Tipografías — Tema "Tachana Beauty" (editorial, elegante)
+   Tipografía — Tema "ACTOLS Quotes" (moderno, redondeado, sans)
    ============================================================ */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 /* ============================================================
    Design Tokens (Tema Oscuro)
    ============================================================ */
 :root {
-  --color-bg-main: #121110;        /* Negro cálido, casi carbón */
-  --color-bg-surface: #1A1816;     /* Superficie ligeramente más clara */
-  --color-text-primary: #FFFFFF;   /* Blanco puro */
-  --color-text-secondary: #C7C2BC; /* Gris claro para texto secundario */
+  --color-bg-main: #20183E;         /* Morado oscuro (de la imagen) */
+  --color-bg-surface: #2B2251;      /* Superficie: variante más clara del morado */
+  --color-text-primary: #FFFFFF;    /* Blanco */
+  --color-text-secondary: #B6ADD1;  /* Lavanda claro para texto secundario */
   --color-border: rgba(255,255,255,0.16); /* Línea fina blanca translúcida */
 
-  --color-primary: #C9A876;        /* Dorado champán */
-  --color-primary-hover: #DCC08F;  /* Champán más claro (hover) */
-  --color-primary-muted: #262019;  /* Fondo dorado muy tenue */
-  --color-success: #9CAE8B;        /* Verde salvia apagado */
-  --color-danger: #C17B63;         /* Terracota apagado */
+  --color-primary: #DDB2CA;         /* Rosa / malva (de la imagen) */
+  --color-primary-hover: #E9C7DC;   /* Rosa más claro (hover) */
+  --color-primary-muted: rgba(221,178,202,0.14); /* Fondo rosa muy tenue */
+  --color-success: #9FD8B8;         /* Verde menta suave, coherente con la paleta */
+  --color-danger: #E38FA8;          /* Rosa-rojo suave para peligro */
 
-  --font-sans: 'Cormorant Garamond', 'Georgia', serif;
-  --font-display: 'Playfair Display', 'Georgia', serif;
-  --font-mono: 'Cormorant Garamond', 'Georgia', serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-display: 'Inter', system-ui, sans-serif;
+  --font-mono: 'Inter', system-ui, sans-serif;
 
-  --text-h1: 2.1rem;
+  --text-h1: 1.9rem;
   --text-h2: 1.5rem;
-  --text-body: 1.05rem;
-  --text-small: 0.9rem;
+  --text-body: 1rem;
+  --text-small: 0.875rem;
 
   --space-xs: 0.5rem;
   --space-sm: 1rem;
@@ -34,10 +34,10 @@
   --space-lg: 2rem;
   --space-xl: 3rem;
 
-  --radius-sm: 2px;
-  --radius-md: 3px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
   --shadow-card: none;
-  --shadow-floating: 0 12px 28px -6px rgba(0,0,0,0.55);
+  --shadow-floating: 0 16px 32px -8px rgba(0,0,0,0.5);
 }
 
 /* ============================================================
@@ -1434,64 +1434,78 @@ dialog::backdrop {
   }
 }
 
+
 /* ============================================================
-   TEMA "TACHANA BEAUTY" — Editorial oscuro, serif, líneas finas
+   TEMA "ACTOLS QUOTES" — Morado + rosa, redondeado, moderno
    (overrides visuales; no toca estructura ni funcionalidad)
    ============================================================ */
 
 body {
   background-color: var(--color-bg-main);
-  background-image: radial-gradient(circle at 15% 0%, rgba(201,168,118,0.05), transparent 45%);
 }
 
-/* --- Header / Logo estilo "PRICE LIST" --- */
+/* --- Header --- */
 header {
-  border-bottom: 1px solid var(--color-border);
-  padding-bottom: var(--space-md);
+  border-bottom: none;
+  padding-bottom: var(--space-sm);
+}
+
+.header-left {
+  position: relative;
 }
 
 .logo h1 {
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.28em;
-  font-size: 1.9rem;
+  letter-spacing: 0.35em;
+  font-size: 1.6rem;
   color: var(--color-text-primary);
+  padding-right: 1.6em; /* deja espacio para el badge circular superpuesto */
 }
 
 .logo .badge {
   font-family: var(--font-sans);
-  font-style: italic;
-  font-weight: 500;
-  letter-spacing: 0.02em;
+  font-weight: 600;
+  font-style: normal;
   text-transform: none;
-  color: var(--color-primary);
-  background: transparent;
-  border: 1px solid var(--color-primary);
-  border-radius: 20px;
+  letter-spacing: 0;
+  color: var(--color-text-primary);
+  background: var(--color-primary);
+  border: none;
+  border-radius: 999px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  text-align: center;
+  box-shadow: var(--shadow-floating);
 }
 
-/* --- Selects y toggles del header --- */
-.btn-toggle {
+.btn-toggle,
+#editar-btn,
+.header-right .btn {
   background: transparent;
-  border: 1px solid var(--color-border);
+  border: 1.5px solid rgba(255,255,255,0.5);
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   font-weight: 600;
-  letter-spacing: 0.02em;
-  text-transform: none;
-  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
   border-radius: var(--radius-sm);
 }
 .btn-toggle:hover {
-  background: rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.08);
   border-color: var(--color-text-primary);
-  color: var(--color-text-primary);
   transform: none;
 }
 .btn-toggle.active {
   background: var(--color-primary);
-  color: #1A1712;
+  color: #20183E;
   border-color: var(--color-primary);
 }
 .btn-toggle.active:hover {
@@ -1502,44 +1516,51 @@ header {
 
 #currency-select {
   font-family: var(--font-sans);
-  background-color: var(--color-bg-surface);
-  border-color: var(--color-border);
+  font-weight: 600;
+  background-color: transparent;
+  border: none;
   color: var(--color-text-primary);
   border-radius: var(--radius-sm);
 }
 #currency-select:hover {
-  border-color: var(--color-primary);
+  border-color: transparent;
 }
 
-/* --- Encabezados de categoría estilo "Colaboraciones" --- */
+/* --- Encabezados de categoría --- */
 .category-header {
-  border-bottom: 1px solid var(--color-border);
-  border-top: 1px solid var(--color-border);
-  padding: var(--space-xs) 0;
+  border-bottom: none;
+  border-top: none;
+  padding: 0 0 var(--space-xs) 0;
 }
 
 .category-header h3 {
-  font-family: var(--font-sans);
-  font-style: italic;
-  font-weight: 500;
-  letter-spacing: 0.03em;
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0;
+  font-size: 1.4rem;
   color: var(--color-text-primary);
 }
 
-/* --- Filas de módulos: lista plana con línea, no tarjeta con sombra --- */
+.module-list .empty-message {
+  font-family: var(--font-sans);
+  font-style: normal;
+  color: var(--color-text-secondary);
+}
+
+/* --- Filas de módulos: tarjetas redondeadas con borde visible --- */
 .module-card {
   background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--color-border);
-  border-radius: 0;
+  border: 1.5px solid rgba(255,255,255,0.18);
+  border-radius: var(--radius-sm);
   box-shadow: none;
-  padding: var(--space-sm) var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .module-card:hover {
-  background-color: rgba(201,168,118,0.04);
-  border-color: var(--color-border);
+  border-color: rgba(255,255,255,0.35);
+  background-color: rgba(255,255,255,0.03);
 }
 
 .module-card:has(input:checked) {
@@ -1549,21 +1570,23 @@ header {
 
 .module-card input[type="checkbox"] {
   accent-color: var(--color-primary);
+  width: 20px;
+  height: 20px;
 }
 
 .module-card .module-label {
   font-family: var(--font-sans);
   font-weight: 500;
-  font-size: 1.1rem;
-  letter-spacing: 0.01em;
+  font-size: 1rem;
+  letter-spacing: 0;
   color: var(--color-text-primary);
 }
 
 .module-card .module-price {
   font-family: var(--font-sans);
-  font-style: italic;
-  font-weight: 500;
-  color: var(--color-text-secondary);
+  font-style: normal;
+  font-weight: 600;
+  color: var(--color-text-primary);
 }
 
 .module-card:has(input:checked) .module-price {
@@ -1574,88 +1597,90 @@ header {
   background: transparent;
 }
 
-/* --- Tarjeta de total (Summary) --- */
+/* --- Tarjeta de total (Summary) y Portafolios --- */
 .summary-card,
 .portfolios-card {
   background: var(--color-bg-surface);
-  border: 1px solid var(--color-border);
+  border: none;
   box-shadow: none;
   border-radius: var(--radius-md);
 }
 
-.summary-title {
+.summary-title,
+.portfolios-card > p,
+.portfolios-card h3 {
   font-family: var(--font-sans);
-  font-style: italic;
+  font-style: normal;
   font-weight: 500;
   text-transform: none;
-  letter-spacing: 0.06em;
+  letter-spacing: 0;
+  font-size: var(--text-small);
   color: var(--color-text-secondary);
 }
 
 .total-amount {
   font-family: var(--font-display);
-  font-weight: 600;
-  color: var(--color-primary);
+  font-weight: 800;
+  color: var(--color-text-primary);
   font-size: 2.6rem;
 }
 
 .portfolio-item {
-  background: var(--color-bg-main);
-  border-color: var(--color-border);
+  background: transparent;
+  border-color: rgba(255,255,255,0.18);
   border-radius: var(--radius-sm);
 }
 
 .pf-name-btn {
   font-family: var(--font-sans);
-  font-style: italic;
-  color: var(--color-primary);
+  font-style: normal;
+  font-weight: 600;
+  color: var(--color-text-primary);
 }
 .pf-name-btn:hover {
-  color: var(--color-primary-hover);
+  color: var(--color-primary);
 }
 
-/* --- Botones generales: sobrios, profesionales, jerarquía clara --- */
+/* --- Botones generales --- */
 .btn {
   font-family: var(--font-sans);
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  text-transform: none;
-  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
   border-radius: var(--radius-sm);
-  border: 1px solid transparent;
+  border: 1.5px solid transparent;
   transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
-/* Primario: única acción "sólida" de la interfaz — dorado lleno */
+/* Primario: contorno rosa, coincide con "HACER COTIZACIÓN" / "PORTAFOLIOS" */
 .btn-primary {
-  background: var(--color-primary);
+  background: transparent;
   border-color: var(--color-primary);
-  color: #1A1712;
+  color: var(--color-primary);
 }
 .btn-primary:hover {
-  background: var(--color-primary-hover);
-  border-color: var(--color-primary-hover);
+  background: var(--color-primary);
+  color: #20183E;
   transform: none;
 }
 
-/* Éxito / confirmar: contorno claro, discreto */
 .btn-success {
   background: transparent;
-  border-color: var(--color-border);
+  border-color: rgba(255,255,255,0.35);
   color: var(--color-text-primary);
 }
 .btn-success:hover {
-  border-color: var(--color-success);
-  color: var(--color-success);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
   background: transparent;
   filter: none;
   transform: none;
 }
 
-/* Peligro / eliminar: se mantiene discreto hasta el hover */
 .btn-danger {
   background: transparent;
-  border-color: var(--color-border);
+  border-color: rgba(255,255,255,0.35);
   color: var(--color-text-secondary);
 }
 .btn-danger:hover {
@@ -1666,36 +1691,90 @@ header {
   transform: none;
 }
 
-/* Secundario: contorno blanco fino */
 .btn-secondary {
   background: transparent;
-  border-color: var(--color-border);
+  border-color: rgba(255,255,255,0.35);
   color: var(--color-text-primary);
 }
 .btn-secondary:hover {
   border-color: var(--color-text-primary);
   color: var(--color-text-primary);
-  background: rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.06);
 }
 
 .btn-rates {
   font-family: var(--font-sans);
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  text-transform: none;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  background: transparent;
+  border: none;
   color: var(--color-text-primary);
 }
 .btn-rates:hover {
-  border-color: var(--color-text-primary);
+  color: var(--color-primary);
+  background: transparent;
+  border-color: transparent;
+}
+
+#add-module-form .btn {
+  background: var(--color-primary);
+  border: 1.5px solid var(--color-primary);
+  color: #20183E;
+}
+#add-module-form .btn:hover {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+  filter: none;
+}
+
+/* Botón "Portafolios" y "Hacer cotización" ocupan todo el ancho, redondeados */
+.summary-card .btn,
+.portfolios-card > .btn,
+#make-quote-btn,
+#portfolios-toggle-btn {
+  width: 100%;
+  padding-top: var(--space-sm);
+  padding-bottom: var(--space-sm);
+  border-radius: var(--radius-sm);
+}
+
+/* --- Botones pequeños de edición/borrado --- */
+.category-actions .btn-edit-cat,
+.module-card .admin-actions .btn-edit {
+  background: transparent;
+  border: 1.5px solid rgba(255,255,255,0.3);
   color: var(--color-text-primary);
-  background: rgba(255,255,255,0.05);
+}
+.category-actions .btn-edit-cat:hover,
+.module-card .admin-actions .btn-edit:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: transparent;
+  transform: none;
+}
+.category-actions .btn-delete-cat,
+.module-card .admin-actions .btn-delete {
+  background: transparent;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  color: var(--color-text-secondary);
+}
+.category-actions .btn-delete-cat:hover,
+.module-card .admin-actions .btn-delete:hover {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+  background: transparent;
+  filter: none;
+  transform: none;
 }
 
 /* --- Formularios (inputs, selects) --- */
 #category-controls,
 #add-module-form {
   background: var(--color-bg-surface);
-  border-color: var(--color-border);
+  border: none;
+  border-radius: var(--radius-md);
 }
 
 #category-controls input,
@@ -1707,8 +1786,8 @@ header {
 #client-dialog .form-group input,
 #rates-dialog .form-group input {
   font-family: var(--font-sans);
-  background-color: var(--color-bg-main);
-  border-color: var(--color-border);
+  background-color: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.18);
   color: var(--color-text-primary);
   border-radius: var(--radius-sm);
 }
@@ -1721,15 +1800,69 @@ header {
   border-color: var(--color-primary);
 }
 
-#add-module-form .btn {
-  background: var(--color-primary);
-  border: 1px solid var(--color-primary);
-  color: #1A1712;
+/* --- Diálogos / modales --- */
+dialog,
+#client-dialog {
+  background: var(--color-bg-surface);
+  border: none;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-floating);
 }
-#add-module-form .btn:hover {
-  background: var(--color-primary-hover);
-  border-color: var(--color-primary-hover);
-  filter: none;
+
+.dialog-header h2,
+#client-dialog h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--color-text-primary);
+}
+
+#client-dialog .form-group label,
+#rates-dialog .form-group label {
+  font-family: var(--font-sans);
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--color-text-secondary);
+}
+
+/* --- Menú contextual de portafolios --- */
+.pf-context-menu {
+  background: var(--color-bg-surface);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: var(--radius-sm);
+}
+.pf-context-menu .pf-menu-item {
+  font-family: var(--font-sans);
+}
+.pf-context-menu .pf-menu-item:hover {
+  background: var(--color-primary-muted);
+  color: var(--color-primary);
+}
+
+.pf-action-btn {
+  background: transparent;
+  border-color: rgba(255,255,255,0.3);
+  font-family: var(--font-sans);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  border-radius: var(--radius-sm);
+}
+.pf-action-btn:hover {
+  background: var(--color-primary-muted);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  box-shadow: none;
+}
+
+/* --- Footer --- */
+.app-footer {
+  font-family: var(--font-sans);
+  font-style: normal;
+  letter-spacing: 0;
+  color: var(--color-text-secondary);
+  border-top: none;
 }
 
 /* --- Anillos de foco: blancos, nunca el azul por defecto del navegador --- */
@@ -1751,95 +1884,4 @@ textarea:focus-visible,
 }
 input[type="checkbox"] {
   accent-color: var(--color-primary);
-}
-
-/* --- Diálogos / modales --- */
-dialog,
-#client-dialog {
-  background: var(--color-bg-surface);
-  border: 1px solid var(--color-border);
-  border-top: 2px solid var(--color-primary);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-floating);
-}
-
-.dialog-header h2,
-#client-dialog h3 {
-  font-family: var(--font-display);
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  color: var(--color-text-primary);
-}
-
-#client-dialog .form-group label,
-#rates-dialog .form-group label {
-  font-family: var(--font-sans);
-  font-style: italic;
-  letter-spacing: 0.02em;
-}
-
-/* --- Menú contextual de portafolios --- */
-.pf-context-menu {
-  background: var(--color-bg-surface);
-  border: 1px solid var(--color-border);
-}
-.pf-context-menu .pf-menu-item {
-  font-family: var(--font-sans);
-}
-.pf-context-menu .pf-menu-item:hover {
-  background: var(--color-primary-muted);
-  color: var(--color-primary);
-}
-
-.pf-action-btn {
-  background: transparent;
-  border-color: var(--color-border);
-  font-family: var(--font-sans);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  font-size: 0.78rem;
-}
-.pf-action-btn:hover {
-  background: var(--color-primary-muted);
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  box-shadow: none;
-}
-
-/* --- Footer --- */
-.app-footer {
-  font-family: var(--font-sans);
-  font-style: italic;
-  letter-spacing: 0.04em;
-  color: var(--color-text-secondary);
-  border-top: 1px solid var(--color-border);
-}
-
-/* --- Botones pequeños de edición/borrado (categorías y módulos admin) --- */
-.category-actions .btn-edit-cat,
-.module-card .admin-actions .btn-edit {
-  background: transparent;
-  border: 1px solid var(--color-border);
-  color: var(--color-text-primary);
-}
-.category-actions .btn-edit-cat:hover,
-.module-card .admin-actions .btn-edit:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  background: transparent;
-  transform: none;
-}
-.category-actions .btn-delete-cat,
-.module-card .admin-actions .btn-delete {
-  background: transparent;
-  border: 1px solid var(--color-border);
-  color: var(--color-text-secondary);
-}
-.category-actions .btn-delete-cat:hover,
-.module-card .admin-actions .btn-delete:hover {
-  border-color: var(--color-danger);
-  color: var(--color-danger);
-  background: transparent;
-  filter: none;
-  transform: none;
 }
