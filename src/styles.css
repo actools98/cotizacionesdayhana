@@ -1,32 +1,31 @@
-@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400..900;1,400..900&family=Jost:wght@400;500;600&display=swap');
-
 /* ============================================================
-   Design Tokens — Tema "Lienxo" (editorial claro)
-   Inspirado en el portafolio: fondo crema, líneas finas,
-   tipografía serif elegante + sans-serif con tracking amplio.
+   Design Tokens (Tema Elegante)
    ============================================================ */
 :root {
-  --color-bg-main: #FBFAF8;         /* blanco cálido, casi blanco */
-  --color-bg-surface: #FFFFFF;      /* superficies (cards, sidebar) */
-  --color-text-primary: #2B2A28;    /* casi negro cálido */
-  --color-text-secondary: #7A756C;  /* gris cálido */
-  --color-border: #E1DDD3;          /* línea fina crema-gris */
+  /* Paleta Base */
+  --color-bg-main: #20183e;        /* Fondo principal */
+  --color-bg-surface: #261d47;     /* Fondo para tarjetas (ligeramente más claro) */
+  --color-text-primary: #FFFFFF;   /* Blanco puro para textos principales */
+  --color-text-secondary: #ddb2ca; /* Rosado para textos secundarios y detalles */
+  --color-border: rgba(221, 178, 202, 0.3); /* Bordes con el rosado transparente */
 
-  --color-primary: #2B2A28;         /* negro cálido, actúa como acento */
-  --color-primary-hover: #4A4640;
-  --color-primary-muted: #F1EEE6;   /* fondo suave para selección */
-  --color-success: #6B8F71;         /* verde apagado */
-  --color-danger: #B5675A;          /* terracota apagado */
+  /* Colores de Acción */
+  --color-primary: #ddb2ca;        
+  --color-primary-hover: #e9c8da;  /* Rosado ligeramente más brillante para hover */
+  --color-primary-muted: rgba(221, 178, 202, 0.15); /* Fondo sutil para elementos activos */
+  
+  /* Adaptaciones para mantener la paleta limpia */
+  --color-success: #ddb2ca;        
+  --color-danger: #c46487;         /* Un tono rojo-rosado armónico para acciones de borrar */
 
-  --font-sans: 'Jost', 'Helvetica Neue', Arial, sans-serif;
-  --font-serif: 'Bodoni Moda', 'Didot', 'Playfair Display', Georgia, serif;
+  /* Tipografías y Espaciado */
+  --font-sans: 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  --text-h1: 2.4rem;
-  --text-h2: 1.6rem;
+  --text-h1: 2rem;
+  --text-h2: 1.5rem;
   --text-body: 1rem;
-  --text-small: 0.8rem;
-  --tracking-wide: 0.12em;
+  --text-small: 0.875rem;
 
   --space-xs: 0.5rem;
   --space-sm: 1rem;
@@ -34,10 +33,10 @@
   --space-lg: 2rem;
   --space-xl: 3rem;
 
-  --radius-sm: 2px;
-  --radius-md: 2px;
-  --shadow-card: none;
-  --shadow-floating: 0 8px 24px -8px rgba(43, 42, 40, 0.18);
+  --radius-sm: 4px; /* Un poco más cuadrado para mayor elegancia */
+  --radius-md: 8px; 
+  --shadow-card: 0 4px 6px -1px rgba(0,0,0,0.3), 0 2px 4px -1px rgba(0,0,0,0.2);
+  --shadow-floating: 0 10px 15px -3px rgba(0,0,0,0.4), 0 4px 6px -2px rgba(0,0,0,0.2);
 }
 
 /* ============================================================
@@ -52,11 +51,8 @@
 body {
   font-family: var(--font-sans);
   background-color: var(--color-bg-main);
-  /* grano de papel orgánico (ruido feTurbulence), no una grilla repetitiva */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.16  0 0 0 0 0.15  0 0 0 0 0.13  0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-repeat: repeat;
   color: var(--color-text-primary);
-  line-height: 1.6;
+  line-height: 1.5;
   padding: var(--space-lg);
 }
 
@@ -84,8 +80,8 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: var(--space-lg);
-  background-color: transparent;
-  border-radius: 0;
+  background-color: var(--color-bg-main);
+  border-radius: var(--radius-md);
 }
 
 @media (max-width: 768px) {
@@ -102,7 +98,7 @@ header {
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--space-lg);
-  padding-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
   border-bottom: 1px solid var(--color-border);
   flex-wrap: wrap;
   gap: var(--space-sm);
@@ -121,24 +117,19 @@ header {
 }
 
 .logo h1 {
-  font-family: var(--font-serif);
   font-size: var(--text-h1);
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-weight: 700;
   color: var(--color-text-primary);
+  letter-spacing: -0.02em;
 }
 
 .logo .badge {
-  font-family: var(--font-sans);
   font-size: var(--text-small);
-  font-weight: 500;
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
-  color: var(--color-text-secondary);
-  background-color: transparent;
-  border: 1px solid var(--color-border);
-  padding: 0.2rem 0.7rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  background-color: var(--color-primary-muted);
+  border: 1px solid var(--color-primary);
+  padding: 0.2rem 0.6rem;
   border-radius: 20px;
 }
 
@@ -154,34 +145,32 @@ header {
   border: 1px solid var(--color-border);
   padding: var(--space-xs) var(--space-md);
   border-radius: var(--radius-sm);
-  font-weight: 500;
+  font-weight: 600;
   font-size: var(--text-small);
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
   cursor: pointer;
   transition: all 0.2s ease;
   min-height: 44px;
 }
 
 .btn-toggle:hover {
-  background-color: var(--color-primary);
-  color: #FFFFFF;
+  background-color: var(--color-primary-muted);
   border-color: var(--color-primary);
+  transform: translateY(-1px);
 }
 
 .btn-toggle:focus-visible {
-  outline: 1px solid var(--color-primary);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
 .btn-toggle.active {
   background-color: var(--color-primary);
-  color: #FFFFFF;
+  color: var(--color-bg-main);
   border-color: var(--color-primary);
 }
 
 .btn-toggle.active:hover {
-  filter: brightness(1.15);
+  background-color: var(--color-primary-hover);
 }
 
 .currency-selector {
@@ -193,12 +182,10 @@ header {
   font-family: var(--font-sans);
   font-size: var(--text-small);
   font-weight: 500;
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
   padding: var(--space-xs) var(--space-sm);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  background-color: var(--color-bg-surface);
+  background-color: transparent;
   color: var(--color-text-primary);
   cursor: pointer;
   outline: none;
@@ -207,11 +194,11 @@ header {
 }
 
 #currency-select:hover {
-  border-color: var(--color-text-secondary);
+  border-color: var(--color-primary);
 }
 
 #currency-select:focus-visible {
-  outline: 1px solid var(--color-primary);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
@@ -254,9 +241,8 @@ header {
 /* Total Estimado */
 .summary-card {
   background: var(--color-bg-surface);
-  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  box-shadow: none;
+  box-shadow: var(--shadow-floating);
   padding: var(--space-md) var(--space-lg);
   display: flex;
   flex-direction: column;
@@ -264,19 +250,18 @@ header {
 }
 
 .summary-title {
-  font-family: var(--font-sans);
   font-size: var(--text-small);
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: var(--tracking-wide);
+  letter-spacing: 0.05em;
   color: var(--color-text-secondary);
   margin: 0;
 }
 
 .total-amount {
-  font-family: var(--font-serif);
+  font-family: var(--font-mono);
   font-size: 3rem;
-  font-weight: 500;
+  font-weight: 700;
   color: var(--color-text-primary);
   line-height: 1.2;
   word-break: break-word;
@@ -285,9 +270,8 @@ header {
 /* Portafolios */
 .portfolios-card {
   background: var(--color-bg-surface);
-  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  box-shadow: none;
+  box-shadow: var(--shadow-floating);
   padding: var(--space-md) var(--space-lg);
   display: flex;
   flex-direction: column;
@@ -320,7 +304,6 @@ header {
 .portfolio-item .pf-name {
   font-weight: 500;
   font-size: var(--text-small);
-  letter-spacing: 0.02em;
 }
 
 .portfolio-item .pf-actions {
@@ -389,11 +372,8 @@ header {
 }
 
 .category-header h3 {
-  font-family: var(--font-serif);
   font-size: var(--text-h2);
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-weight: 600;
   color: var(--color-text-primary);
 }
 
@@ -406,34 +386,32 @@ header {
   min-height: 32px;
   padding: 0 var(--space-sm);
   font-size: var(--text-small);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  border: 1px solid var(--color-border);
+  border: none;
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .category-actions .btn-edit-cat {
-  background-color: transparent;
-  color: var(--color-text-primary);
+  background-color: var(--color-primary);
+  color: var(--color-bg-main);
 }
 
 .category-actions .btn-edit-cat:hover {
-  background-color: var(--color-primary);
-  color: #FFFFFF;
-  border-color: var(--color-primary);
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
 }
 
 .category-actions .btn-delete-cat {
   background-color: transparent;
+  border: 1px solid var(--color-danger);
   color: var(--color-danger);
-  border-color: var(--color-danger);
 }
 
 .category-actions .btn-delete-cat:hover {
   background-color: var(--color-danger);
-  color: #FFFFFF;
+  color: var(--color-text-primary);
+  transform: translateY(-1px);
 }
 
 .module-list {
@@ -458,13 +436,13 @@ header {
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  box-shadow: none;
+  box-shadow: var(--shadow-card);
   transition: all 0.2s ease-in-out;
   cursor: pointer;
 }
 
 .module-card:hover {
-  border-color: var(--color-text-primary);
+  border-color: var(--color-text-secondary);
 }
 
 .module-card:has(input:checked) {
@@ -482,7 +460,7 @@ header {
 }
 
 .module-card input[type="checkbox"]:focus-visible {
-  outline: 1px solid var(--color-primary);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
@@ -503,7 +481,7 @@ header {
 }
 
 .module-card:has(input:checked) .module-price {
-  color: var(--color-text-primary);
+  color: var(--color-primary);
   font-weight: 600;
 }
 
@@ -530,34 +508,32 @@ header {
   min-height: 32px;
   padding: 0 var(--space-sm);
   font-size: var(--text-small);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  border: 1px solid var(--color-border);
+  border: none;
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .module-card .admin-actions .btn-edit {
-  background-color: transparent;
-  color: var(--color-text-primary);
+  background-color: var(--color-primary);
+  color: var(--color-bg-main);
 }
 
 .module-card .admin-actions .btn-edit:hover {
-  background-color: var(--color-primary);
-  color: #FFFFFF;
-  border-color: var(--color-primary);
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
 }
 
 .module-card .admin-actions .btn-delete {
   background-color: transparent;
+  border: 1px solid var(--color-danger);
   color: var(--color-danger);
-  border-color: var(--color-danger);
 }
 
 .module-card .admin-actions .btn-delete:hover {
   background-color: var(--color-danger);
-  color: #FFFFFF;
+  color: var(--color-text-primary);
+  transform: translateY(-1px);
 }
 
 /* ============================================================
@@ -595,7 +571,7 @@ header {
   padding: 0 var(--space-sm);
   font-family: var(--font-sans);
   font-size: var(--text-body);
-  background-color: var(--color-bg-main);
+  background-color: transparent;
   color: var(--color-text-primary);
   transition: border 0.2s ease;
 }
@@ -606,7 +582,7 @@ header {
 }
 
 #category-controls input:focus-visible {
-  outline: 1px solid var(--color-primary);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
@@ -634,7 +610,7 @@ header {
   padding: 0 var(--space-sm);
   font-family: var(--font-sans);
   font-size: var(--text-body);
-  background-color: var(--color-bg-main);
+  background-color: transparent;
   color: var(--color-text-primary);
   transition: border 0.2s ease;
 }
@@ -648,6 +624,11 @@ header {
   cursor: pointer;
 }
 
+#add-module-form select option {
+  background-color: var(--color-bg-surface);
+  color: var(--color-text-primary);
+}
+
 #add-module-form input:focus,
 #add-module-form select:focus {
   border-color: var(--color-primary);
@@ -656,27 +637,26 @@ header {
 
 #add-module-form input:focus-visible,
 #add-module-form select:focus-visible {
-  outline: 1px solid var(--color-primary);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
 #add-module-form .btn {
   flex: 0 0 auto;
   height: 44px;
-  background-color: var(--color-primary);
-  color: #FFFFFF;
-  border: 1px solid var(--color-primary);
+  background-color: var(--color-success);
+  color: var(--color-bg-main);
+  border: none;
   padding: 0 var(--space-md);
   border-radius: var(--radius-sm);
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 #add-module-form .btn:hover {
   background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
 }
 
 /* ============================================================
@@ -691,9 +671,7 @@ header {
   font-family: var(--font-sans);
   font-weight: 500;
   font-size: var(--text-small);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  border: 1px solid var(--color-border);
+  border: none;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   text-decoration: none;
@@ -701,40 +679,40 @@ header {
 }
 
 .btn:focus-visible {
-  outline: 1px solid var(--color-primary);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
 .btn-primary {
   background-color: var(--color-primary);
-  color: #FFFFFF;
-  border-color: var(--color-primary);
+  color: var(--color-bg-main);
 }
 
 .btn-primary:hover {
   background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
 }
 
 .btn-success {
-  background-color: transparent;
-  color: var(--color-success);
-  border-color: var(--color-success);
+  background-color: var(--color-success);
+  color: var(--color-bg-main);
 }
 
 .btn-success:hover {
-  background-color: var(--color-success);
-  color: #FFFFFF;
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
 }
 
 .btn-danger {
   background-color: transparent;
+  border: 1px solid var(--color-danger);
   color: var(--color-danger);
-  border-color: var(--color-danger);
 }
 
 .btn-danger:hover {
   background-color: var(--color-danger);
-  color: #FFFFFF;
+  color: var(--color-text-primary);
+  transform: translateY(-1px);
 }
 
 .btn-secondary {
@@ -744,8 +722,8 @@ header {
 }
 
 .btn-secondary:hover {
-  background-color: var(--color-bg-main);
-  border-color: var(--color-text-primary);
+  background-color: var(--color-primary-muted);
+  border-color: var(--color-primary);
 }
 
 .btn-block {
@@ -756,7 +734,7 @@ header {
    Diálogo centrado (nombre del cliente y producto)
    ============================================================ */
 #client-dialog {
-  border: 1px solid var(--color-border);
+  border: none;
   border-radius: var(--radius-md);
   padding: var(--space-lg);
   max-width: 420px;
@@ -772,14 +750,12 @@ header {
 }
 
 #client-dialog::backdrop {
-  background-color: rgba(43, 42, 40, 0.45);
-  backdrop-filter: blur(3px);
+  background-color: rgba(32, 24, 62, 0.8);
+  backdrop-filter: blur(4px);
 }
 
 #client-dialog h3 {
-  font-family: var(--font-serif);
   font-size: var(--text-h2);
-  letter-spacing: 0.03em;
   margin-bottom: var(--space-sm);
   color: var(--color-text-primary);
 }
@@ -792,8 +768,6 @@ header {
   display: block;
   font-size: var(--text-small);
   font-weight: 500;
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
   margin-bottom: var(--space-xs);
   color: var(--color-text-secondary);
 }
@@ -806,7 +780,7 @@ header {
   padding: 0 var(--space-sm);
   font-family: var(--font-sans);
   font-size: var(--text-body);
-  background-color: var(--color-bg-main);
+  background-color: transparent;
   color: var(--color-text-primary);
   transition: border 0.2s ease;
 }
@@ -817,7 +791,7 @@ header {
 }
 
 #client-dialog .form-group input:focus-visible {
-  outline: 1px solid var(--color-primary);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
@@ -841,8 +815,6 @@ header {
   border-top: 1px solid var(--color-border);
   text-align: center;
   font-size: var(--text-small);
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
   color: var(--color-text-secondary);
 }
 
@@ -887,7 +859,7 @@ header {
   }
 
   .module-card .admin-actions .btn {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     padding: 0 var(--space-xs);
     min-height: 28px;
   }
@@ -962,17 +934,17 @@ header {
   }
 
   .logo h1 {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
   }
 
   .btn-toggle {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     padding: var(--space-xs) var(--space-sm);
     min-height: 36px;
   }
 
   #currency-select {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     padding: var(--space-xs) var(--space-sm);
     min-height: 36px;
   }
@@ -996,6 +968,7 @@ header {
    Estilos adicionales para botones de categoría, diálogos, etc.
    ============================================================ */
 
+/* Botón Tasas */
 .btn-rates {
   background: transparent;
   border: 1px solid var(--color-border);
@@ -1004,19 +977,17 @@ header {
   border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: var(--text-small);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
   transition: all 0.2s ease;
   min-height: 44px;
 }
 .btn-rates:hover {
-  background-color: var(--color-primary);
-  color: #FFFFFF;
+  background-color: var(--color-primary-muted);
   border-color: var(--color-primary);
 }
 
+/* Diálogos (Portafolios y Tasas) */
 dialog {
-  border: 1px solid var(--color-border);
+  border: none;
   border-radius: var(--radius-md);
   padding: var(--space-lg);
   max-width: 600px;
@@ -1031,8 +1002,8 @@ dialog {
   margin: 0;
 }
 dialog::backdrop {
-  background-color: rgba(43, 42, 40, 0.45);
-  backdrop-filter: blur(3px);
+  background-color: rgba(32, 24, 62, 0.8);
+  backdrop-filter: blur(4px);
 }
 .dialog-header {
   display: flex;
@@ -1043,9 +1014,7 @@ dialog::backdrop {
   padding-bottom: var(--space-sm);
 }
 .dialog-header h2 {
-  font-family: var(--font-serif);
   font-size: var(--text-h2);
-  letter-spacing: 0.03em;
   color: var(--color-text-primary);
 }
 .dialog-close {
@@ -1067,28 +1036,113 @@ dialog::backdrop {
   justify-content: flex-end;
 }
 
+/* Portafolios en modal */
+.portfolio-item-modal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.pf-name-btn {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: var(--text-body);
+  cursor: pointer;
+  text-align: left;
+  padding: var(--space-xs) 0;
+  transition: color 0.2s ease;
+}
+.pf-name-btn:hover {
+  color: var(--color-primary-hover);
+}
+.pf-actions-modal {
+  display: none;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-top: var(--space-xs);
+}
+.pf-actions-modal .btn {
+  font-size: var(--text-small);
+  padding: 0 var(--space-sm);
+  min-height: 32px;
+}
+.pf-edit-form {
+  display: none;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
+  padding: var(--space-sm);
+  background: transparent;
+  border-radius: var(--radius-sm);
+}
+.pf-edit-form input {
+  flex: 1 1 150px;
+  height: 36px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-sm);
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  font-size: var(--text-small);
+}
+.pf-edit-form .btn {
+  height: 36px;
+  font-size: var(--text-small);
+}
+
+/* Responsive para diálogos */
+@media (max-width: 480px) {
+  dialog {
+    padding: var(--space-md);
+    width: 95%;
+  }
+  .pf-actions-modal {
+    flex-direction: column;
+    width: 100%;
+  }
+  .pf-actions-modal .btn {
+    width: 100%;
+  }
+  .pf-edit-form {
+    flex-direction: column;
+  }
+  .pf-edit-form input {
+    width: 100%;
+  }
+  .pf-edit-form .btn {
+    width: 100%;
+  }
+}
+
+/* ============================================================
+   Estilos para Portafolios: menú flotante y formularios inline
+   ============================================================ */
 .pf-name-btn {
   display: block;
   width: 100%;
   padding: var(--space-sm) var(--space-md);
-  background: var(--color-bg-surface);
+  background: var(--color-bg-main);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   color: var(--color-text-primary);
-  font-weight: 500;
+  font-weight: 600;
   font-size: var(--text-body);
-  letter-spacing: 0.03em;
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: center;
   margin-bottom: var(--space-xs);
 }
 .pf-name-btn:hover {
-  background: var(--color-primary);
-  color: #FFFFFF;
+  background: var(--color-primary-muted);
   border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-floating);
 }
 
+/* Menú contextual (flotante) */
 .pf-context-menu {
   display: none;
   flex-direction: column;
@@ -1116,14 +1170,111 @@ dialog::backdrop {
 }
 .pf-context-menu .pf-menu-item:hover {
   background: var(--color-primary-muted);
+  color: var(--color-primary);
 }
 .pf-context-menu .pf-menu-item.danger {
   color: var(--color-danger);
 }
 .pf-context-menu .pf-menu-item.danger:hover {
-  background: rgba(181, 103, 90, 0.12);
+  background: rgba(196, 100, 135, 0.15);
 }
 
+/* Formulario de edición y añadir (inline) */
+.pf-edit-form,
+.add-portfolio-form-inline {
+  display: none;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  background: transparent;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  margin-top: var(--space-xs);
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+.pf-edit-form input,
+.add-portfolio-form-inline input {
+  flex: 1 1 150px;
+  height: 36px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-sm);
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  font-size: var(--text-small);
+}
+.pf-edit-form .btn,
+.add-portfolio-form-inline .btn {
+  height: 36px;
+  font-size: var(--text-small);
+  padding: 0 var(--space-sm);
+}
+
+/* Contenedor para el botón "Añadir portafolio" */
+.add-portfolio-container {
+  margin-top: var(--space-md);
+  display: flex;
+  justify-content: center;
+}
+.add-portfolio-container .btn {
+  width: 100%;
+  max-width: 250px;
+}
+
+/* Ocultar el bloque de portafolios en modo edición (controlado por JS) */
+#portfolios-card {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ajustes responsive para el menú flotante */
+@media (max-width: 767px) {
+  .pf-context-menu {
+    min-width: 140px;
+    max-width: 90vw;
+    left: 10px !important; 
+    right: 10px !important;
+  }
+  .pf-context-menu .pf-menu-item {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 0.8rem;
+  }
+  .pf-edit-form,
+  .add-portfolio-form-inline {
+    flex-direction: column;
+  }
+  .pf-edit-form input,
+  .add-portfolio-form-inline input,
+  .pf-edit-form .btn,
+  .add-portfolio-form-inline .btn {
+    width: 100%;
+  }
+}
+
+/* Diálogo de tasas: ajustar etiquetas */
+#rates-dialog .form-group label {
+  display: block;
+  font-size: var(--text-small);
+  font-weight: 500;
+  margin-bottom: var(--space-xs);
+  color: var(--color-text-secondary);
+}
+#rates-dialog .form-group input {
+  width: 100%;
+  height: 44px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-sm);
+  background: transparent;
+  color: var(--color-text-primary);
+  font-size: var(--text-body);
+}
+
+/* ============================================================
+   Portafolios: Acordeón horizontal con animación
+   ============================================================ */
 .pf-actions-container {
   overflow: hidden;
   max-height: 0;
@@ -1156,7 +1307,6 @@ dialog::backdrop {
   color: var(--color-text-primary);
   font-size: var(--text-small);
   font-weight: 500;
-  letter-spacing: 0.03em;
   cursor: pointer;
   transition: all 0.2s ease;
   display: inline-flex;
@@ -1168,114 +1318,22 @@ dialog::backdrop {
 .pf-action-btn:hover {
   background: var(--color-primary-muted);
   border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
 }
 
 .pf-action-btn.danger {
   color: var(--color-danger);
   border-color: var(--color-danger);
+  background: transparent;
 }
 
 .pf-action-btn.danger:hover {
-  background: rgba(181, 103, 90, 0.1);
+  background: rgba(196, 100, 135, 0.1);
   border-color: var(--color-danger);
 }
 
-.pf-edit-form,
-.add-portfolio-form-inline {
-  display: none;
-  flex-wrap: wrap;
-  gap: var(--space-sm);
-  padding: var(--space-sm);
-  background: var(--color-bg-main);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
-  margin-top: var(--space-sm);
-  width: 100%;
-  align-items: center;
-  justify-content: center;
-}
-
-.pf-edit-form input,
-.add-portfolio-form-inline input {
-  flex: 1 1 150px;
-  height: 36px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 0 var(--space-sm);
-  background: var(--color-bg-surface);
-  color: var(--color-text-primary);
-  font-size: var(--text-small);
-}
-
-.pf-edit-form .btn,
-.add-portfolio-form-inline .btn {
-  height: 36px;
-  font-size: var(--text-small);
-  padding: 0 var(--space-sm);
-}
-
-.add-portfolio-container {
-  margin-top: var(--space-md);
-  display: flex;
-  justify-content: center;
-}
-.add-portfolio-container .btn {
-  width: 100%;
-  max-width: 250px;
-}
-
-#portfolios-card {
-  display: flex;
-  flex-direction: column;
-}
-
-#rates-dialog .form-group label {
-  display: block;
-  font-size: var(--text-small);
-  font-weight: 500;
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
-  margin-bottom: var(--space-xs);
-  color: var(--color-text-secondary);
-}
-#rates-dialog .form-group input {
-  width: 100%;
-  height: 44px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 0 var(--space-sm);
-  background: var(--color-bg-main);
-  color: var(--color-text-primary);
-  font-size: var(--text-body);
-}
-
-/* Responsive para diálogos y menú de portafolios */
-@media (max-width: 767px) {
-  .pf-context-menu {
-    min-width: 140px;
-    max-width: 90vw;
-  }
-  .pf-context-menu .pf-menu-item {
-    padding: var(--space-xs) var(--space-sm);
-    font-size: 0.8rem;
-  }
-  .pf-edit-form,
-  .add-portfolio-form-inline {
-    flex-direction: column;
-  }
-  .pf-edit-form input,
-  .add-portfolio-form-inline input,
-  .pf-edit-form .btn,
-  .add-portfolio-form-inline .btn {
-    width: 100%;
-  }
-}
-
 @media (max-width: 480px) {
-  dialog {
-    padding: var(--space-md);
-    width: 95%;
-  }
   .pf-actions-wrapper {
     flex-direction: column;
     align-items: stretch;
