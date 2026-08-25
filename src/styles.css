@@ -1,29 +1,28 @@
 /* ============================================================
-   Tipografía — Tema "ACTOLS Quotes" (moderno, redondeado, sans)
-   ============================================================ */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
-/* ============================================================
-   Design Tokens (Tema Oscuro)
+   Design Tokens (Tema Elegante)
    ============================================================ */
 :root {
-  --color-bg-main: #20183E;         /* Morado oscuro (de la imagen) */
-  --color-bg-surface: #2B2251;      /* Superficie: variante más clara del morado */
-  --color-text-primary: #FFFFFF;    /* Blanco */
-  --color-text-secondary: #B6ADD1;  /* Lavanda claro para texto secundario */
-  --color-border: rgba(255,255,255,0.16); /* Línea fina blanca translúcida */
+  /* Paleta Base */
+  --color-bg-main: #20183e;        /* Fondo principal */
+  --color-bg-surface: #261d47;     /* Fondo para tarjetas (ligeramente más claro) */
+  --color-text-primary: #FFFFFF;   /* Blanco puro para textos principales */
+  --color-text-secondary: #ddb2ca; /* Rosado para textos secundarios y detalles */
+  --color-border: rgba(221, 178, 202, 0.3); /* Bordes con el rosado transparente */
 
-  --color-primary: #DDB2CA;         /* Rosa / malva (de la imagen) */
-  --color-primary-hover: #E9C7DC;   /* Rosa más claro (hover) */
-  --color-primary-muted: rgba(221,178,202,0.14); /* Fondo rosa muy tenue */
-  --color-success: #9FD8B8;         /* Verde menta suave, coherente con la paleta */
-  --color-danger: #E38FA8;          /* Rosa-rojo suave para peligro */
+  /* Colores de Acción */
+  --color-primary: #ddb2ca;        
+  --color-primary-hover: #e9c8da;  /* Rosado ligeramente más brillante para hover */
+  --color-primary-muted: rgba(221, 178, 202, 0.15); /* Fondo sutil para elementos activos */
+  
+  /* Adaptaciones para mantener la paleta limpia */
+  --color-success: #ddb2ca;        
+  --color-danger: #c46487;         /* Un tono rojo-rosado armónico para acciones de borrar */
 
+  /* Tipografías y Espaciado */
   --font-sans: 'Inter', system-ui, sans-serif;
-  --font-display: 'Inter', system-ui, sans-serif;
-  --font-mono: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 
-  --text-h1: 1.9rem;
+  --text-h1: 2rem;
   --text-h2: 1.5rem;
   --text-body: 1rem;
   --text-small: 0.875rem;
@@ -34,10 +33,10 @@
   --space-lg: 2rem;
   --space-xl: 3rem;
 
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --shadow-card: none;
-  --shadow-floating: 0 16px 32px -8px rgba(0,0,0,0.5);
+  --radius-sm: 4px; /* Un poco más cuadrado para mayor elegancia */
+  --radius-md: 8px; 
+  --shadow-card: 0 4px 6px -1px rgba(0,0,0,0.3), 0 2px 4px -1px rgba(0,0,0,0.2);
+  --shadow-floating: 0 10px 15px -3px rgba(0,0,0,0.4), 0 4px 6px -2px rgba(0,0,0,0.2);
 }
 
 /* ============================================================
@@ -127,8 +126,9 @@ header {
 .logo .badge {
   font-size: var(--text-small);
   font-weight: 600;
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   background-color: var(--color-primary-muted);
+  border: 1px solid var(--color-primary);
   padding: 0.2rem 0.6rem;
   border-radius: 20px;
 }
@@ -140,9 +140,9 @@ header {
 }
 
 .btn-toggle {
-  background-color: var(--color-primary);
-  color: #FFFFFF;
-  border: none;
+  background-color: transparent;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
   padding: var(--space-xs) var(--space-md);
   border-radius: var(--radius-sm);
   font-weight: 600;
@@ -153,7 +153,8 @@ header {
 }
 
 .btn-toggle:hover {
-  background-color: var(--color-primary-hover);
+  background-color: var(--color-primary-muted);
+  border-color: var(--color-primary);
   transform: translateY(-1px);
 }
 
@@ -163,11 +164,13 @@ header {
 }
 
 .btn-toggle.active {
-  background-color: var(--color-success);
+  background-color: var(--color-primary);
+  color: var(--color-bg-main);
+  border-color: var(--color-primary);
 }
 
 .btn-toggle.active:hover {
-  filter: brightness(0.9);
+  background-color: var(--color-primary-hover);
 }
 
 .currency-selector {
@@ -182,7 +185,7 @@ header {
   padding: var(--space-xs) var(--space-sm);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  background-color: var(--color-bg-surface);
+  background-color: transparent;
   color: var(--color-text-primary);
   cursor: pointer;
   outline: none;
@@ -191,7 +194,7 @@ header {
 }
 
 #currency-select:hover {
-  border-color: var(--color-text-secondary);
+  border-color: var(--color-primary);
 }
 
 #currency-select:focus-visible {
@@ -391,7 +394,7 @@ header {
 
 .category-actions .btn-edit-cat {
   background-color: var(--color-primary);
-  color: #FFFFFF;
+  color: var(--color-bg-main);
 }
 
 .category-actions .btn-edit-cat:hover {
@@ -400,12 +403,14 @@ header {
 }
 
 .category-actions .btn-delete-cat {
-  background-color: var(--color-danger);
-  color: #FFFFFF;
+  background-color: transparent;
+  border: 1px solid var(--color-danger);
+  color: var(--color-danger);
 }
 
 .category-actions .btn-delete-cat:hover {
-  filter: brightness(0.85);
+  background-color: var(--color-danger);
+  color: var(--color-text-primary);
   transform: translateY(-1px);
 }
 
@@ -511,7 +516,7 @@ header {
 
 .module-card .admin-actions .btn-edit {
   background-color: var(--color-primary);
-  color: #FFFFFF;
+  color: var(--color-bg-main);
 }
 
 .module-card .admin-actions .btn-edit:hover {
@@ -520,12 +525,14 @@ header {
 }
 
 .module-card .admin-actions .btn-delete {
-  background-color: var(--color-danger);
-  color: #FFFFFF;
+  background-color: transparent;
+  border: 1px solid var(--color-danger);
+  color: var(--color-danger);
 }
 
 .module-card .admin-actions .btn-delete:hover {
-  filter: brightness(0.85);
+  background-color: var(--color-danger);
+  color: var(--color-text-primary);
   transform: translateY(-1px);
 }
 
@@ -564,7 +571,7 @@ header {
   padding: 0 var(--space-sm);
   font-family: var(--font-sans);
   font-size: var(--text-body);
-  background-color: var(--color-bg-main);
+  background-color: transparent;
   color: var(--color-text-primary);
   transition: border 0.2s ease;
 }
@@ -603,7 +610,7 @@ header {
   padding: 0 var(--space-sm);
   font-family: var(--font-sans);
   font-size: var(--text-body);
-  background-color: var(--color-bg-main);
+  background-color: transparent;
   color: var(--color-text-primary);
   transition: border 0.2s ease;
 }
@@ -615,6 +622,11 @@ header {
 #add-module-form select {
   flex: 1 1 120px;
   cursor: pointer;
+}
+
+#add-module-form select option {
+  background-color: var(--color-bg-surface);
+  color: var(--color-text-primary);
 }
 
 #add-module-form input:focus,
@@ -633,7 +645,7 @@ header {
   flex: 0 0 auto;
   height: 44px;
   background-color: var(--color-success);
-  color: #FFFFFF;
+  color: var(--color-bg-main);
   border: none;
   padding: 0 var(--space-md);
   border-radius: var(--radius-sm);
@@ -643,7 +655,7 @@ header {
 }
 
 #add-module-form .btn:hover {
-  filter: brightness(0.92);
+  background-color: var(--color-primary-hover);
   transform: translateY(-1px);
 }
 
@@ -673,7 +685,7 @@ header {
 
 .btn-primary {
   background-color: var(--color-primary);
-  color: #FFFFFF;
+  color: var(--color-bg-main);
 }
 
 .btn-primary:hover {
@@ -683,21 +695,23 @@ header {
 
 .btn-success {
   background-color: var(--color-success);
-  color: #FFFFFF;
+  color: var(--color-bg-main);
 }
 
 .btn-success:hover {
-  filter: brightness(0.92);
+  background-color: var(--color-primary-hover);
   transform: translateY(-1px);
 }
 
 .btn-danger {
-  background-color: var(--color-danger);
-  color: #FFFFFF;
+  background-color: transparent;
+  border: 1px solid var(--color-danger);
+  color: var(--color-danger);
 }
 
 .btn-danger:hover {
-  filter: brightness(0.85);
+  background-color: var(--color-danger);
+  color: var(--color-text-primary);
   transform: translateY(-1px);
 }
 
@@ -708,8 +722,8 @@ header {
 }
 
 .btn-secondary:hover {
-  background-color: var(--color-bg-main);
-  border-color: var(--color-text-secondary);
+  background-color: var(--color-primary-muted);
+  border-color: var(--color-primary);
 }
 
 .btn-block {
@@ -736,7 +750,7 @@ header {
 }
 
 #client-dialog::backdrop {
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(32, 24, 62, 0.8);
   backdrop-filter: blur(4px);
 }
 
@@ -766,7 +780,7 @@ header {
   padding: 0 var(--space-sm);
   font-family: var(--font-sans);
   font-size: var(--text-body);
-  background-color: var(--color-bg-main);
+  background-color: transparent;
   color: var(--color-text-primary);
   transition: border 0.2s ease;
 }
@@ -949,37 +963,10 @@ header {
     width: 95%;
   }
 }
+
 /* ============================================================
    Estilos adicionales para botones de categoría, diálogos, etc.
    ============================================================ */
-
-/* Botones de categoría en modo edición */
-.category-actions .btn-edit-cat,
-.category-actions .btn-delete-cat {
-  min-height: 32px;
-  padding: 0 var(--space-sm);
-  font-size: var(--text-small);
-  border: none;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.category-actions .btn-edit-cat {
-  background-color: var(--color-primary);
-  color: #FFFFFF;
-}
-.category-actions .btn-edit-cat:hover {
-  background-color: var(--color-primary-hover);
-  transform: translateY(-1px);
-}
-.category-actions .btn-delete-cat {
-  background-color: var(--color-danger);
-  color: #FFFFFF;
-}
-.category-actions .btn-delete-cat:hover {
-  filter: brightness(0.85);
-  transform: translateY(-1px);
-}
 
 /* Botón Tasas */
 .btn-rates {
@@ -994,8 +981,8 @@ header {
   min-height: 44px;
 }
 .btn-rates:hover {
-  background-color: var(--color-bg-surface);
-  border-color: var(--color-text-secondary);
+  background-color: var(--color-primary-muted);
+  border-color: var(--color-primary);
 }
 
 /* Diálogos (Portafolios y Tasas) */
@@ -1015,7 +1002,7 @@ dialog {
   margin: 0;
 }
 dialog::backdrop {
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(32, 24, 62, 0.8);
   backdrop-filter: blur(4px);
 }
 .dialog-header {
@@ -1088,7 +1075,7 @@ dialog::backdrop {
   gap: var(--space-sm);
   margin-top: var(--space-xs);
   padding: var(--space-sm);
-  background: var(--color-bg-main);
+  background: transparent;
   border-radius: var(--radius-sm);
 }
 .pf-edit-form input {
@@ -1129,16 +1116,15 @@ dialog::backdrop {
     width: 100%;
   }
 }
+
 /* ============================================================
    Estilos para Portafolios: menú flotante y formularios inline
    ============================================================ */
-
-/* Botón principal de cada portafolio (se ve como un botón centrado) */
 .pf-name-btn {
   display: block;
   width: 100%;
   padding: var(--space-sm) var(--space-md);
-  background: var(--color-primary-muted);
+  background: var(--color-bg-main);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   color: var(--color-text-primary);
@@ -1150,8 +1136,8 @@ dialog::backdrop {
   margin-bottom: var(--space-xs);
 }
 .pf-name-btn:hover {
-  background: var(--color-primary);
-  color: #FFFFFF;
+  background: var(--color-primary-muted);
+  border-color: var(--color-primary);
   transform: translateY(-2px);
   box-shadow: var(--shadow-floating);
 }
@@ -1166,8 +1152,10 @@ dialog::backdrop {
   box-shadow: var(--shadow-floating);
   padding: var(--space-xs) 0;
   min-width: 160px;
+  max-width: 260px;
   z-index: 1000;
   position: fixed;
+  transform: none !important;
 }
 .pf-context-menu .pf-menu-item {
   background: none;
@@ -1182,12 +1170,13 @@ dialog::backdrop {
 }
 .pf-context-menu .pf-menu-item:hover {
   background: var(--color-primary-muted);
+  color: var(--color-primary);
 }
 .pf-context-menu .pf-menu-item.danger {
   color: var(--color-danger);
 }
 .pf-context-menu .pf-menu-item.danger:hover {
-  background: rgba(248, 113, 113, 0.15);
+  background: rgba(196, 100, 135, 0.15);
 }
 
 /* Formulario de edición y añadir (inline) */
@@ -1197,11 +1186,13 @@ dialog::backdrop {
   flex-wrap: wrap;
   gap: var(--space-sm);
   padding: var(--space-sm);
-  background: var(--color-bg-main);
+  background: transparent;
   border-radius: var(--radius-sm);
   border: 1px solid var(--color-border);
   margin-top: var(--space-xs);
   width: 100%;
+  align-items: center;
+  justify-content: center;
 }
 .pf-edit-form input,
 .add-portfolio-form-inline input {
@@ -1242,7 +1233,8 @@ dialog::backdrop {
 @media (max-width: 767px) {
   .pf-context-menu {
     min-width: 140px;
-    left: 10px !important; /* para que no se salga en móvil */
+    max-width: 90vw;
+    left: 10px !important; 
     right: 10px !important;
   }
   .pf-context-menu .pf-menu-item {
@@ -1275,33 +1267,14 @@ dialog::backdrop {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 0 var(--space-sm);
-  background: var(--color-bg-main);
+  background: transparent;
   color: var(--color-text-primary);
   font-size: var(--text-body);
 }
-/* ============================================================
-   Corrección de posicionamiento para menú contextual de portafolios
-   ============================================================ */
 
-.pf-context-menu {
-  /* Posición la establece JavaScript con top/left, así que no usar transform */
-  transform: none !important;
-  min-width: 160px;
-  max-width: 260px;
-}
-
-/* En móviles, para que no se salga, dejamos que JS ajuste */
-@media (max-width: 767px) {
-  .pf-context-menu {
-    min-width: 140px;
-    max-width: 90vw;
-  }
-}
 /* ============================================================
    Portafolios: Acordeón horizontal con animación
    ============================================================ */
-
-/* Contenedor de acciones (se despliega) */
 .pf-actions-container {
   overflow: hidden;
   max-height: 0;
@@ -1311,7 +1284,7 @@ dialog::backdrop {
 }
 
 .pf-actions-container.open {
-  max-height: 200px; /* se ajusta con JS dinámicamente */
+  max-height: 200px;
   opacity: 1;
   margin-top: var(--space-sm);
 }
@@ -1324,7 +1297,6 @@ dialog::backdrop {
   padding: var(--space-xs) 0;
 }
 
-/* Botones de acción (horizontal) */
 .pf-action-btn {
   flex: 0 1 auto;
   min-width: 80px;
@@ -1353,66 +1325,14 @@ dialog::backdrop {
 .pf-action-btn.danger {
   color: var(--color-danger);
   border-color: var(--color-danger);
+  background: transparent;
 }
 
 .pf-action-btn.danger:hover {
-  background: rgba(248, 113, 113, 0.1);
+  background: rgba(196, 100, 135, 0.1);
   border-color: var(--color-danger);
 }
 
-/* Formulario de edición (inline) */
-.pf-edit-form,
-.add-portfolio-form-inline {
-  display: none;
-  flex-wrap: wrap;
-  gap: var(--space-sm);
-  padding: var(--space-sm);
-  background: var(--color-bg-main);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
-  margin-top: var(--space-sm);
-  width: 100%;
-  align-items: center;
-  justify-content: center;
-}
-
-.pf-edit-form input,
-.add-portfolio-form-inline input {
-  flex: 1 1 150px;
-  height: 36px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 0 var(--space-sm);
-  background: var(--color-bg-surface);
-  color: var(--color-text-primary);
-  font-size: var(--text-small);
-}
-
-.pf-edit-form .btn,
-.add-portfolio-form-inline .btn {
-  height: 36px;
-  font-size: var(--text-small);
-  padding: 0 var(--space-sm);
-}
-
-/* Contenedor para el botón "Añadir portafolio" */
-.add-portfolio-container {
-  margin-top: var(--space-md);
-  display: flex;
-  justify-content: center;
-}
-.add-portfolio-container .btn {
-  width: 100%;
-  max-width: 250px;
-}
-
-/* Ocultar el bloque de portafolios en modo edición (controlado por JS) */
-#portfolios-card {
-  display: flex;
-  flex-direction: column;
-}
-
-/* Responsive: en móviles, los botones de acción se apilan verticalmente si no caben */
 @media (max-width: 480px) {
   .pf-actions-wrapper {
     flex-direction: column;
@@ -1422,466 +1342,4 @@ dialog::backdrop {
     width: 100%;
     justify-content: center;
   }
-  .pf-edit-form,
-  .add-portfolio-form-inline {
-    flex-direction: column;
-  }
-  .pf-edit-form input,
-  .add-portfolio-form-inline input,
-  .pf-edit-form .btn,
-  .add-portfolio-form-inline .btn {
-    width: 100%;
-  }
-}
-
-
-/* ============================================================
-   TEMA "ACTOLS QUOTES" — Morado + rosa, redondeado, moderno
-   (overrides visuales; no toca estructura ni funcionalidad)
-   ============================================================ */
-
-body {
-  background-color: var(--color-bg-main);
-}
-
-/* --- Header --- */
-header {
-  border-bottom: none;
-  padding-bottom: var(--space-sm);
-}
-
-.header-left {
-  position: relative;
-}
-
-.logo h1 {
-  font-family: var(--font-display);
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.35em;
-  font-size: 1.6rem;
-  color: var(--color-text-primary);
-  padding-right: 1.6em; /* deja espacio para el badge circular superpuesto */
-}
-
-.logo .badge {
-  font-family: var(--font-sans);
-  font-weight: 600;
-  font-style: normal;
-  text-transform: none;
-  letter-spacing: 0;
-  color: var(--color-text-primary);
-  background: var(--color-primary);
-  border: none;
-  border-radius: 999px;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.6rem;
-  text-align: center;
-  box-shadow: var(--shadow-floating);
-}
-
-.btn-toggle,
-#editar-btn,
-.header-right .btn {
-  background: transparent;
-  border: 1.5px solid rgba(255,255,255,0.5);
-  color: var(--color-text-primary);
-  font-family: var(--font-sans);
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  border-radius: var(--radius-sm);
-}
-.btn-toggle:hover {
-  background: rgba(255,255,255,0.08);
-  border-color: var(--color-text-primary);
-  transform: none;
-}
-.btn-toggle.active {
-  background: var(--color-primary);
-  color: #20183E;
-  border-color: var(--color-primary);
-}
-.btn-toggle.active:hover {
-  filter: none;
-  background: var(--color-primary-hover);
-  border-color: var(--color-primary-hover);
-}
-
-#currency-select {
-  font-family: var(--font-sans);
-  font-weight: 600;
-  background-color: transparent;
-  border: none;
-  color: var(--color-text-primary);
-  border-radius: var(--radius-sm);
-}
-#currency-select:hover {
-  border-color: transparent;
-}
-
-/* --- Encabezados de categoría --- */
-.category-header {
-  border-bottom: none;
-  border-top: none;
-  padding: 0 0 var(--space-xs) 0;
-}
-
-.category-header h3 {
-  font-family: var(--font-display);
-  font-style: normal;
-  font-weight: 700;
-  letter-spacing: 0;
-  font-size: 1.4rem;
-  color: var(--color-text-primary);
-}
-
-.module-list .empty-message {
-  font-family: var(--font-sans);
-  font-style: normal;
-  color: var(--color-text-secondary);
-}
-
-/* --- Filas de módulos: tarjetas redondeadas con borde visible --- */
-.module-card {
-  background: transparent;
-  border: 1.5px solid rgba(255,255,255,0.18);
-  border-radius: var(--radius-sm);
-  box-shadow: none;
-  padding: var(--space-sm) var(--space-md);
-  transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-.module-card:hover {
-  border-color: rgba(255,255,255,0.35);
-  background-color: rgba(255,255,255,0.03);
-}
-
-.module-card:has(input:checked) {
-  background-color: var(--color-primary-muted);
-  border-color: var(--color-primary);
-}
-
-.module-card input[type="checkbox"] {
-  accent-color: var(--color-primary);
-  width: 20px;
-  height: 20px;
-}
-
-.module-card .module-label {
-  font-family: var(--font-sans);
-  font-weight: 500;
-  font-size: 1rem;
-  letter-spacing: 0;
-  color: var(--color-text-primary);
-}
-
-.module-card .module-price {
-  font-family: var(--font-sans);
-  font-style: normal;
-  font-weight: 600;
-  color: var(--color-text-primary);
-}
-
-.module-card:has(input:checked) .module-price {
-  color: var(--color-primary);
-}
-
-.module-card.admin-mode {
-  background: transparent;
-}
-
-/* --- Tarjeta de total (Summary) y Portafolios --- */
-.summary-card,
-.portfolios-card {
-  background: var(--color-bg-surface);
-  border: none;
-  box-shadow: none;
-  border-radius: var(--radius-md);
-}
-
-.summary-title,
-.portfolios-card > p,
-.portfolios-card h3 {
-  font-family: var(--font-sans);
-  font-style: normal;
-  font-weight: 500;
-  text-transform: none;
-  letter-spacing: 0;
-  font-size: var(--text-small);
-  color: var(--color-text-secondary);
-}
-
-.total-amount {
-  font-family: var(--font-display);
-  font-weight: 800;
-  color: var(--color-text-primary);
-  font-size: 2.6rem;
-}
-
-.portfolio-item {
-  background: transparent;
-  border-color: rgba(255,255,255,0.18);
-  border-radius: var(--radius-sm);
-}
-
-.pf-name-btn {
-  font-family: var(--font-sans);
-  font-style: normal;
-  font-weight: 600;
-  color: var(--color-text-primary);
-}
-.pf-name-btn:hover {
-  color: var(--color-primary);
-}
-
-/* --- Botones generales --- */
-.btn {
-  font-family: var(--font-sans);
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  font-size: 0.85rem;
-  border-radius: var(--radius-sm);
-  border: 1.5px solid transparent;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-}
-
-/* Primario: contorno rosa, coincide con "HACER COTIZACIÓN" / "PORTAFOLIOS" */
-.btn-primary {
-  background: transparent;
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-.btn-primary:hover {
-  background: var(--color-primary);
-  color: #20183E;
-  transform: none;
-}
-
-.btn-success {
-  background: transparent;
-  border-color: rgba(255,255,255,0.35);
-  color: var(--color-text-primary);
-}
-.btn-success:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  background: transparent;
-  filter: none;
-  transform: none;
-}
-
-.btn-danger {
-  background: transparent;
-  border-color: rgba(255,255,255,0.35);
-  color: var(--color-text-secondary);
-}
-.btn-danger:hover {
-  border-color: var(--color-danger);
-  color: var(--color-danger);
-  background: transparent;
-  filter: none;
-  transform: none;
-}
-
-.btn-secondary {
-  background: transparent;
-  border-color: rgba(255,255,255,0.35);
-  color: var(--color-text-primary);
-}
-.btn-secondary:hover {
-  border-color: var(--color-text-primary);
-  color: var(--color-text-primary);
-  background: rgba(255,255,255,0.06);
-}
-
-.btn-rates {
-  font-family: var(--font-sans);
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  background: transparent;
-  border: none;
-  color: var(--color-text-primary);
-}
-.btn-rates:hover {
-  color: var(--color-primary);
-  background: transparent;
-  border-color: transparent;
-}
-
-#add-module-form .btn {
-  background: var(--color-primary);
-  border: 1.5px solid var(--color-primary);
-  color: #20183E;
-}
-#add-module-form .btn:hover {
-  background: var(--color-primary-hover);
-  border-color: var(--color-primary-hover);
-  filter: none;
-}
-
-/* Botón "Portafolios" y "Hacer cotización" ocupan todo el ancho, redondeados */
-.summary-card .btn,
-.portfolios-card > .btn,
-#make-quote-btn,
-#portfolios-toggle-btn {
-  width: 100%;
-  padding-top: var(--space-sm);
-  padding-bottom: var(--space-sm);
-  border-radius: var(--radius-sm);
-}
-
-/* --- Botones pequeños de edición/borrado --- */
-.category-actions .btn-edit-cat,
-.module-card .admin-actions .btn-edit {
-  background: transparent;
-  border: 1.5px solid rgba(255,255,255,0.3);
-  color: var(--color-text-primary);
-}
-.category-actions .btn-edit-cat:hover,
-.module-card .admin-actions .btn-edit:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  background: transparent;
-  transform: none;
-}
-.category-actions .btn-delete-cat,
-.module-card .admin-actions .btn-delete {
-  background: transparent;
-  border: 1.5px solid rgba(255,255,255,0.3);
-  color: var(--color-text-secondary);
-}
-.category-actions .btn-delete-cat:hover,
-.module-card .admin-actions .btn-delete:hover {
-  border-color: var(--color-danger);
-  color: var(--color-danger);
-  background: transparent;
-  filter: none;
-  transform: none;
-}
-
-/* --- Formularios (inputs, selects) --- */
-#category-controls,
-#add-module-form {
-  background: var(--color-bg-surface);
-  border: none;
-  border-radius: var(--radius-md);
-}
-
-#category-controls input,
-#add-module-form input,
-#add-module-form select,
-.add-portfolio-form input,
-.add-portfolio-form-inline input,
-.pf-edit-form input,
-#client-dialog .form-group input,
-#rates-dialog .form-group input {
-  font-family: var(--font-sans);
-  background-color: rgba(255,255,255,0.06);
-  border: 1.5px solid rgba(255,255,255,0.18);
-  color: var(--color-text-primary);
-  border-radius: var(--radius-sm);
-}
-#category-controls input:focus,
-#add-module-form input:focus,
-#add-module-form select:focus,
-.add-portfolio-form input:focus,
-#client-dialog .form-group input:focus,
-#rates-dialog .form-group input:focus {
-  border-color: var(--color-primary);
-}
-
-/* --- Diálogos / modales --- */
-dialog,
-#client-dialog {
-  background: var(--color-bg-surface);
-  border: none;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-floating);
-}
-
-.dialog-header h2,
-#client-dialog h3 {
-  font-family: var(--font-display);
-  font-weight: 700;
-  letter-spacing: 0;
-  color: var(--color-text-primary);
-}
-
-#client-dialog .form-group label,
-#rates-dialog .form-group label {
-  font-family: var(--font-sans);
-  font-style: normal;
-  font-weight: 500;
-  letter-spacing: 0;
-  color: var(--color-text-secondary);
-}
-
-/* --- Menú contextual de portafolios --- */
-.pf-context-menu {
-  background: var(--color-bg-surface);
-  border: 1px solid rgba(255,255,255,0.18);
-  border-radius: var(--radius-sm);
-}
-.pf-context-menu .pf-menu-item {
-  font-family: var(--font-sans);
-}
-.pf-context-menu .pf-menu-item:hover {
-  background: var(--color-primary-muted);
-  color: var(--color-primary);
-}
-
-.pf-action-btn {
-  background: transparent;
-  border-color: rgba(255,255,255,0.3);
-  font-family: var(--font-sans);
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  font-size: 0.78rem;
-  border-radius: var(--radius-sm);
-}
-.pf-action-btn:hover {
-  background: var(--color-primary-muted);
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  box-shadow: none;
-}
-
-/* --- Footer --- */
-.app-footer {
-  font-family: var(--font-sans);
-  font-style: normal;
-  letter-spacing: 0;
-  color: var(--color-text-secondary);
-  border-top: none;
-}
-
-/* --- Anillos de foco: blancos, nunca el azul por defecto del navegador --- */
-button:focus,
-.btn:focus,
-input:focus,
-select:focus,
-textarea:focus {
-  outline: none;
-}
-button:focus-visible,
-.btn:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible,
-[tabindex]:focus-visible {
-  outline: 2px solid var(--color-text-primary);
-  outline-offset: 2px;
-}
-input[type="checkbox"] {
-  accent-color: var(--color-primary);
 }
