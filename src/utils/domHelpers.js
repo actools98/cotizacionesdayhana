@@ -1,8 +1,5 @@
 // domHelpers.js - Funciones para creación y manipulación del DOM
 
-/**
- * Crea una tarjeta de módulo en modo cotización (checkbox + label + precio)
- */
 export function createModuleCard(module, currency, convertFn, formatFn) {
   const { id, description, price } = module;
   const priceConverted = convertFn(price, currency);
@@ -35,9 +32,6 @@ export function createModuleCard(module, currency, convertFn, formatFn) {
   return card;
 }
 
-/**
- * Renderiza la lista de módulos agrupados por categoría (modo cotización)
- */
 export function renderModulesByCategory(container, modules, categories, currency, convertFn, formatFn) {
   container.innerHTML = '';
   if (!categories || categories.length === 0) {
@@ -86,10 +80,6 @@ export function renderModulesByCategory(container, modules, categories, currency
   }
 }
 
-/**
- * Crea una tarjeta de módulo en modo administración (edición)
- * Incluye botones Editar y Eliminar
- */
 export function createAdminModuleCard(module, onDelete, onEdit) {
   const { id, description, price } = module;
   const card = document.createElement('div');
@@ -134,10 +124,6 @@ export function createAdminModuleCard(module, onDelete, onEdit) {
   return card;
 }
 
-/**
- * Renderiza la lista de módulos agrupados por categoría en modo administración
- * con botones para editar/eliminar categoría
- */
 export function renderAdminModulesByCategory(container, modules, categories, onDeleteModule, onEditModule, onEditCategory, onDeleteCategory) {
   container.innerHTML = '';
   if (!categories || categories.length === 0) {
@@ -166,7 +152,6 @@ export function renderAdminModulesByCategory(container, modules, categories, onD
     title.textContent = category.name;
     header.appendChild(title);
 
-    // Botones de acción para categoría
     const actions = document.createElement('div');
     actions.className = 'category-actions';
 
