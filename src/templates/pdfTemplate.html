@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    /* --- Estilos generales (ajusta según tu diseño en Penpot) --- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #ffffff;
+      color: #20183e;
+      padding: 20px;
+    }
+    .pdf-container {
+      max-width: 100%;
+      font-size: 12pt;
+      line-height: 1.6;
+    }
+    /* Encabezado */
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .header h1 {
+      font-size: 28pt;
+      font-weight: 700;
+      color: #ddb2ca; /* rosado principal */
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+    .header .badge {
+      font-size: 10pt;
+      font-weight: 600;
+      color: #ddb2ca;
+      background: rgba(221, 178, 202, 0.15);
+      padding: 2px 14px;
+      border-radius: 20px;
+      display: inline-block;
+    }
+    .divider {
+      border-top: 1px solid #e0d6e8;
+      margin: 16px 0;
+    }
+    /* Datos del cliente */
+    .client-info {
+      margin-bottom: 16px;
+    }
+    .client-info p {
+      margin: 4px 0;
+    }
+    .client-info strong {
+      font-weight: 600;
+      color: #20183e;
+    }
+    /* Lista de servicios */
+    .services {
+      margin: 16px 0;
+    }
+    .service-item {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .service-name {
+      font-weight: 600;
+      flex: 1 1 60%;
+    }
+    .service-price {
+      font-weight: 600;
+      color: #20183e;
+      white-space: nowrap;
+    }
+    .service-detail {
+      font-size: 9pt;
+      font-style: italic;
+      color: #666;
+      width: 100%;
+      margin-top: 2px;
+      padding-left: 8px;
+      border-left: 2px solid #ddb2ca;
+    }
+    /* Total */
+    .total {
+      text-align: right;
+      font-size: 18pt;
+      font-weight: 700;
+      margin-top: 20px;
+      color: #20183e;
+    }
+    /* Pie de página */
+    .footer {
+      margin-top: 40px;
+      font-size: 9pt;
+      color: #999;
+      border-top: 1px solid #e0d6e8;
+      padding-top: 12px;
+      text-align: center;
+    }
+    .footer p {
+      margin: 2px 0;
+    }
+    /* Ajustes para impresión */
+    @media print {
+      body { padding: 0; }
+      .pdf-container { margin: 0; }
+    }
+  </style>
+</head>
+<body>
+<div class="pdf-container">
+  <!-- Encabezado -->
+  <div class="header">
+    <h1>actols</h1>
+    <span class="badge">Cotización</span>
+  </div>
+  <div class="divider"></div>
+
+  <!-- Datos del cliente -->
+  <div class="client-info">
+    <p><strong>Cliente:</strong> {{clientName}}</p>
+    <p><strong>Producto o servicio:</strong> {{productName}}</p>
+    <p><strong>Fecha:</strong> {{date}}</p>
+  </div>
+  <div class="divider"></div>
+
+  <!-- Lista de servicios (se inyecta con JS) -->
+  <div class="services">
+    {{services}}
+  </div>
+
+  <!-- Total -->
+  <div class="total">Total: {{total}}</div>
+
+  <!-- Pie de página -->
+  <div class="footer">
+    <p>Esta cotización es válida por 30 días.</p>
+    <p>powered by actols</p>
+  </div>
+</div>
+</body>
+</html>
