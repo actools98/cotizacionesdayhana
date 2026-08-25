@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>actols · Cotizador</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/styles.css" />
+</head>
+<body>
+
+  <!-- MODAL DE LOGIN (superpuesto) -->
+  <div id="login-overlay" style="position:fixed; inset:0; background:rgba(15,23,42,0.85); backdrop-filter:blur(4px); z-index:9999; display:flex; align-items:center; justify-content:center; flex-direction:column;">
+    <div style="background:var(--color-bg-surface); padding:var(--space-lg); border-radius:var(--radius-md); max-width:400px; width:90%; box-shadow:var(--shadow-floating); text-align:center;">
+      <h2 style="margin-bottom:var(--space-sm); color:var(--color-text-primary);">Acceso restringido</h2>
+      <p style="color:var(--color-text-secondary); margin-bottom:var(--space-md);">Ingresa la contraseña para continuar</p>
+      <input type="password" id="password-input" placeholder="Contraseña" style="width:100%; height:44px; border:1px solid var(--color-border); border-radius:var(--radius-sm); padding:0 var(--space-sm); background:var(--color-bg-main); color:var(--color-text-primary); font-size:var(--text-body); margin-bottom:var(--space-md);" />
+      <button id="login-btn" class="btn btn-primary" style="width:100%;">Ingresar</button>
+      <div id="login-error" style="color:var(--color-danger); margin-top:var(--space-sm); display:none;">Contraseña incorrecta</div>
+    </div>
+  </div>
+
+  <!-- Contenedor principal de la app (oculto hasta login) -->
+  <div id="app-wrapper" style="display:none;">
+    <div class="app-container">
+      <!-- Header con botón de cerrar sesión -->
+      <header>
+        <div class="header-left">
+          <div class="logo">
+            <h1>actols</h1>
+            <span class="badge">Quotes</span>
+          </div>
+          <button class="btn-toggle" id="toggle-mode-btn">Editar</button>
+        </div>
+        <div class="header-right">
+          <div class="currency-selector">
+            <label for="currency-select" class="visually-hidden">Moneda</label>
+            <select id="currency-select">
+              <option value="COP">COP ($)</option>
+              <option value="USD">USD ($)</option>
+              <option value="EUR">EUR (€)</option>
+            </select>
+          </div>
+          <button class="btn btn-secondary btn-rates" id="rates-toggle-btn" title="Ajustar tasas de cambio">Tasas</button>
+          <button class="btn btn-secondary" id="logout-btn" style="margin-left:var(--space-xs);">Salir</button>
+        </div>
+      </header>
+
+      <!-- Grid principal -->
+      <div class="content-grid">
+        <main id="modules-container">
+          <!-- Renderizado dinámico -->
+        </main>
+
+        <aside class="sidebar" id="summary-panel">
+          <div class="summary-card" id="total-card">
+            <h2 class="summary-title">Total Estimado</h2>
+            <div class="total-amount" id="total-display">$ 0</div>
+            <button class="btn btn-primary btn-block" id="quote-action-btn">Hacer Cotización</button>
+          </div>
+
+          <div class="portfolios-card" id="portfolios-card">
+            <h2 class="summary-title">Portafolios</h2>
+            <button class="btn btn-secondary btn-block" id="portfolios-open-btn">Portafolios</button>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Contenedor para agregar módulo (modo edición) -->
+      <div id="add-module-container" style="display: none; margin-top: var(--space-md);">
+        <form id="add-module-form">
+          <input type="text" id="module-desc" placeholder="Descripción" required />
+          <input type="number" id="module-price" placeholder="Precio (COP)" required />
+          <select id="module-category-select">
+            <!-- Se llenará con JS -->
+          </select>
+          <button type="submit" class="btn">Agregar</button>
+        </form>
+      </div>
+
+      <!-- Footer -->
+      <footer class="app-footer">
+        <p>powered by actols</p>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Diálogos (cotización, portafolios, tasas) -->
+  <dialog id="client-dialog">
+    <form method="dialog">
+      <h3>Datos de la Cotización</h3>
+      <div class="form-group">
+        <label for="client-name-input">Nombre del Cliente</label>
+        <input type="text" id="client-name-input" placeholder="Ej: Juan Pérez" required />
+      </div>
+      <div class="form-group">
+        <label for="product-name-input">Producto o servicio</label>
+        <input type="text" id="product-name-input" placeholder="Ej: Desarrollo de software" required />
+      </div>
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-secondary" id="dialog-cancel">Cancelar</button>
+        <button type="submit" class="btn btn-primary" id="dialog-confirm">Generar PDF</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="portfolios-dialog">
+    <div class="dialog-header">
+      <h2>Portafolios</h2>
+      <button class="dialog-close" id="portfolios-dialog-close">&times;</button>
+    </div>
+    <div id="portfolios-list-modal">
+      <!-- Renderizado dinámico -->
+    </div>
+  </dialog>
+
+  <dialog id="rates-dialog">
+    <div class="dialog-header">
+      <h2>Ajustar tasas de cambio</h2>
+      <button class="dialog-close" id="rates-dialog-close">&times;</button>
+    </div>
+    <p>Si la tasa automática no es correcta, puedes ingresar valores manualmente.</p>
+    <div class="form-group">
+      <label for="rate-usd">1000 COP = ? USD</label>
+      <input type="number" id="rate-usd" step="0.000001" min="0" placeholder="Ej: 0.25" />
+    </div>
+    <div class="form-group">
+      <label for="rate-eur">1000 COP = ? EUR</label>
+      <input type="number" id="rate-eur" step="0.000001" min="0" placeholder="Ej: 0.23" />
+    </div>
+    <div class="dialog-actions">
+      <button class="btn btn-secondary" id="rates-dialog-cancel">Cancelar</button>
+      <button class="btn btn-primary" id="rates-dialog-save">Guardar tasas</button>
+      <button class="btn btn-danger" id="rates-dialog-reset">Restablecer API</button>
+    </div>
+  </dialog>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

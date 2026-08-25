@@ -1,0 +1,7 @@
+[
+  { "id": "mod-1", "description": "Costo base de operación", "price": 600000 },
+  { "id": "mod-2", "description": "Servicio de consultoría básica", "price": 350000 },
+  { "id": "mod-3", "description": "Implementación de software", "price": 1200000 },
+  { "id": "mod-4", "description": "Capacitación presencial", "price": 450000 },
+  { "id": "mod-5", "description": "Soporte técnico mensual", "price": 280000 }
+]

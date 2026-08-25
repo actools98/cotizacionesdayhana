@@ -1,0 +1,1429 @@
+/* ============================================================
+   Design Tokens (Tema Oscuro)
+   ============================================================ */
+:root {
+  --color-bg-main: #0F172A;        /* Slate 900 */
+  --color-bg-surface: #1E293B;     /* Slate 800 */
+  --color-text-primary: #F1F5F9;   /* Slate 100 */
+  --color-text-secondary: #94A3B8; /* Slate 400 */
+  --color-border: #334155;         /* Slate 700 */
+
+  --color-primary: #818CF8;        /* Indigo 400 */
+  --color-primary-hover: #6366F1;  /* Indigo 500 */
+  --color-primary-muted: #1E1B4B;  /* Indigo 950 */
+  --color-success: #34D399;        /* Emerald 400 */
+  --color-danger: #F87171;         /* Red 400 */
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --text-h1: 2rem;
+  --text-h2: 1.5rem;
+  --text-body: 1rem;
+  --text-small: 0.875rem;
+
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --shadow-card: 0 4px 6px -1px rgba(0,0,0,0.3), 0 2px 4px -1px rgba(0,0,0,0.2);
+  --shadow-floating: 0 10px 15px -3px rgba(0,0,0,0.4), 0 4px 6px -2px rgba(0,0,0,0.2);
+}
+
+/* ============================================================
+   Reset & Base
+   ============================================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg-main);
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  padding: var(--space-lg);
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: var(--space-sm);
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+}
+
+/* ============================================================
+   Contenedor principal
+   ============================================================ */
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-lg);
+  background-color: var(--color-bg-main);
+  border-radius: var(--radius-md);
+}
+
+@media (max-width: 768px) {
+  .app-container {
+    padding: var(--space-sm);
+  }
+}
+
+/* ============================================================
+   Header
+   ============================================================ */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.logo {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-xs);
+}
+
+.logo h1 {
+  font-size: var(--text-h1);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+}
+
+.logo .badge {
+  font-size: var(--text-small);
+  font-weight: 600;
+  color: var(--color-primary);
+  background-color: var(--color-primary-muted);
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.btn-toggle {
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+  border: none;
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: var(--text-small);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 44px;
+}
+
+.btn-toggle:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+}
+
+.btn-toggle:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.btn-toggle.active {
+  background-color: var(--color-success);
+}
+
+.btn-toggle.active:hover {
+  filter: brightness(0.9);
+}
+
+.currency-selector {
+  display: flex;
+  align-items: center;
+}
+
+#currency-select {
+  font-family: var(--font-sans);
+  font-size: var(--text-small);
+  font-weight: 500;
+  padding: var(--space-xs) var(--space-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  outline: none;
+  transition: border 0.2s ease;
+  min-height: 44px;
+}
+
+#currency-select:hover {
+  border-color: var(--color-text-secondary);
+}
+
+#currency-select:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   Grid de contenido (2 columnas)
+   ============================================================ */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+@media (max-width: 1023px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+}
+
+/* ============================================================
+   Sidebar (total + portafolios)
+   ============================================================ */
+.sidebar {
+  position: sticky;
+  top: var(--space-lg);
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+@media (max-width: 1023px) {
+  .sidebar {
+    position: static;
+    margin-top: var(--space-md);
+  }
+}
+
+/* Total Estimado */
+.summary-card {
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-floating);
+  padding: var(--space-md) var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.summary-title {
+  font-size: var(--text-small);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.total-amount {
+  font-family: var(--font-mono);
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+/* Portafolios */
+.portfolios-card {
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-floating);
+  padding: var(--space-md) var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.portfolios-dropdown {
+  margin-top: var(--space-sm);
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-sm);
+}
+
+#portfolios-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-sm);
+}
+
+.portfolio-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--color-bg-main);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+}
+
+.portfolio-item .pf-name {
+  font-weight: 500;
+  font-size: var(--text-small);
+}
+
+.portfolio-item .pf-actions {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.portfolio-item .pf-actions button {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font-size: var(--text-small);
+  padding: 0 var(--space-xs);
+  transition: color 0.2s ease;
+}
+
+.portfolio-item .pf-actions button:hover {
+  color: var(--color-text-primary);
+}
+
+.add-portfolio-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-top: var(--space-sm);
+}
+
+.add-portfolio-form input {
+  flex: 1 1 120px;
+  height: 36px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-sm);
+  background: var(--color-bg-main);
+  color: var(--color-text-primary);
+  font-size: var(--text-small);
+  transition: border 0.2s ease;
+}
+
+.add-portfolio-form input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+.add-portfolio-form .btn {
+  height: 36px;
+  font-size: var(--text-small);
+  padding: 0 var(--space-sm);
+}
+
+/* ============================================================
+   Categorías y listas de módulos
+   ============================================================ */
+.category-section {
+  margin-bottom: var(--space-lg);
+}
+
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-xs);
+}
+
+.category-header h3 {
+  font-size: var(--text-h2);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.category-actions {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.category-actions .btn {
+  min-height: 32px;
+  padding: 0 var(--space-sm);
+  font-size: var(--text-small);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.category-actions .btn-edit-cat {
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+}
+
+.category-actions .btn-edit-cat:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+}
+
+.category-actions .btn-delete-cat {
+  background-color: var(--color-danger);
+  color: #FFFFFF;
+}
+
+.category-actions .btn-delete-cat:hover {
+  filter: brightness(0.85);
+  transform: translateY(-1px);
+}
+
+.module-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.module-list .empty-message {
+  color: var(--color-text-secondary);
+  font-style: italic;
+  padding: var(--space-sm) 0;
+}
+
+/* ============================================================
+   Tarjetas de módulo (modo cotización)
+   ============================================================ */
+.module-card {
+  display: flex;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.module-card:hover {
+  border-color: var(--color-text-secondary);
+}
+
+.module-card:has(input:checked) {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-muted);
+}
+
+.module-card input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.module-card input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.module-card .module-label {
+  flex: 1;
+  margin-left: var(--space-sm);
+  font-size: var(--text-body);
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.module-card .module-price {
+  font-family: var(--font-mono);
+  font-size: var(--text-body);
+  color: var(--color-text-secondary);
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.module-card:has(input:checked) .module-price {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* ============================================================
+   Tarjetas en modo administración (edición)
+   ============================================================ */
+.module-card.admin-mode {
+  cursor: default;
+  background: var(--color-bg-surface);
+  border-color: var(--color-border);
+}
+
+.module-card.admin-mode:hover {
+  border-color: var(--color-border);
+}
+
+.module-card .admin-actions {
+  display: flex;
+  gap: var(--space-xs);
+  margin-left: var(--space-sm);
+}
+
+.module-card .admin-actions .btn {
+  min-height: 32px;
+  padding: 0 var(--space-sm);
+  font-size: var(--text-small);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.module-card .admin-actions .btn-edit {
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+}
+
+.module-card .admin-actions .btn-edit:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+}
+
+.module-card .admin-actions .btn-delete {
+  background-color: var(--color-danger);
+  color: #FFFFFF;
+}
+
+.module-card .admin-actions .btn-delete:hover {
+  filter: brightness(0.85);
+  transform: translateY(-1px);
+}
+
+/* ============================================================
+   Drag & Drop (SortableJS)
+   ============================================================ */
+.sortable-ghost {
+  opacity: 0.4;
+  background-color: var(--color-primary-muted);
+  border: 2px dashed var(--color-primary);
+}
+
+.sortable-chosen {
+  box-shadow: var(--shadow-floating);
+}
+
+/* ============================================================
+   Formularios de administración (modo edición)
+   ============================================================ */
+#category-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+  padding: var(--space-sm);
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+#category-controls input {
+  flex: 1 1 150px;
+  height: 44px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-sm);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  background-color: var(--color-bg-main);
+  color: var(--color-text-primary);
+  transition: border 0.2s ease;
+}
+
+#category-controls input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+#category-controls input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+#category-controls .btn {
+  flex: 0 0 auto;
+  height: 44px;
+}
+
+#add-module-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+  padding: var(--space-sm);
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+#add-module-form input,
+#add-module-form select {
+  height: 44px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-sm);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  background-color: var(--color-bg-main);
+  color: var(--color-text-primary);
+  transition: border 0.2s ease;
+}
+
+#add-module-form input {
+  flex: 2 1 140px;
+}
+
+#add-module-form select {
+  flex: 1 1 120px;
+  cursor: pointer;
+}
+
+#add-module-form input:focus,
+#add-module-form select:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+#add-module-form input:focus-visible,
+#add-module-form select:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+#add-module-form .btn {
+  flex: 0 0 auto;
+  height: 44px;
+  background-color: var(--color-success);
+  color: #FFFFFF;
+  border: none;
+  padding: 0 var(--space-md);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#add-module-form .btn:hover {
+  filter: brightness(0.92);
+  transform: translateY(-1px);
+}
+
+/* ============================================================
+   Botones generales
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: var(--text-small);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  min-height: 44px;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+}
+
+.btn-success {
+  background-color: var(--color-success);
+  color: #FFFFFF;
+}
+
+.btn-success:hover {
+  filter: brightness(0.92);
+  transform: translateY(-1px);
+}
+
+.btn-danger {
+  background-color: var(--color-danger);
+  color: #FFFFFF;
+}
+
+.btn-danger:hover {
+  filter: brightness(0.85);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-bg-main);
+  border-color: var(--color-text-secondary);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* ============================================================
+   Diálogo centrado (nombre del cliente y producto)
+   ============================================================ */
+#client-dialog {
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  max-width: 420px;
+  width: 90%;
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-floating);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+}
+
+#client-dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+#client-dialog h3 {
+  font-size: var(--text-h2);
+  margin-bottom: var(--space-sm);
+  color: var(--color-text-primary);
+}
+
+#client-dialog .form-group {
+  margin-bottom: var(--space-md);
+}
+
+#client-dialog .form-group label {
+  display: block;
+  font-size: var(--text-small);
+  font-weight: 500;
+  margin-bottom: var(--space-xs);
+  color: var(--color-text-secondary);
+}
+
+#client-dialog .form-group input {
+  width: 100%;
+  height: 44px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-sm);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  background-color: var(--color-bg-main);
+  color: var(--color-text-primary);
+  transition: border 0.2s ease;
+}
+
+#client-dialog .form-group input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+#client-dialog .form-group input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: flex-end;
+  margin-top: var(--space-md);
+}
+
+.dialog-actions .btn {
+  min-width: 100px;
+}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+.app-footer {
+  margin-top: var(--space-xl);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+  font-size: var(--text-small);
+  color: var(--color-text-secondary);
+}
+
+/* ============================================================
+   Responsive: Móviles y tablets
+   ============================================================ */
+@media (max-width: 1023px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+
+  .sidebar {
+    position: static;
+    top: auto;
+    margin-top: var(--space-md);
+  }
+}
+
+@media (max-width: 767px) {
+  .content-grid {
+    gap: var(--space-md);
+    margin-bottom: 0;
+  }
+
+  .sidebar {
+    margin-top: var(--space-md);
+  }
+
+  .summary-card,
+  .portfolios-card {
+    padding: var(--space-sm);
+  }
+
+  .total-amount {
+    font-size: 2rem;
+  }
+
+  .module-card {
+    padding: var(--space-sm);
+    font-size: var(--text-small);
+  }
+
+  .module-card .admin-actions .btn {
+    font-size: 0.75rem;
+    padding: 0 var(--space-xs);
+    min-height: 28px;
+  }
+
+  #add-module-form {
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  #add-module-form input,
+  #add-module-form select,
+  #add-module-form .btn {
+    width: 100%;
+    flex: 1 1 auto;
+  }
+
+  #category-controls {
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  #category-controls input,
+  #category-controls .btn {
+    width: 100%;
+  }
+
+  .category-header {
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+
+  .category-header .category-actions {
+    display: flex;
+    gap: var(--space-xs);
+    margin-left: auto;
+  }
+
+  .app-footer {
+    margin-top: var(--space-lg);
+    padding-top: var(--space-sm);
+  }
+
+  .add-portfolio-form {
+    flex-direction: column;
+  }
+
+  .add-portfolio-form input,
+  .add-portfolio-form .btn {
+    width: 100%;
+  }
+
+  .portfolio-item {
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+
+  .portfolio-item .pf-actions {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-sm);
+  }
+
+  .header-left,
+  .header-right {
+    justify-content: space-between;
+  }
+
+  .logo h1 {
+    font-size: 1.5rem;
+  }
+
+  .btn-toggle {
+    font-size: 0.75rem;
+    padding: var(--space-xs) var(--space-sm);
+    min-height: 36px;
+  }
+
+  #currency-select {
+    font-size: 0.75rem;
+    padding: var(--space-xs) var(--space-sm);
+    min-height: 36px;
+  }
+
+  .summary-card,
+  .portfolios-card {
+    padding: var(--space-sm);
+  }
+
+  .total-amount {
+    font-size: 1.8rem;
+  }
+
+  #client-dialog {
+    padding: var(--space-md);
+    width: 95%;
+  }
+}
+/* ============================================================
+   Estilos adicionales para botones de categoría, diálogos, etc.
+   ============================================================ */
+
+/* Botones de categoría en modo edición */
+.category-actions .btn-edit-cat,
+.category-actions .btn-delete-cat {
+  min-height: 32px;
+  padding: 0 var(--space-sm);
+  font-size: var(--text-small);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.category-actions .btn-edit-cat {
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+}
+.category-actions .btn-edit-cat:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+}
+.category-actions .btn-delete-cat {
+  background-color: var(--color-danger);
+  color: #FFFFFF;
+}
+.category-actions .btn-delete-cat:hover {
+  filter: brightness(0.85);
+  transform: translateY(-1px);
+}
+
+/* Botón Tasas */
+.btn-rates {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: var(--text-small);
+  transition: all 0.2s ease;
+  min-height: 44px;
+}
+.btn-rates:hover {
+  background-color: var(--color-bg-surface);
+  border-color: var(--color-text-secondary);
+}
+
+/* Diálogos (Portafolios y Tasas) */
+dialog {
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  max-width: 600px;
+  width: 90%;
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-floating);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+}
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-sm);
+}
+.dialog-header h2 {
+  font-size: var(--text-h2);
+  color: var(--color-text-primary);
+}
+.dialog-close {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 1.8rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.dialog-close:hover {
+  color: var(--color-text-primary);
+}
+.dialog-footer {
+  margin-top: var(--space-md);
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-sm);
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Portafolios en modal */
+.portfolio-item-modal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.pf-name-btn {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: var(--text-body);
+  cursor: pointer;
+  text-align: left;
+  padding: var(--space-xs) 0;
+  transition: color 0.2s ease;
+}
+.pf-name-btn:hover {
+  color: var(--color-primary-hover);
+}
+.pf-actions-modal {
+  display: none;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-top: var(--space-xs);
+}
+.pf-actions-modal .btn {
+  font-size: var(--text-small);
+  padding: 0 var(--space-sm);
+  min-height: 32px;
+}
+.pf-edit-form {
+  display: none;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
+  padding: var(--space-sm);
+  background: var(--color-bg-main);
+  border-radius: var(--radius-sm);
+}
+.pf-edit-form input {
+  flex: 1 1 150px;
+  height: 36px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-sm);
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  font-size: var(--text-small);
+}
+.pf-edit-form .btn {
+  height: 36px;
+  font-size: var(--text-small);
+}
+
+/* Responsive para diálogos */
+@media (max-width: 480px) {
+  dialog {
+    padding: var(--space-md);
+    width: 95%;
+  }
+  .pf-actions-modal {
+    flex-direction: column;
+    width: 100%;
+  }
+  .pf-actions-modal .btn {
+    width: 100%;
+  }
+  .pf-edit-form {
+    flex-direction: column;
+  }
+  .pf-edit-form input {
+    width: 100%;
+  }
+  .pf-edit-form .btn {
+    width: 100%;
+  }
+}
+/* ============================================================
+   Estilos para Portafolios: menú flotante y formularios inline
+   ============================================================ */
+
+/* Botón principal de cada portafolio (se ve como un botón centrado) */
+.pf-name-btn {
+  display: block;
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-primary-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-weight: 600;
+  font-size: var(--text-body);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  margin-bottom: var(--space-xs);
+}
+.pf-name-btn:hover {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-floating);
+}
+
+/* Menú contextual (flotante) */
+.pf-context-menu {
+  display: none;
+  flex-direction: column;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-floating);
+  padding: var(--space-xs) 0;
+  min-width: 160px;
+  z-index: 1000;
+  position: fixed;
+}
+.pf-context-menu .pf-menu-item {
+  background: none;
+  border: none;
+  padding: var(--space-xs) var(--space-md);
+  text-align: left;
+  font-size: var(--text-small);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background 0.15s ease;
+  width: 100%;
+}
+.pf-context-menu .pf-menu-item:hover {
+  background: var(--color-primary-muted);
+}
+.pf-context-menu .pf-menu-item.danger {
+  color: var(--color-danger);
+}
+.pf-context-menu .pf-menu-item.danger:hover {
+  background: rgba(248, 113, 113, 0.15);
+}
+
+/* Formulario de edición y añadir (inline) */
+.pf-edit-form,
+.add-portfolio-form-inline {
+  display: none;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  background: var(--color-bg-main);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  margin-top: var(--space-xs);
+  width: 100%;
+}
+.pf-edit-form input,
+.add-portfolio-form-inline input {
+  flex: 1 1 150px;
+  height: 36px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-sm);
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  font-size: var(--text-small);
+}
+.pf-edit-form .btn,
+.add-portfolio-form-inline .btn {
+  height: 36px;
+  font-size: var(--text-small);
+  padding: 0 var(--space-sm);
+}
+
+/* Contenedor para el botón "Añadir portafolio" */
+.add-portfolio-container {
+  margin-top: var(--space-md);
+  display: flex;
+  justify-content: center;
+}
+.add-portfolio-container .btn {
+  width: 100%;
+  max-width: 250px;
+}
+
+/* Ocultar el bloque de portafolios en modo edición (controlado por JS) */
+#portfolios-card {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ajustes responsive para el menú flotante */
+@media (max-width: 767px) {
+  .pf-context-menu {
+    min-width: 140px;
+    left: 10px !important; /* para que no se salga en móvil */
+    right: 10px !important;
+  }
+  .pf-context-menu .pf-menu-item {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 0.8rem;
+  }
+  .pf-edit-form,
+  .add-portfolio-form-inline {
+    flex-direction: column;
+  }
+  .pf-edit-form input,
+  .add-portfolio-form-inline input,
+  .pf-edit-form .btn,
+  .add-portfolio-form-inline .btn {
+    width: 100%;
+  }
+}
+
+/* Diálogo de tasas: ajustar etiquetas */
+#rates-dialog .form-group label {
+  display: block;
+  font-size: var(--text-small);
+  font-weight: 500;
+  margin-bottom: var(--space-xs);
+  color: var(--color-text-secondary);
+}
+#rates-dialog .form-group input {
+  width: 100%;
+  height: 44px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-sm);
+  background: var(--color-bg-main);
+  color: var(--color-text-primary);
+  font-size: var(--text-body);
+}
+/* ============================================================
+   Corrección de posicionamiento para menú contextual de portafolios
+   ============================================================ */
+
+.pf-context-menu {
+  /* Posición la establece JavaScript con top/left, así que no usar transform */
+  transform: none !important;
+  min-width: 160px;
+  max-width: 260px;
+}
+
+/* En móviles, para que no se salga, dejamos que JS ajuste */
+@media (max-width: 767px) {
+  .pf-context-menu {
+    min-width: 140px;
+    max-width: 90vw;
+  }
+}
+/* ============================================================
+   Portafolios: Acordeón horizontal con animación
+   ============================================================ */
+
+/* Contenedor de acciones (se despliega) */
+.pf-actions-container {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.3s ease, opacity 0.25s ease, margin 0.3s ease;
+  margin-top: 0;
+}
+
+.pf-actions-container.open {
+  max-height: 200px; /* se ajusta con JS dinámicamente */
+  opacity: 1;
+  margin-top: var(--space-sm);
+}
+
+.pf-actions-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  justify-content: center;
+  padding: var(--space-xs) 0;
+}
+
+/* Botones de acción (horizontal) */
+.pf-action-btn {
+  flex: 0 1 auto;
+  min-width: 80px;
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font-size: var(--text-small);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.pf-action-btn:hover {
+  background: var(--color-primary-muted);
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+}
+
+.pf-action-btn.danger {
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+.pf-action-btn.danger:hover {
+  background: rgba(248, 113, 113, 0.1);
+  border-color: var(--color-danger);
+}
+
+/* Formulario de edición (inline) */
+.pf-edit-form,
+.add-portfolio-form-inline {
+  display: none;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  background: var(--color-bg-main);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  margin-top: var(--space-sm);
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.pf-edit-form input,
+.add-portfolio-form-inline input {
+  flex: 1 1 150px;
+  height: 36px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-sm);
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  font-size: var(--text-small);
+}
+
+.pf-edit-form .btn,
+.add-portfolio-form-inline .btn {
+  height: 36px;
+  font-size: var(--text-small);
+  padding: 0 var(--space-sm);
+}
+
+/* Contenedor para el botón "Añadir portafolio" */
+.add-portfolio-container {
+  margin-top: var(--space-md);
+  display: flex;
+  justify-content: center;
+}
+.add-portfolio-container .btn {
+  width: 100%;
+  max-width: 250px;
+}
+
+/* Ocultar el bloque de portafolios en modo edición (controlado por JS) */
+#portfolios-card {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Responsive: en móviles, los botones de acción se apilan verticalmente si no caben */
+@media (max-width: 480px) {
+  .pf-actions-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .pf-action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .pf-edit-form,
+  .add-portfolio-form-inline {
+    flex-direction: column;
+  }
+  .pf-edit-form input,
+  .add-portfolio-form-inline input,
+  .pf-edit-form .btn,
+  .add-portfolio-form-inline .btn {
+    width: 100%;
+  }
+}
