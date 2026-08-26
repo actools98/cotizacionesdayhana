@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <style>
-    /* Reset y base */
     * {
       margin: 0;
       padding: 0;
@@ -29,7 +28,7 @@
     .header h1 {
       font-size: 28pt;
       font-weight: 700;
-      color: #1e3a8a; /* azul oscuro */
+      color: #1e3a8a;
       letter-spacing: -0.02em;
       margin-bottom: 4px;
     }
@@ -59,58 +58,74 @@
       color: #1e3a8a;
     }
 
-    /* Lista de servicios */
-    .services {
-      margin: 16px 0;
-    }
-
-    /* Cada servicio: fondo azul claro, borde redondeado */
-    .service-item {
-      background-color: #eff6ff;    /* azul muy claro */
-      border-left: 6px solid #1e3a8a;
-      border-radius: 4px;
-      padding: 10px 14px;
-      margin-bottom: 12px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      justify-content: space-between;
-    }
-
-    .service-name {
-      font-weight: 700;
-      color: #1e3a8a;        /* azul oscuro */
-      flex: 1 1 60%;
-      font-size: 12pt;
-      word-wrap: break-word;
-      white-space: normal;
-    }
-    .service-price {
-      font-weight: 700;
-      color: #1e3a8a;
-      white-space: nowrap;
-      font-size: 12pt;
-    }
-    .service-detail {
-      font-size: 10pt;
-      color: #374151;
+    /* ======== TABLA ======== */
+    .services-table {
       width: 100%;
-      margin-top: 6px;
-      padding-left: 12px;
-      border-left: 3px solid #93c5fd;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 12pt;
+    }
+
+    .services-table th {
+      background-color: #1e3a8a;
+      color: #ffffff;
+      font-weight: 600;
+      padding: 8px 12px;
+      text-align: left;
+      border: 1px solid #1e3a8a;
+    }
+
+    .services-table th:last-child {
+      text-align: right;
+    }
+
+    /* Fila del servicio (nombre + precio) con fondo azul */
+    .service-row td {
+      background-color: #dbeafe; /* azul claro */
+      padding: 8px 12px;
+      border: 1px solid #93c5fd;
+    }
+
+    .service-row .service-name {
+      font-weight: 700;
+      color: #1e3a8a;
       word-wrap: break-word;
       white-space: normal;
     }
-
-    /* Total */
-    .total {
-      text-align: right;
-      font-size: 18pt;
+    .service-row .service-price {
       font-weight: 700;
-      margin-top: 20px;
       color: #1e3a8a;
-      border-top: 2px solid #1e3a8a;
-      padding-top: 12px;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    /* Fila del detalle (ocupa ambas columnas) */
+    .detail-row td {
+      background-color: #f9fafb; /* gris muy claro */
+      padding: 8px 12px;
+      border-left: 1px solid #e5e7eb;
+      border-right: 1px solid #e5e7eb;
+      border-bottom: 1px solid #e5e7eb;
+      color: #374151;
+      font-size: 10pt;
+      white-space: pre-wrap;    /* respeta saltos de línea */
+      word-wrap: break-word;
+    }
+
+    /* Fila del total */
+    .total-row td {
+      background-color: #dbeafe;
+      padding: 10px 12px;
+      border: 1px solid #93c5fd;
+      font-weight: 700;
+      color: #1e3a8a;
+      font-size: 14pt;
+    }
+    .total-row .total-label {
+      text-align: left;
+    }
+    .total-row .total-value {
+      text-align: right;
     }
 
     /* Pie de página */
@@ -141,7 +156,7 @@
   </div>
   <div class="divider"></div>
 
-  <!-- Cliente -->
+  <!-- Datos del cliente -->
   <div class="client-info">
     <p><strong>Cliente:</strong> {{clientName}}</p>
     <p><strong>Producto o servicio:</strong> {{productName}}</p>
@@ -149,15 +164,25 @@
   </div>
   <div class="divider"></div>
 
-  <!-- Servicios -->
-  <div class="services">
-    {{services}}
-  </div>
+  <!-- Tabla de servicios -->
+  <table class="services-table">
+    <thead>
+      <tr>
+        <th>Servicio</th>
+        <th>Precio</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{servicesRows}}
+      <!-- Fila del total -->
+      <tr class="total-row">
+        <td class="total-label">Total</td>
+        <td class="total-value">{{total}}</td>
+      </tr>
+    </tbody>
+  </table>
 
-  <!-- Total -->
-  <div class="total">Total: {{total}}</div>
-
-  <!-- Pie -->
+  <!-- Pie de página -->
   <div class="footer">
     <p>Esta cotización es válida por 30 días.</p>
     <p>powered by actols</p>
