@@ -38,12 +38,12 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
   const totalFormatted = formatCurrency(totalConverted, currency);
   html = html.replace('{{total}}', totalFormatted);
 
-  // 2. Crear iframe oculto con ancho fijo grande (1080px)
+  // 2. Crear iframe oculto con ancho fijo de 1080px
   const iframe = document.createElement('iframe');
   iframe.style.position = 'fixed';
   iframe.style.top = '-9999px';
   iframe.style.left = '-9999px';
-  iframe.style.width = '1080px';   // Ancho fijo grande para evitar desbordes
+  iframe.style.width = '1080px';
   iframe.style.border = 'none';
   iframe.style.background = '#ffffff';
   document.body.appendChild(iframe);
@@ -63,9 +63,23 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
 
   try {
     const body = iframe.contentDocument.body;
-    // Forzar un ancho mínimo igual al del iframe para que la captura siempre tenga ese ancho
-    body.style.minWidth = '1080px';
-    body.style.margin = '0 auto'; // centrar si es necesario
+    
+    // ============================================================
+    // CORRECCIÓN: Forzar el ancho del body a 1080px exactos
+    // para que la captura siempre tenga el mismo ancho y los
+    // márgenes laterales se mantengan consistentes.
+    // ============================================================
+    body.style.width = '1080px';
+    body.style.boxSizing = 'border-box';
+    body.style.margin = '0';
+    body.style.padding = '48px'; // ya está en la plantilla, pero lo reafirmamos
+
+    // Asegurar que el contenedor ocupe todo el ancho disponible
+    const container = iframe.contentDocument.querySelector('.pdf-container');
+    if (container) {
+      container.style.width = '100%';
+      container.style.boxSizing = 'border-box';
+    }
 
     // Ajustar la altura del iframe al contenido
     iframe.style.height = body.scrollHeight + 'px';
@@ -76,7 +90,7 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
       backgroundColor: '#ffffff',
       logging: false,
       allowTaint: false,
-      width: body.scrollWidth,    // ahora será 1080px o más
+      width: body.scrollWidth,   // ahora será 1080px exactos
       height: body.scrollHeight,
     });
 
