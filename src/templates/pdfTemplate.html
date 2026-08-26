@@ -18,7 +18,7 @@
       margin: 0;
       padding: 0;
       width: 1080px;
-      overflow: hidden; /* Evita desbordes horizontales */
+      overflow: hidden;
       line-height: 1.5;
     }
     .pdf-container {
@@ -36,7 +36,7 @@
     .header {
       text-align: center;
       margin-bottom: 24px;
-      padding: 0 20px; /* Margen interno sin sumar al ancho (box-sizing ya lo incluye) */
+      padding: 0 15px;
     }
     .header .logo-img {
       height: 80px;
@@ -61,14 +61,14 @@
        ========================================================== */
     .divider {
       border-top: 2px solid #1e3a8a;
-      margin: 16px 20px;
+      margin: 16px 15px;
     }
 
     /* ==========================================================
        INFORMACIÓN DEL CLIENTE (11pt)
        ========================================================== */
     .client-info {
-      margin: 0 20px 16px 20px;
+      margin: 0 15px 16px 15px;
       font-size: 11pt;
     }
     .client-info p {
@@ -80,14 +80,14 @@
     }
 
     /* ==========================================================
-       TABLA DE SERVICIOS (forzada a 100% del ancho)
+       TABLA DE SERVICIOS (AUTO para que se ajuste al contenido)
        ========================================================== */
     .services-table {
       width: 100%;
       border-collapse: collapse;
       margin: 16px 0;
       font-size: 11pt;
-      table-layout: fixed;
+      table-layout: auto; /* Automático, se ajusta al contenido */
       word-break: break-word;
       overflow-wrap: break-word;
     }
@@ -96,21 +96,26 @@
     .services-table td {
       word-break: break-word;
       overflow-wrap: break-word;
-      max-width: 0;
-      padding: 6px 8px; /* Padding reducido para que quepa */
+      padding: 6px 8px; /* Padding reducido para ganar espacio */
       vertical-align: top;
       box-sizing: border-box;
       overflow: hidden;
     }
 
+    /* Columna de servicios: ocupa lo necesario pero sin robar espacio */
     .services-table th:first-child,
     .services-table td:first-child {
-      width: 70%;
+      max-width: 70%;
+      min-width: 40%;
     }
+
+    /* Columna de precios: ancho mínimo para que quepan los precios */
     .services-table th:last-child,
     .services-table td:last-child {
-      width: 30%;
+      min-width: 200px; /* Mínimo para que quepan los precios */
+      max-width: 350px;
       text-align: right;
+      white-space: normal;
     }
 
     .services-table th {
@@ -157,7 +162,7 @@
       font-weight: 700;
       color: #000000;
       text-align: right;
-      white-space: normal; /* Importante: que se pueda romper */
+      white-space: normal;
       display: block;
       font-size: 11pt;
       word-break: break-word;
@@ -178,13 +183,14 @@
       text-align: right;
       white-space: normal;
       word-break: break-word;
+      min-width: 200px;
     }
 
     /* ==========================================================
        PIE DE PÁGINA (9pt)
        ========================================================== */
     .footer {
-      margin: 40px 20px 0 20px;
+      margin: 40px 15px 0 15px;
       font-size: 9pt;
       color: #6b7280;
       border-top: 1px solid #d6d6d6;
