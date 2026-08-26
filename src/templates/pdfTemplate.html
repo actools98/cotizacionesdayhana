@@ -13,13 +13,16 @@
       background: #ffffff;
       color: #000000;
       line-height: 1.5;
-      /* El padding se movió al contenedor */
     }
     .pdf-container {
-      width: 794px; /* Ancho exacto fijado aquí */
-      padding: 48px; /* Padding trasladado aquí */
+      width: 794px;
+      padding: 48px;
       background: #ffffff;
-      margin: 0 auto;
+      /* Anclamos el contenedor arriba a la izquierda para evitar el offset */
+      position: absolute;
+      top: 0;
+      left: 0;
+      margin: 0;
     }
 
     .header {
@@ -145,7 +148,7 @@
 
     @media print {
       body { padding: 0; }
-      .pdf-container { margin: 0; }
+      .pdf-container { margin: 0; position: static; }
     }
   </style>
 </head>
