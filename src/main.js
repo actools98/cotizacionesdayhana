@@ -4,6 +4,7 @@
 //  + Portafolios con menú contextual
 //  + Manejo de errores detallado
 //  + Precio 0 (gratuito) permitido
+//  + Contador de días de demo (27/08/2026 – 11/09/2026)
 // ============================================================
 
 import { getModules, addModule, deleteModule, editModule, reorderModules, getCategories, addCategory, editCategory, deleteCategory, reorderCategories, getPortfolios, addPortfolio, editPortfolio, deletePortfolio } from './state.js';
@@ -141,10 +142,39 @@ async function initApp() {
     bindEvents();
     renderPortfoliosModal();
     updatePortfoliosVisibility();
+    // Contador de días de demo
+    updateDemoCounter();
+    setInterval(updateDemoCounter, 60000);
   } catch (error) {
     console.error('Error en inicialización:', error);
     alert('No se pudo cargar la aplicación.');
   }
+}
+
+// ============================================================
+//  CONTADOR DE DÍAS DE DEMO (27/08/2026 – 11/09/2026)
+// ============================================================
+function updateDemoCounter() {
+  const el = document.getElementById('demo-counter');
+  if (!el) return;
+
+  const now = new Date();
+  const start = new Date(2026, 7, 27); // 27 de agosto
+  const end = new Date(2026, 8, 11);   // 11 de septiembre
+
+  let days = 0;
+  if (now < start) {
+    days = 15;
+  } else if (now >= end) {
+    days = 0;
+  } else {
+    const diff = end - now;
+    days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+    if (days < 0) days = 0;
+    if (days > 15) days = 15;
+  }
+
+  el.textContent = `Te quedan ${days} días de Demo`;
 }
 
 async function loadData() {
@@ -360,7 +390,6 @@ async function onAddModule(e) {
   const price = parseFloat(modulePriceInput.value);
   const categoryId = moduleCategorySelect.value || currentCategories[0]?.id || null;
 
-  // Validación: permitir precio 0 (gratuito)
   if (!desc_es || !desc_fr || !desc_en || isNaN(price) || price < 0) {
     alert('Complete los campos obligatorios (nombre en los 3 idiomas y precio en CHF, puede ser 0 para gratuito).');
     return;
@@ -370,7 +399,6 @@ async function onAddModule(e) {
     await addModule(desc_es, desc_fr, desc_en, price, categoryId, detail_es, detail_fr, detail_en);
     await loadData();
     renderAll();
-    // Limpiar campos
     moduleDescEs.value = '';
     moduleDescFr.value = '';
     moduleDescEn.value = '';
@@ -407,7 +435,6 @@ function handleEditModule(id) {
   editModuleDetailFr.value = module.detail_fr || '';
   editModuleDetailEn.value = module.detail_en || '';
   editModulePrice.value = module.price;
-  // Seleccionar categoría
   for (let opt of editModuleCategory.options) {
     if (opt.value === module.category_id) {
       editModuleCategory.value = module.category_id;
@@ -427,7 +454,6 @@ async function saveEditModule() {
   const price = parseFloat(editModulePrice.value);
   const categoryId = editModuleCategory.value || currentCategories[0]?.id || null;
 
-  // Validación: permitir precio 0
   if (!name_es || !name_fr || !name_en || isNaN(price) || price < 0) {
     alert('Complete los campos obligatorios (precio puede ser 0 para gratuito).');
     return;
@@ -512,7 +538,6 @@ function renderPortfoliosModal() {
   if (!portfoliosListModal) return;
   portfoliosListModal.innerHTML = '';
 
-  // --- Lista de portafolios como botones ---
   if (!currentPortfolios || currentPortfolios.length === 0) {
     const emptyMsg = document.createElement('p');
     emptyMsg.textContent = 'No hay portafolios. Agrega uno.';
@@ -611,7 +636,6 @@ function renderPortfoliosModal() {
     });
   }
 
-  // --- Formulario para agregar ---
   const addForm = document.createElement('div');
   addForm.style.marginTop = '16px';
   addForm.style.paddingTop = '16px';
