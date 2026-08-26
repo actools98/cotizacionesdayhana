@@ -11,7 +11,6 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
     .replace(/\{\{productName\}\}/g, productName)
     .replace(/\{\{date\}\}/g, new Date().toLocaleDateString('es-CO'));
 
-  // 2. Generar filas de servicios
   const servicesRowsHtml = selectedModules.map(mod => {
     const price = convertCurrency(mod.price, currency);
     const priceFormatted = formatCurrency(price, currency);
@@ -37,13 +36,13 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
   const totalFormatted = formatCurrency(totalConverted, currency);
   html = html.replace('{{total}}', totalFormatted);
 
-  // 3. Crear iframe
+  // 2. Crear iframe
   const iframe = document.createElement('iframe');
   iframe.style.position = 'fixed';
   iframe.style.top = '-9999px';
   iframe.style.left = '-9999px';
   iframe.style.width = '794px';
-  iframe.style.height = '1px'; // se ajustará después
+  iframe.style.height = '1px';
   iframe.style.border = 'none';
   document.body.appendChild(iframe);
 
@@ -52,7 +51,6 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
   iframeDoc.write(html);
   iframeDoc.close();
 
-  // Esperar a que cargue
   await new Promise(resolve => {
     iframe.onload = resolve;
     if (iframe.contentWindow && iframe.contentWindow.document.readyState === 'complete') {
@@ -62,22 +60,20 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
   await new Promise(resolve => setTimeout(resolve, 500));
 
   try {
-    const container = iframe.contentDocument.querySelector('.pdf-container');
+    const body = iframe.contentDocument.body;
     // Ajustar altura del iframe al contenido
-    iframe.style.height = container.scrollHeight + 'px';
+    iframe.style.height = body.scrollHeight + 'px';
 
-    // Capturar el contenedor
-    const canvas = await html2canvas(container, {
+    // Capturar el body completo (incluye el padding)
+    const canvas = await html2canvas(body, {
       scale: 2,
       useCORS: true,
       backgroundColor: '#ffffff',
-      logging: true, // activar logs para depurar
+      logging: false,
       allowTaint: false,
-      width: 794,
-      height: container.scrollHeight,
+      width: body.scrollWidth,
+      height: body.scrollHeight,
     });
-
-    console.log('Canvas width:', canvas.width, 'height:', canvas.height);
 
     const imgData = canvas.toDataURL('image/jpeg', 0.95);
     const pdf = new jsPDF('p', 'mm', 'a4');
@@ -91,17 +87,10 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
     const scale = pdfWidth / imgWidth;
     const scaledHeight = imgHeight * scale;
 
-    console.log('imgWidth:', imgWidth, 'imgHeight:', imgHeight);
-    console.log('scale:', scale, 'scaledHeight:', scaledHeight);
-    console.log('pdfHeight:', pdfHeight);
-
     if (scaledHeight <= pdfHeight) {
-      // Una sola página
       pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, scaledHeight);
     } else {
-      // Múltiples páginas
-      const pageHeightPx = pdfHeight / scale; // altura en píxeles de la imagen por página
-      console.log('pageHeightPx:', pageHeightPx);
+      const pageHeightPx = pdfHeight / scale;
       let remainingHeight = imgHeight;
       let yOffset = 0;
       let pageCount = 0;
@@ -109,9 +98,7 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
       while (remainingHeight > 0) {
         const srcY = yOffset;
         const srcHeight = Math.min(pageHeightPx, remainingHeight);
-        console.log(`Página ${pageCount + 1}: srcY=${srcY}, srcHeight=${srcHeight}, remaining=${remainingHeight}`);
 
-        // Crear canvas temporal para la porción
         const tempCanvas = document.createElement('canvas');
         tempCanvas.width = imgWidth;
         tempCanvas.height = srcHeight;
@@ -130,7 +117,6 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
         yOffset += srcHeight;
         pageCount++;
       }
-      console.log(`Total páginas: ${pageCount}`);
     }
 
     pdf.save(`Cotizacion_${clientName.replace(/\s+/g, '_')}.pdf`);
