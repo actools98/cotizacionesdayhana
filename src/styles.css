@@ -1524,3 +1524,206 @@ dialog::backdrop {
     min-height: 60px;
   }
 }
+/* ============================================================
+   MEJORAS PARA MÓVILES (reemplaza o complementa las existentes)
+   ============================================================ */
+
+/* --- Header en móvil --- */
+@media (max-width: 768px) {
+  /* Header: apilar y ajustar */
+  header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-sm);
+  }
+
+  .header-left {
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .header-right {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-xs);
+  }
+
+  .header-right .btn {
+    font-size: 0.75rem;
+    padding: var(--space-xs) var(--space-sm);
+    min-height: 36px;
+    flex: 0 1 auto;
+  }
+
+  .language-selector,
+  .currency-selector {
+    flex: 1 1 auto;
+    min-width: 70px;
+  }
+
+  #language-select,
+  #currency-select {
+    font-size: 0.75rem;
+    padding: var(--space-xs) var(--space-sm);
+    min-height: 36px;
+    width: 100%;
+  }
+
+  /* Ocultar textos largos en botones */
+  .btn-toggle {
+    font-size: 0.75rem;
+    padding: var(--space-xs) var(--space-sm);
+    min-height: 36px;
+  }
+
+  /* Botón de Salir */
+  #logout-btn {
+    margin-left: 0 !important;
+  }
+
+  /* --- Sidebar --- */
+  .sidebar {
+    margin-top: var(--space-md);
+  }
+
+  .summary-card,
+  .portfolios-card {
+    padding: var(--space-sm);
+  }
+
+  .total-amount {
+    font-size: 2rem;
+  }
+
+  /* --- Diálogos --- */
+  dialog {
+    padding: var(--space-md);
+    width: 95%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  #edit-module-dialog {
+    padding: var(--space-md);
+  }
+
+  #edit-module-dialog > form > div > div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-xs);
+  }
+
+  #edit-module-dialog .form-textarea {
+    min-height: 60px;
+  }
+
+  /* --- Formulario de agregar módulo --- */
+  #add-module-form > div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-xs);
+  }
+
+  #add-module-form > div[style*="display: flex"] {
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  #add-module-form .form-input,
+  #add-module-form .form-select,
+  #add-module-form .btn {
+    width: 100%;
+    flex: 1 1 auto;
+  }
+
+  /* --- Portafolios en modal (menú contextual) --- */
+  .pf-context-menu {
+    min-width: 140px;
+    max-width: 90vw;
+    left: 5px !important;
+    right: 5px !important;
+  }
+
+  .pf-context-menu .pf-menu-item {
+    font-size: 0.8rem;
+    padding: var(--space-xs) var(--space-sm);
+  }
+
+  .pf-actions-modal {
+    flex-direction: column;
+    width: 100%;
+  }
+  .pf-actions-modal .btn {
+    width: 100%;
+  }
+  .pf-edit-form {
+    flex-direction: column;
+  }
+  .pf-edit-form input,
+  .pf-edit-form .btn {
+    width: 100%;
+  }
+
+  /* --- Cotización (diálogo) --- */
+  #client-dialog .dialog-actions {
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+  #client-dialog .dialog-actions .btn {
+    width: 100%;
+  }
+
+  /* --- Tasas (diálogo) --- */
+  #rates-dialog .dialog-actions {
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+  #rates-dialog .dialog-actions .btn {
+    width: 100%;
+  }
+
+  /* --- Ajustes generales --- */
+  .module-card {
+    padding: var(--space-sm);
+    font-size: var(--text-small);
+  }
+  .module-card .module-price {
+    font-size: var(--text-small);
+  }
+  .module-card .admin-actions .btn {
+    font-size: 0.75rem;
+    padding: 0 var(--space-xs);
+    min-height: 28px;
+  }
+  .category-header {
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+  .category-actions .btn {
+    font-size: 0.75rem;
+    padding: 0 var(--space-sm);
+    min-height: 32px;
+  }
+}
+
+/* --- Ajustes para pantallas muy pequeñas (≤ 480px) --- */
+@media (max-width: 480px) {
+  .logo h1 {
+    font-size: 1.5rem;
+  }
+  .header-right .btn {
+    font-size: 0.7rem;
+    padding: var(--space-xs) var(--space-xs);
+    min-height: 32px;
+  }
+  #language-select,
+  #currency-select {
+    font-size: 0.7rem;
+    padding: var(--space-xs);
+    min-height: 32px;
+  }
+  .total-amount {
+    font-size: 1.5rem;
+  }
+  .module-card {
+    padding: var(--space-xs);
+  }
+}
