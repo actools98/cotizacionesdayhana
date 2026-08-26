@@ -9,11 +9,15 @@ export async function getModules() {
   return res.json();
 }
 
-export async function addModule(description, price, category_id = null, detail = null) {
+export async function addModule(description_es, description_fr, description_en, price, category_id = null, detail_es = null, detail_fr = null, detail_en = null) {
   const res = await fetch(`${API_URL}/modules`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ description, price: Number(price), category_id, detail })
+    body: JSON.stringify({ 
+      description_es, description_fr, description_en,
+      detail_es, detail_fr, detail_en,
+      price: Number(price), category_id 
+    })
   });
   if (!res.ok) throw new Error('Error al agregar módulo');
   return res.json();
@@ -25,11 +29,15 @@ export async function deleteModule(id) {
   return true;
 }
 
-export async function editModule(id, description, price, category_id = null, detail = null) {
+export async function editModule(id, description_es, description_fr, description_en, price, category_id = null, detail_es = null, detail_fr = null, detail_en = null) {
   const res = await fetch(`${API_URL}/modules/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ description, price: Number(price), category_id, detail })
+    body: JSON.stringify({ 
+      description_es, description_fr, description_en,
+      detail_es, detail_fr, detail_en,
+      price: Number(price), category_id 
+    })
   });
   if (!res.ok) throw new Error('Error al editar módulo');
   return res.json();
@@ -45,7 +53,7 @@ export async function reorderModules(items) {
   return res.json();
 }
 
-// ---- Categorías ----
+// ---- Categorías (sin cambios) ----
 export async function getCategories() {
   const res = await fetch(`${API_URL}/categories`);
   if (!res.ok) throw new Error('Error al obtener categorías');
@@ -88,7 +96,7 @@ export async function reorderCategories(items) {
   return res.json();
 }
 
-// ---- Portafolios ----
+// ---- Portafolios (sin cambios) ----
 export async function getPortfolios() {
   const res = await fetch(`${API_URL}/portfolios`);
   if (!res.ok) throw new Error('Error al obtener portafolios');
