@@ -37,43 +37,46 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
   const totalFormatted = formatCurrency(totalConverted, currency);
   html = html.replace('{{total}}', totalFormatted);
 
-  // 2. Crear un contenedor en el DOM (oculto) para renderizar el HTML
+  // 2. Crear contenedor en el DOM, pero visible (opacidad 0)
   const container = document.createElement('div');
   container.innerHTML = html;
   container.style.position = 'fixed';
-  container.style.top = '-9999px';
-  container.style.left = '-9999px';
-  container.style.width = '794px'; // Ancho fijo igual al de la plantilla original
+  container.style.top = '0';
+  container.style.left = '0';
+  container.style.width = '794px'; // Ancho fijo
   container.style.background = '#ffffff';
+  container.style.opacity = '0'; // INVISIBLE para el usuario
+  container.style.pointerEvents = 'none'; // No bloquea interacciones
+  container.style.zIndex = '-9999'; // Detrás de todo
   container.style.padding = '0';
   container.style.margin = '0';
   container.style.boxSizing = 'border-box';
   document.body.appendChild(container);
 
   // Esperar a que el navegador renderice el contenido
-  await new Promise(resolve => setTimeout(resolve, 300));
+  await new Promise(resolve => setTimeout(resolve, 500));
 
   try {
     // 3. Configurar opciones de html2pdf
     const opt = {
-      margin:        [0, 0, 0, 0], // Sin márgenes adicionales (los márgenes ya están en la plantilla)
+      margin:        [0, 0, 0, 0],
       filename:      `Cotizacion_${clientName.replace(/\s+/g, '_')}.pdf`,
       image:         { type: 'jpeg', quality: 0.95 },
       html2canvas:   { 
-        scale: 2,                  // Buena resolución
+        scale: 2,
         useCORS: true,
-        logging: false,
+        logging: true, // Activar logs para depurar
         allowTaint: false,
         backgroundColor: '#ffffff',
-        width: 794,                // Ancho fijo de la captura (coincide con el contenedor)
+        width: 794,
         height: container.scrollHeight,
       },
       jsPDF:         { 
         unit: 'mm', 
-        format: 'a4',              // Página A4
+        format: 'a4',
         orientation: 'portrait' 
       },
-      pagebreak:     { mode: ['avoid-all', 'css', 'legacy'] } // Evita saltos de página no deseados
+      pagebreak:     { mode: ['avoid-all', 'css', 'legacy'] }
     };
 
     // 4. Generar el PDF
