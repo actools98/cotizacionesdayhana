@@ -1727,18 +1727,24 @@ dialog::backdrop {
     padding: var(--space-xs);
   }
 }
-/* Logo */
+/* ============================================================
+   Logo imagen
+   ============================================================ */
 .logo-img {
-  height: 40px;        /* Ajusta la altura según prefieras */
-  width: auto;         /* Mantiene la proporción */
+  height: 40px;           /* Altura fija, la anchura se ajusta automáticamente */
+  width: auto;
   display: block;
-  max-height: 50px;    /* Límite máximo para que no crezca en móviles */
+  object-fit: contain;    /* Para que no se deforme si el contenedor es más pequeño */
 }
 
-/* En móviles, reducir tamaño */
+/* Ajuste del contenedor del logo (opcional) */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);   /* Si quieres separación con otros elementos */
+}
 @media (max-width: 768px) {
   .logo-img {
     height: 30px;
-    max-height: 30px;
   }
 }
