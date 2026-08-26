@@ -5,7 +5,7 @@ import { formatCurrency } from '../utils/formatters.js';
 import { convertCurrency } from './currencyConverter.js';
 
 export async function generateQuotePDF(clientName, productName, selectedModules, currency, totalCOP) {
-  // 1. Rellenar plantilla
+  // 1. Rellenar la plantilla
   let html = templateHtml
     .replace(/\{\{clientName\}\}/g, clientName)
     .replace(/\{\{productName\}\}/g, productName)
@@ -31,42 +31,51 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
   const totalFormatted = formatCurrency(totalConverted, currency);
   html = html.replace('{{total}}', totalFormatted);
 
-  // 2. Crear contenedor visible (opacidad 0) para que html2canvas lo capture
-  const container = document.createElement('div');
-  container.innerHTML = html;
-  container.style.position = 'fixed';
-  container.style.top = '0';
-  container.style.left = '0';
-  container.style.width = '794px'; // A4 en píxeles ~210mm a 96dpi
-  container.style.background = '#ffffff';
-  container.style.opacity = '0';    // invisible para el usuario
-  container.style.pointerEvents = 'none';
-  container.style.zIndex = '9999';
-  document.body.appendChild(container);
+  // 2. Crear un iframe oculto
+  const iframe = document.createElement('iframe');
+  iframe.style.position = 'fixed';
+  iframe.style.top = '-9999px';
+  iframe.style.left = '-9999px';
+  iframe.style.width = '794px';
+  iframe.style.height = '1123px';
+  iframe.style.border = 'none';
+  document.body.appendChild(iframe);
 
-  // 3. Esperar renderizado
-  await new Promise(resolve => requestAnimationFrame(resolve));
-  await new Promise(resolve => setTimeout(resolve, 100)); // margen extra
+  // 3. Escribir el HTML en el iframe
+  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+  iframeDoc.open();
+  iframeDoc.write(html);
+  iframeDoc.close();
+
+  // 4. Esperar a que cargue todo (incluyendo fuentes)
+  await new Promise(resolve => {
+    iframe.onload = resolve;
+    // Si el contenido ya está cargado, resolver inmediatamente
+    if (iframe.contentWindow && iframe.contentWindow.document.readyState === 'complete') {
+      resolve();
+    }
+  });
+  // Esperar un poco más para que el render se estabilice
+  await new Promise(resolve => setTimeout(resolve, 200));
 
   try {
-    // 4. Capturar con html2canvas
-    const canvas = await html2canvas(container, {
+    // 5. Capturar el iframe con html2canvas
+    const canvas = await html2canvas(iframe.contentDocument.body, {
       scale: 2,
       useCORS: true,
       backgroundColor: '#ffffff',
-      logging: true,
+      logging: false,
       allowTaint: false,
       width: 794,
-      height: container.scrollHeight,
+      height: iframe.contentDocument.body.scrollHeight,
     });
 
-    // 5. Crear PDF
+    // 6. Generar PDF
     const imgData = canvas.toDataURL('image/jpeg', 0.95);
     const pdf = new jsPDF('p', 'mm', 'a4');
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = pdf.internal.pageSize.getHeight();
 
-    // Calcular escalado para que quepa en una página
     const imgWidth = canvas.width;
     const imgHeight = canvas.height;
     const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
@@ -75,14 +84,14 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
 
     pdf.addImage(imgData, 'JPEG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
 
-    // 6. Guardar
+    // 7. Guardar
     pdf.save(`Cotizacion_${clientName.replace(/\s+/g, '_')}.pdf`);
 
   } catch (error) {
     console.error('Error al generar PDF:', error);
     throw error;
   } finally {
-    // Limpiar DOM
-    document.body.removeChild(container);
+    // Limpiar el iframe
+    document.body.removeChild(iframe);
   }
 }
