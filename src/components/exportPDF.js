@@ -72,13 +72,14 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
     body.style.margin = '0';
     body.style.padding = '0';
     body.style.boxSizing = 'border-box';
+    body.style.overflow = 'hidden'; // Evita desbordes
 
     if (container) {
       container.style.width = '100%';
       container.style.maxWidth = '100%';
       container.style.boxSizing = 'border-box';
-      // Eliminar cualquier padding que pueda desbordar
       container.style.padding = '0';
+      container.style.overflow = 'hidden';
     }
 
     // Ajustar altura del iframe al contenido
@@ -100,7 +101,6 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
     const imgHeight = canvas.height;
 
     // 4. Crear PDF con el ancho EXACTO de la imagen en puntos (1px = 1pt)
-    // Esto asegura que el visor muestre el PDF a tamaño real (escalado 100% al ancho)
     const widthPt = imgWidth;    // 2160 puntos
     const heightPt = imgHeight;  // altura variable en puntos
 
