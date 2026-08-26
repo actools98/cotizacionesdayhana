@@ -1,78 +1,62 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cotización actols</title>
   <style>
-    /* Reset básico */
+    /* Reset y base */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
       background: #ffffff;
-      color: #20183e;
+      color: #111827;
       padding: 20px;
-      line-height: 1.6;
+      line-height: 1.5;
     }
-
     .pdf-container {
       max-width: 100%;
-      background: white;
+      font-size: 12pt;
     }
 
     /* Encabezado */
     .header {
       text-align: center;
       margin-bottom: 24px;
-      padding-bottom: 12px;
-      border-bottom: 2px solid #ddb2ca;
     }
-
     .header h1 {
       font-size: 28pt;
       font-weight: 700;
-      color: #ddb2ca;
+      color: #1e3a8a; /* azul oscuro */
       letter-spacing: -0.02em;
-      margin: 0;
-      padding: 0;
+      margin-bottom: 4px;
     }
-
     .header .badge {
       font-size: 10pt;
       font-weight: 600;
-      color: #ddb2ca;
-      background: rgba(221, 178, 202, 0.15);
+      color: #1e3a8a;
+      background: #dbeafe;
       padding: 2px 14px;
       border-radius: 20px;
       display: inline-block;
-      margin-top: 4px;
+    }
+    .divider {
+      border-top: 2px solid #1e3a8a;
+      margin: 16px 0;
     }
 
     /* Datos del cliente */
     .client-info {
-      margin: 16px 0;
-      padding: 8px 0;
+      margin-bottom: 16px;
     }
-
     .client-info p {
       margin: 4px 0;
-      font-size: 12pt;
     }
-
     .client-info strong {
       font-weight: 600;
-      color: #20183e;
-    }
-
-    /* Divider */
-    .divider {
-      border-top: 1px solid #e0d6e8;
-      margin: 8px 0 16px 0;
+      color: #1e3a8a;
     }
 
     /* Lista de servicios */
@@ -80,36 +64,42 @@
       margin: 16px 0;
     }
 
+    /* Cada servicio: fondo azul claro, borde redondeado */
     .service-item {
+      background-color: #eff6ff;    /* azul muy claro */
+      border-left: 6px solid #1e3a8a;
+      border-radius: 4px;
+      padding: 10px 14px;
+      margin-bottom: 12px;
       display: flex;
       flex-wrap: wrap;
-      justify-content: space-between;
       align-items: baseline;
-      padding: 8px 0;
-      border-bottom: 1px solid #f0eaf5;
+      justify-content: space-between;
     }
 
     .service-name {
-      font-weight: 600;
+      font-weight: 700;
+      color: #1e3a8a;        /* azul oscuro */
       flex: 1 1 60%;
       font-size: 12pt;
+      word-wrap: break-word;
+      white-space: normal;
     }
-
     .service-price {
-      font-weight: 600;
-      color: #20183e;
+      font-weight: 700;
+      color: #1e3a8a;
       white-space: nowrap;
       font-size: 12pt;
     }
-
     .service-detail {
-      font-size: 9pt;
-      font-style: italic;
-      color: #555;
+      font-size: 10pt;
+      color: #374151;
       width: 100%;
-      margin-top: 2px;
-      padding-left: 8px;
-      border-left: 2px solid #ddb2ca;
+      margin-top: 6px;
+      padding-left: 12px;
+      border-left: 3px solid #93c5fd;
+      word-wrap: break-word;
+      white-space: normal;
     }
 
     /* Total */
@@ -118,66 +108,60 @@
       font-size: 18pt;
       font-weight: 700;
       margin-top: 20px;
+      color: #1e3a8a;
+      border-top: 2px solid #1e3a8a;
       padding-top: 12px;
-      border-top: 2px solid #ddb2ca;
-      color: #20183e;
     }
 
     /* Pie de página */
     .footer {
       margin-top: 40px;
       font-size: 9pt;
-      color: #999;
-      border-top: 1px solid #e0d6e8;
+      color: #6b7280;
+      border-top: 1px solid #d1d5db;
       padding-top: 12px;
       text-align: center;
     }
-
     .footer p {
       margin: 2px 0;
     }
 
-    /* Ajustes para impresión */
     @media print {
-      body {
-        padding: 0;
-      }
-      .pdf-container {
-        margin: 0;
-      }
+      body { padding: 0; }
+      .pdf-container { margin: 0; }
     }
   </style>
 </head>
 <body>
-  <div class="pdf-container">
-    <!-- Encabezado -->
-    <div class="header">
-      <h1>actols</h1>
-      <span class="badge">Cotización</span>
-    </div>
-
-    <!-- Datos del cliente -->
-    <div class="client-info">
-      <p><strong>Cliente:</strong> {{clientName}}</p>
-      <p><strong>Producto o servicio:</strong> {{productName}}</p>
-      <p><strong>Fecha:</strong> {{date}}</p>
-    </div>
-
-    <div class="divider"></div>
-
-    <!-- Lista de servicios (se reemplaza con JS) -->
-    <div class="services">
-      {{services}}
-    </div>
-
-    <!-- Total -->
-    <div class="total">Total: {{total}}</div>
-
-    <!-- Pie de página -->
-    <div class="footer">
-      <p>Esta cotización es válida por 30 días.</p>
-      <p>powered by actols</p>
-    </div>
+<div class="pdf-container">
+  <!-- Encabezado -->
+  <div class="header">
+    <h1>actols</h1>
+    <span class="badge">Cotización</span>
   </div>
+  <div class="divider"></div>
+
+  <!-- Cliente -->
+  <div class="client-info">
+    <p><strong>Cliente:</strong> {{clientName}}</p>
+    <p><strong>Producto o servicio:</strong> {{productName}}</p>
+    <p><strong>Fecha:</strong> {{date}}</p>
+  </div>
+  <div class="divider"></div>
+
+  <!-- Servicios -->
+  <div class="services">
+    {{services}}
+  </div>
+
+  <!-- Total -->
+  <div class="total">Total: {{total}}</div>
+
+  <!-- Pie -->
+  <div class="footer">
+    <p>Esta cotización es válida por 30 días.</p>
+    <p>powered by actols</p>
+  </div>
+</div>
 </body>
 </html>
