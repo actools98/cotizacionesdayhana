@@ -1477,3 +1477,50 @@ dialog::backdrop {
     grid-template-columns: 1fr !important;
   }
 }
+/* ============================================================
+   Ajustes para el diálogo de edición de módulo
+   ============================================================ */
+
+#edit-module-dialog {
+  max-width: 900px;  /* más ancho */
+  width: 95%;
+  padding: var(--space-lg) var(--space-xl); /* más espacio interno */
+}
+
+#edit-module-dialog .form-group {
+  margin-bottom: var(--space-sm);
+}
+
+#edit-module-dialog .form-textarea {
+  min-height: 90px;  /* más altura para los detalles */
+  resize: vertical;
+}
+
+#edit-module-dialog .form-select {
+  height: auto;      /* permite que el texto se muestre completo */
+  min-height: 44px;
+  line-height: 1.5;  /* mejor legibilidad */
+  padding: var(--space-sm);
+}
+
+/* Ajuste para el label y el campo en general */
+#edit-module-dialog .form-group label {
+  display: block;
+  font-size: var(--text-small);
+  font-weight: 500;
+  margin-bottom: var(--space-xs);
+  color: var(--color-text-secondary);
+}
+
+/* Responsive: en móviles, los grids se apilan */
+@media (max-width: 768px) {
+  #edit-module-dialog {
+    padding: var(--space-md);
+  }
+  #edit-module-dialog > form > div > div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+  #edit-module-dialog .form-textarea {
+    min-height: 60px;
+  }
+}
