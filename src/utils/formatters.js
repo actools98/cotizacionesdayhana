@@ -1,6 +1,11 @@
 // formatters.js - Formateo de números y monedas
 
 export function formatCurrency(value, currency = 'CHF') {
+  // Si el valor es 0, mostramos "Gratuito"
+  if (value === 0) {
+    return 'Gratuito';
+  }
+
   const symbols = {
     CHF: 'CHF',
     USD: '$',
@@ -10,10 +15,8 @@ export function formatCurrency(value, currency = 'CHF') {
 
   let formatted;
   if (currency === 'CHF' || currency === 'USD') {
-    // Para CHF y USD usamos formato internacional con coma decimal y separador de miles
     formatted = value.toFixed(2).toLocaleString('en-US');
   } else {
-    // EUR igual
     formatted = value.toFixed(2).toLocaleString('en-US');
   }
   return `${symbol} ${formatted}`;
