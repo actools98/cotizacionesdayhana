@@ -3,6 +3,7 @@
 //  + Multi-idioma (ES, FR, EN) y moneda base CHF
 //  + Portafolios con menú contextual
 //  + Manejo de errores detallado
+//  + Precio 0 (gratuito) permitido
 // ============================================================
 
 import { getModules, addModule, deleteModule, editModule, reorderModules, getCategories, addCategory, editCategory, deleteCategory, reorderCategories, getPortfolios, addPortfolio, editPortfolio, deletePortfolio } from './state.js';
@@ -359,8 +360,9 @@ async function onAddModule(e) {
   const price = parseFloat(modulePriceInput.value);
   const categoryId = moduleCategorySelect.value || currentCategories[0]?.id || null;
 
-  if (!desc_es || !desc_fr || !desc_en || isNaN(price) || price <= 0) {
-    alert('Complete los campos obligatorios (nombre en los 3 idiomas y precio en CHF).');
+  // Validación: permitir precio 0 (gratuito)
+  if (!desc_es || !desc_fr || !desc_en || isNaN(price) || price < 0) {
+    alert('Complete los campos obligatorios (nombre en los 3 idiomas y precio en CHF, puede ser 0 para gratuito).');
     return;
   }
 
@@ -425,8 +427,9 @@ async function saveEditModule() {
   const price = parseFloat(editModulePrice.value);
   const categoryId = editModuleCategory.value || currentCategories[0]?.id || null;
 
-  if (!name_es || !name_fr || !name_en || isNaN(price) || price <= 0) {
-    alert('Complete los campos obligatorios.');
+  // Validación: permitir precio 0
+  if (!name_es || !name_fr || !name_en || isNaN(price) || price < 0) {
+    alert('Complete los campos obligatorios (precio puede ser 0 para gratuito).');
     return;
   }
 
