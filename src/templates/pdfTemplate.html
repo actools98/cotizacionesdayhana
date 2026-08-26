@@ -3,25 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <style>
+    /* --- ESTILOS SEGÚN NORMAS APA 7ma EDICIÓN --- */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
+
     body {
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-      background: #ffffff;
-      color: #111827;
-      padding: 40px 30px; /* más margen superior y laterales */
-      line-height: 1.5;
-    }
-    .pdf-container {
-      max-width: 100%;
+      /* Fuente estándar APA: Times New Roman, 12pt */
+      font-family: 'Times New Roman', Times, serif;
       font-size: 12pt;
       background: #ffffff;
+      color: #000000;
+
+      /* Márgenes APA: 2.54 cm en todos los lados */
+      padding: 2.54cm;
+      line-height: 2.0; /* Interlineado doble */
     }
 
-    /* Encabezado */
+    .pdf-container {
+      max-width: 100%;
+    }
+
+    /* --- ENCABEZADO --- */
     .header {
       text-align: center;
       margin-bottom: 24px;
@@ -29,14 +34,12 @@
     .header h1 {
       font-size: 28pt;
       font-weight: 700;
-      color: #1e3a8a;
       letter-spacing: -0.02em;
       margin-bottom: 4px;
     }
     .header .badge {
       font-size: 10pt;
       font-weight: 600;
-      color: #1e3a8a;
       background: #dbeafe;
       padding: 2px 14px;
       border-radius: 20px;
@@ -47,7 +50,7 @@
       margin: 16px 0;
     }
 
-    /* Datos del cliente */
+    /* --- DATOS DEL CLIENTE --- */
     .client-info {
       margin-bottom: 16px;
     }
@@ -55,11 +58,10 @@
       margin: 4px 0;
     }
     .client-info strong {
-      font-weight: 600;
-      color: #1e3a8a;
+      font-weight: 700;
     }
 
-    /* ======== TABLA ======== */
+    /* --- TABLA DE SERVICIOS --- */
     .services-table {
       width: 100%;
       border-collapse: collapse;
@@ -67,10 +69,11 @@
       font-size: 12pt;
     }
 
+    /* Cabecera de la tabla */
     .services-table th {
       background-color: #1e3a8a;
       color: #ffffff;
-      font-weight: 600;
+      font-weight: 700;
       padding: 8px 12px;
       text-align: left;
       border: 1px solid #1e3a8a;
@@ -79,6 +82,7 @@
       text-align: right;
     }
 
+    /* Filas de servicio */
     .service-row td {
       background-color: #ffffff;
       padding: 8px 12px;
@@ -88,15 +92,15 @@
 
     .service-name {
       font-weight: 700;
-      color: #1e3a8a;
       display: block;
       margin-bottom: 4px;
     }
 
+    /* --- DETALLE DEL SERVICIO (con sangría APA) --- */
     .service-detail {
-      font-size: 10pt;
-      color: #374151;
-      white-space: pre-wrap;
+      font-size: 12pt;
+      color: #000000;
+      white-space: pre-wrap;   /* Respeta saltos de línea */
       word-wrap: break-word;
       background-color: #f9fafb;
       padding: 6px 10px;
@@ -104,22 +108,24 @@
       border-left: 3px solid #93c5fd;
       margin-top: 4px;
       display: block;
+
+      /* Sangría APA: 1.27 cm (0.5 pulgadas) en la primera línea */
+      text-indent: 1.27cm;
     }
 
     .service-price {
       font-weight: 700;
-      color: #1e3a8a;
       text-align: right;
       white-space: nowrap;
       display: block;
     }
 
+    /* --- TOTAL --- */
     .total-row td {
       background-color: #ffffff;
       padding: 10px 12px;
       border: 1px solid #d1d5db;
       font-weight: 700;
-      color: #1e3a8a;
       font-size: 14pt;
     }
     .total-row .total-label {
@@ -130,10 +136,10 @@
       white-space: nowrap;
     }
 
-    /* Pie de página */
+    /* --- PIE DE PÁGINA --- */
     .footer {
       margin-top: 40px;
-      font-size: 9pt;
+      font-size: 10pt;
       color: #6b7280;
       border-top: 1px solid #d1d5db;
       padding-top: 12px;
@@ -158,7 +164,7 @@
   </div>
   <div class="divider"></div>
 
-  <!-- Cliente -->
+  <!-- Datos del cliente -->
   <div class="client-info">
     <p><strong>Cliente:</strong> {{clientName}}</p>
     <p><strong>Producto o servicio:</strong> {{productName}}</p>
