@@ -44,7 +44,6 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
   iframe.style.top = '-9999px';
   iframe.style.left = '-9999px';
   iframe.style.width = '1080px';
-  iframe.style.height = 'auto';
   iframe.style.border = 'none';
   iframe.style.background = '#ffffff';
   document.body.appendChild(iframe);
@@ -66,23 +65,22 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
     const body = iframe.contentDocument.body;
     const container = iframe.contentDocument.querySelector('.pdf-container');
 
-    // Asegurar que el body tenga el ancho exacto y márgenes internos
+    // Asegurar que el body y el contenedor tengan el ancho exacto
     body.style.width = '1080px';
     body.style.margin = '0';
     body.style.padding = '0';
     body.style.boxSizing = 'border-box';
 
-    // El container ya tiene padding de 48px, asegurar que ocupe todo el ancho
     if (container) {
       container.style.width = '100%';
       container.style.maxWidth = '100%';
       container.style.boxSizing = 'border-box';
     }
 
-    // Ajustar altura del iframe al contenido
+    // Ajustar la altura del iframe al contenido
     iframe.style.height = body.scrollHeight + 'px';
 
-    // 3. Capturar el contenedor completo (no solo el body, para evitar problemas de padding)
+    // 3. Capturar el contenedor completo
     const targetElement = container || body;
     const canvas = await html2canvas(targetElement, {
       scale: 2,
@@ -94,30 +92,34 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
       height: targetElement.scrollHeight,
     });
 
-    const imgWidth = canvas.width;
-    const imgHeight = canvas.height;
+    const imgWidth = canvas.width;    // = 2160 px (1080 * 2)
+    const imgHeight = canvas.height;  // altura en px
 
-    // 4. Crear PDF con ancho fijo en puntos (1px = 1pt = 0.352778 mm)
-    // 1080px = 1080pt = 381mm (aproximadamente)
-    // Usamos el ancho de la imagen capturada (que debería ser 1080px * 2 por el scale)
-    const pdfWidthPt = imgWidth; // = 2160px (por el scale 2)
-    const pdfWidthMm = pdfWidthPt * 0.352778; // Convertir puntos a mm
-    const pdfHeightMm = imgHeight * 0.352778;
+    // 4. Definir el ancho del PDF en mm (por ejemplo, 210 mm = A4)
+    // Pero como no quieres que se recorte, usa un ancho fijo en mm que corresponda a la pantalla del móvil.
+    // En lugar de eso, vamos a escalar la imagen al ancho de la página A4 pero manteniendo la proporción.
+    const pdfWidthMm = 210; // ancho A4 en mm
+    const scale = pdfWidthMm / (imgWidth / 72 * 25.4); // Convertir píxeles a mm (1px = 1/72 pulgadas, 1 pulgada = 25.4 mm)
+    // O más simple: la relación entre el ancho en píxeles y el ancho deseado en mm
+    const finalScale = pdfWidthMm / (imgWidth * 0.352778); // 1px = 0.352778 mm (a 72 DPI)
+    const pdfHeightMm = imgHeight * 0.352778 * finalScale; // = imgHeight * pdfWidthMm / imgWidth
+
+    // O aún más simple: escalar la imagen al ancho de 210 mm directamente
+    const pdfHeightMmDirect = imgHeight * (pdfWidthMm / (imgWidth * 0.352778));
 
     const pdf = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
-      format: [pdfWidthMm, pdfHeightMm]
+      format: [pdfWidthMm, pdfHeightMmDirect]
     });
 
-    // Agregar la imagen sin escalar (1:1 en mm)
     pdf.addImage(
       canvas.toDataURL('image/jpeg', 0.95),
       'JPEG',
       0,
       0,
       pdfWidthMm,
-      pdfHeightMm
+      pdfHeightMmDirect
     );
 
     pdf.save(`Cotizacion_${clientName.replace(/\s+/g, '_')}.pdf`);
