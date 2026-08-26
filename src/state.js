@@ -10,17 +10,25 @@ export async function getModules() {
 }
 
 export async function addModule(description_es, description_fr, description_en, price, category_id = null, detail_es = null, detail_fr = null, detail_en = null) {
-  const res = await fetch(`${API_URL}/modules`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ 
-      description_es, description_fr, description_en,
-      detail_es, detail_fr, detail_en,
-      price: Number(price), category_id 
-    })
-  });
-  if (!res.ok) throw new Error('Error al agregar módulo');
-  return res.json();
+  try {
+    const res = await fetch(`${API_URL}/modules`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        description_es, description_fr, description_en,
+        detail_es, detail_fr, detail_en,
+        price: Number(price), category_id 
+      })
+    });
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.error || 'Error al agregar módulo');
+    }
+    return res.json();
+  } catch (error) {
+    console.error('Error en addModule:', error);
+    throw error;
+  }
 }
 
 export async function deleteModule(id) {
@@ -30,17 +38,25 @@ export async function deleteModule(id) {
 }
 
 export async function editModule(id, description_es, description_fr, description_en, price, category_id = null, detail_es = null, detail_fr = null, detail_en = null) {
-  const res = await fetch(`${API_URL}/modules/${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ 
-      description_es, description_fr, description_en,
-      detail_es, detail_fr, detail_en,
-      price: Number(price), category_id 
-    })
-  });
-  if (!res.ok) throw new Error('Error al editar módulo');
-  return res.json();
+  try {
+    const res = await fetch(`${API_URL}/modules/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        description_es, description_fr, description_en,
+        detail_es, detail_fr, detail_en,
+        price: Number(price), category_id 
+      })
+    });
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.error || 'Error al editar módulo');
+    }
+    return res.json();
+  } catch (error) {
+    console.error('Error en editModule:', error);
+    throw error;
+  }
 }
 
 export async function reorderModules(items) {
