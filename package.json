@@ -11,8 +11,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.2",
-    "jspdf": "^2.5.1",
-    "jspdf-autotable": "^3.5.31",
+    "html2pdf.js": "^0.10.1",
     "sortablejs": "^1.15.2",
     "sqlite": "^5.0.1",
     "sqlite3": "^5.1.6"
