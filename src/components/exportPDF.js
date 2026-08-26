@@ -5,6 +5,7 @@ import { formatCurrency } from '../utils/formatters.js';
 import { convertCurrency } from './currencyConverter.js';
 
 export async function generateQuotePDF(clientName, productName, selectedModules, currency, totalCHF, lang = 'es') {
+  // 1. Rellenar plantilla
   let html = templateHtml
     .replace(/\{\{clientName\}\}/g, clientName)
     .replace(/\{\{productName\}\}/g, productName)
@@ -37,11 +38,12 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
   const totalFormatted = formatCurrency(totalConverted, currency);
   html = html.replace('{{total}}', totalFormatted);
 
+  // 2. Crear iframe oculto con ancho fijo grande (1080px)
   const iframe = document.createElement('iframe');
   iframe.style.position = 'fixed';
   iframe.style.top = '-9999px';
   iframe.style.left = '-9999px';
-  iframe.style.width = '794px';
+  iframe.style.width = '1080px';   // Ancho fijo grande para evitar desbordes
   iframe.style.border = 'none';
   iframe.style.background = '#ffffff';
   document.body.appendChild(iframe);
@@ -61,6 +63,11 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
 
   try {
     const body = iframe.contentDocument.body;
+    // Forzar un ancho mínimo igual al del iframe para que la captura siempre tenga ese ancho
+    body.style.minWidth = '1080px';
+    body.style.margin = '0 auto'; // centrar si es necesario
+
+    // Ajustar la altura del iframe al contenido
     iframe.style.height = body.scrollHeight + 'px';
 
     const canvas = await html2canvas(body, {
@@ -69,14 +76,16 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
       backgroundColor: '#ffffff',
       logging: false,
       allowTaint: false,
-      width: body.scrollWidth,
+      width: body.scrollWidth,    // ahora será 1080px o más
       height: body.scrollHeight,
     });
 
     const imgWidth = canvas.width;
     const imgHeight = canvas.height;
 
+    // Ancho del PDF en mm (A4)
     const pdfWidth = 210;
+    // Escala para ajustar el ancho de la imagen al ancho del PDF
     const scale = pdfWidth / imgWidth;
     const pdfHeight = imgHeight * scale;
 
