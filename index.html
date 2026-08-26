@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>actols · Cotizador</title>
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
@@ -12,7 +11,7 @@
 </head>
 <body>
 
-  <!-- MODAL DE LOGIN -->
+  <!-- LOGIN (sin cambios) -->
   <div id="login-overlay" style="position:fixed; inset:0; background:rgba(15,23,42,0.85); backdrop-filter:blur(4px); z-index:9999; display:flex; align-items:center; justify-content:center; flex-direction:column;">
     <div style="background:var(--color-bg-surface); padding:var(--space-lg); border-radius:var(--radius-md); max-width:400px; width:90%; box-shadow:var(--shadow-floating); text-align:center;">
       <h2 style="margin-bottom:var(--space-sm); color:var(--color-text-primary);">Acceso restringido</h2>
@@ -35,10 +34,20 @@
           <button class="btn-toggle" id="toggle-mode-btn">Editar</button>
         </div>
         <div class="header-right">
+          <!-- Selector de idioma -->
+          <div class="language-selector">
+            <label for="language-select" class="visually-hidden">Idioma</label>
+            <select id="language-select">
+              <option value="es">Español</option>
+              <option value="fr">Français</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+          <!-- Selector de moneda -->
           <div class="currency-selector">
             <label for="currency-select" class="visually-hidden">Moneda</label>
             <select id="currency-select">
-              <option value="COP">COP ($)</option>
+              <option value="CHF">CHF</option>
               <option value="USD">USD ($)</option>
               <option value="EUR">EUR (€)</option>
             </select>
@@ -56,7 +65,7 @@
         <aside class="sidebar" id="summary-panel">
           <div class="summary-card" id="total-card">
             <h2 class="summary-title">Total Estimado</h2>
-            <div class="total-amount" id="total-display">$ 0</div>
+            <div class="total-amount" id="total-display">CHF 0.00</div>
             <button class="btn btn-primary btn-block" id="quote-action-btn">Hacer Cotización</button>
           </div>
 
@@ -67,16 +76,24 @@
         </aside>
       </div>
 
-      <!-- Formulario para agregar módulo (con detalle) -->
+      <!-- Formulario para agregar módulo con multi-idioma -->
       <div id="add-module-container" style="display: none; margin-top: var(--space-md);">
         <form id="add-module-form">
-          <input type="text" id="module-desc" placeholder="Nombre del servicio" required />
-          <input type="number" id="module-price" placeholder="Precio (COP)" required />
-          <select id="module-category-select">
-            <!-- Se llenará con JS -->
-          </select>
-          <textarea id="module-detail" rows="3" placeholder="Detalle del servicio (opcional)"></textarea>
-          <button type="submit" class="btn">Agregar</button>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+            <input type="text" id="module-desc-es" placeholder="Servicio en español" required />
+            <input type="text" id="module-desc-fr" placeholder="Service en français" required />
+            <input type="text" id="module-desc-en" placeholder="Service in English" required />
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+            <textarea id="module-detail-es" rows="2" placeholder="Detalle en español"></textarea>
+            <textarea id="module-detail-fr" rows="2" placeholder="Détail en français"></textarea>
+            <textarea id="module-detail-en" rows="2" placeholder="Detail in English"></textarea>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <input type="number" id="module-price" placeholder="Precio (CHF)" required style="flex: 1;" />
+            <select id="module-category-select" style="flex: 1;"></select>
+            <button type="submit" class="btn">Agregar</button>
+          </div>
         </form>
       </div>
 
@@ -86,7 +103,7 @@
     </div>
   </div>
 
-  <!-- Diálogos -->
+  <!-- Diálogos (sin cambios estructurales, solo se ajustan los IDs) -->
   <!-- Cotización -->
   <dialog id="client-dialog">
     <form method="dialog">
@@ -106,25 +123,47 @@
     </form>
   </dialog>
 
-  <!-- Diálogo para editar módulo (con detalle) -->
+  <!-- Diálogo para editar módulo (multi-idioma) -->
   <dialog id="edit-module-dialog">
     <form method="dialog">
       <h3>Editar módulo</h3>
-      <div class="form-group">
-        <label for="edit-module-name">Nombre</label>
-        <input type="text" id="edit-module-name" required />
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+        <div class="form-group">
+          <label for="edit-module-name-es">Nombre (es)</label>
+          <input type="text" id="edit-module-name-es" required />
+        </div>
+        <div class="form-group">
+          <label for="edit-module-name-fr">Nombre (fr)</label>
+          <input type="text" id="edit-module-name-fr" required />
+        </div>
+        <div class="form-group">
+          <label for="edit-module-name-en">Nombre (en)</label>
+          <input type="text" id="edit-module-name-en" required />
+        </div>
       </div>
-      <div class="form-group">
-        <label for="edit-module-price">Precio (COP)</label>
-        <input type="number" id="edit-module-price" required />
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+        <div class="form-group">
+          <label for="edit-module-detail-es">Detalle (es)</label>
+          <textarea id="edit-module-detail-es" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="edit-module-detail-fr">Detalle (fr)</label>
+          <textarea id="edit-module-detail-fr" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="edit-module-detail-en">Detalle (en)</label>
+          <textarea id="edit-module-detail-en" rows="3"></textarea>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="edit-module-category">Categoría</label>
-        <select id="edit-module-category"></select>
-      </div>
-      <div class="form-group">
-        <label for="edit-module-detail">Detalle</label>
-        <textarea id="edit-module-detail" rows="4"></textarea>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
+        <div class="form-group" style="flex: 1;">
+          <label for="edit-module-price">Precio (CHF)</label>
+          <input type="number" id="edit-module-price" required />
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label for="edit-module-category">Categoría</label>
+          <select id="edit-module-category"></select>
+        </div>
       </div>
       <div class="dialog-actions">
         <button type="button" class="btn btn-secondary" id="edit-module-cancel">Cancelar</button>
@@ -133,31 +172,28 @@
     </form>
   </dialog>
 
-  <!-- Portafolios -->
+  <!-- Portafolios y Tasas (sin cambios) -->
   <dialog id="portfolios-dialog">
     <div class="dialog-header">
       <h2>Portafolios</h2>
       <button class="dialog-close" id="portfolios-dialog-close">&times;</button>
     </div>
-    <div id="portfolios-list-modal">
-      <!-- Renderizado dinámico -->
-    </div>
+    <div id="portfolios-list-modal"></div>
   </dialog>
 
-  <!-- Tasas -->
   <dialog id="rates-dialog">
     <div class="dialog-header">
       <h2>Ajustar tasas de cambio</h2>
       <button class="dialog-close" id="rates-dialog-close">&times;</button>
     </div>
-    <p>Si la tasa automática no es correcta, puedes ingresar valores manualmente.</p>
+    <p>Introduce las tasas directas: 1 CHF = ? USD / ? EUR</p>
     <div class="form-group">
-      <label for="rate-usd">1000 COP = ? USD</label>
-      <input type="number" id="rate-usd" step="0.000001" min="0" placeholder="Ej: 0.25" />
+      <label for="rate-usd">1 CHF = ? USD</label>
+      <input type="number" id="rate-usd" step="0.000001" min="0" placeholder="Ej: 1.10" />
     </div>
     <div class="form-group">
-      <label for="rate-eur">1000 COP = ? EUR</label>
-      <input type="number" id="rate-eur" step="0.000001" min="0" placeholder="Ej: 0.23" />
+      <label for="rate-eur">1 CHF = ? EUR</label>
+      <input type="number" id="rate-eur" step="0.000001" min="0" placeholder="Ej: 0.95" />
     </div>
     <div class="dialog-actions">
       <button class="btn btn-secondary" id="rates-dialog-cancel">Cancelar</button>
