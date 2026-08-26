@@ -1,126 +1,192 @@
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
-import templateHtml from '../templates/pdfTemplate.html?raw';
-import { formatCurrency } from '../utils/formatters.js';
-import { convertCurrency } from './currencyConverter.js';
-
-export async function generateQuotePDF(clientName, productName, selectedModules, currency, totalCOP) {
-  // 1. Rellenar plantilla
-  let html = templateHtml
-    .replace(/\{\{clientName\}\}/g, clientName)
-    .replace(/\{\{productName\}\}/g, productName)
-    .replace(/\{\{date\}\}/g, new Date().toLocaleDateString('es-CO'));
-
-  const servicesHtml = selectedModules.map(mod => {
-    const price = convertCurrency(mod.price, currency);
-    const priceFormatted = formatCurrency(price, currency);
-    let detailHtml = '';
-    if (mod.detail) {
-      detailHtml = `<div class="service-detail">${mod.detail}</div>`;
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-    return `<div class="service-item">
-              <span class="service-name">${mod.description}</span>
-              <span class="service-price">${priceFormatted}</span>
-              ${detailHtml}
-            </div>`;
-  }).join('');
-
-  html = html.replace('{{services}}', servicesHtml);
-
-  const totalConverted = convertCurrency(totalCOP, currency);
-  const totalFormatted = formatCurrency(totalConverted, currency);
-  html = html.replace('{{total}}', totalFormatted);
-
-  // 2. Crear iframe oculto
-  const iframe = document.createElement('iframe');
-  iframe.style.position = 'fixed';
-  iframe.style.top = '-9999px';
-  iframe.style.left = '-9999px';
-  iframe.style.width = '794px';
-  iframe.style.height = '1123px'; // altura inicial, pero se ajustará al contenido
-  iframe.style.border = 'none';
-  document.body.appendChild(iframe);
-
-  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-  iframeDoc.open();
-  iframeDoc.write(html);
-  iframeDoc.close();
-
-  await new Promise(resolve => {
-    iframe.onload = resolve;
-    if (iframe.contentWindow && iframe.contentWindow.document.readyState === 'complete') {
-      resolve();
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      background: #ffffff;
+      color: #111827;
+      padding: 20px;
+      line-height: 1.5;
     }
-  });
-  await new Promise(resolve => setTimeout(resolve, 300));
-
-  try {
-    // 3. Capturar todo el contenido del iframe
-    const body = iframe.contentDocument.body;
-    const canvas = await html2canvas(body, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: '#ffffff',
-      logging: false,
-      allowTaint: false,
-      width: 794,
-      height: body.scrollHeight,
-    });
-
-    // 4. Preparar PDF
-    const imgData = canvas.toDataURL('image/jpeg', 0.95);
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const pdfWidth = pdf.internal.pageSize.getWidth();  // 210 mm
-    const pdfHeight = pdf.internal.pageSize.getHeight(); // 297 mm
-
-    const imgWidth = canvas.width;
-    const imgHeight = canvas.height;
-
-    // Escala para que el ancho de la imagen se ajuste al ancho de la página
-    const scale = pdfWidth / imgWidth;
-    const scaledHeight = imgHeight * scale;
-
-    // Si el contenido cabe en una página
-    if (scaledHeight <= pdfHeight) {
-      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, scaledHeight);
-    } else {
-      // Dividir en varias páginas
-      const pageHeightPx = pdfHeight / scale; // altura en píxeles de la imagen por página
-      let remainingHeight = imgHeight;
-      let yOffset = 0;
-
-      while (remainingHeight > 0) {
-        // Recortar la porción correspondiente
-        const srcY = yOffset;
-        const srcHeight = Math.min(pageHeightPx, remainingHeight);
-
-        // Crear canvas temporal para la porción
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = imgWidth;
-        tempCanvas.height = srcHeight;
-        const ctx = tempCanvas.getContext('2d');
-        ctx.drawImage(canvas, 0, srcY, imgWidth, srcHeight, 0, 0, imgWidth, srcHeight);
-
-        const portionData = tempCanvas.toDataURL('image/jpeg', 0.95);
-        const portionHeightMm = srcHeight * scale;
-
-        if (pdf.internal.getNumberOfPages() > 1) {
-          pdf.addPage();
-        }
-        pdf.addImage(portionData, 'JPEG', 0, 0, pdfWidth, portionHeightMm);
-
-        remainingHeight -= srcHeight;
-        yOffset += srcHeight;
-      }
+    .pdf-container {
+      max-width: 100%;
+      font-size: 12pt;
     }
 
-    // 5. Guardar PDF
-    pdf.save(`Cotizacion_${clientName.replace(/\s+/g, '_')}.pdf`);
+    /* Encabezado */
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .header h1 {
+      font-size: 28pt;
+      font-weight: 700;
+      color: #1e3a8a;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+    .header .badge {
+      font-size: 10pt;
+      font-weight: 600;
+      color: #1e3a8a;
+      background: #dbeafe;
+      padding: 2px 14px;
+      border-radius: 20px;
+      display: inline-block;
+    }
+    .divider {
+      border-top: 2px solid #1e3a8a;
+      margin: 16px 0;
+    }
 
-  } catch (error) {
-    console.error('Error al generar PDF:', error);
-    throw error;
-  } finally {
-    document.body.removeChild(iframe);
-  }
-}
+    /* Datos del cliente */
+    .client-info {
+      margin-bottom: 16px;
+    }
+    .client-info p {
+      margin: 4px 0;
+    }
+    .client-info strong {
+      font-weight: 600;
+      color: #1e3a8a;
+    }
+
+    /* ======== TABLA ======== */
+    .services-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 12pt;
+    }
+
+    .services-table th {
+      background-color: #1e3a8a;
+      color: #ffffff;
+      font-weight: 600;
+      padding: 8px 12px;
+      text-align: left;
+      border: 1px solid #1e3a8a;
+    }
+
+    .services-table th:last-child {
+      text-align: right;
+    }
+
+    /* Fila del servicio (nombre + precio) con fondo azul */
+    .service-row td {
+      background-color: #dbeafe; /* azul claro */
+      padding: 8px 12px;
+      border: 1px solid #93c5fd;
+    }
+
+    .service-row .service-name {
+      font-weight: 700;
+      color: #1e3a8a;
+      word-wrap: break-word;
+      white-space: normal;
+    }
+    .service-row .service-price {
+      font-weight: 700;
+      color: #1e3a8a;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    /* Fila del detalle (ocupa ambas columnas) */
+    .detail-row td {
+      background-color: #f9fafb; /* gris muy claro */
+      padding: 8px 12px;
+      border-left: 1px solid #e5e7eb;
+      border-right: 1px solid #e5e7eb;
+      border-bottom: 1px solid #e5e7eb;
+      color: #374151;
+      font-size: 10pt;
+      white-space: pre-wrap;    /* respeta saltos de línea */
+      word-wrap: break-word;
+    }
+
+    /* Fila del total */
+    .total-row td {
+      background-color: #dbeafe;
+      padding: 10px 12px;
+      border: 1px solid #93c5fd;
+      font-weight: 700;
+      color: #1e3a8a;
+      font-size: 14pt;
+    }
+    .total-row .total-label {
+      text-align: left;
+    }
+    .total-row .total-value {
+      text-align: right;
+    }
+
+    /* Pie de página */
+    .footer {
+      margin-top: 40px;
+      font-size: 9pt;
+      color: #6b7280;
+      border-top: 1px solid #d1d5db;
+      padding-top: 12px;
+      text-align: center;
+    }
+    .footer p {
+      margin: 2px 0;
+    }
+
+    @media print {
+      body { padding: 0; }
+      .pdf-container { margin: 0; }
+    }
+  </style>
+</head>
+<body>
+<div class="pdf-container">
+  <!-- Encabezado -->
+  <div class="header">
+    <h1>actols</h1>
+    <span class="badge">Cotización</span>
+  </div>
+  <div class="divider"></div>
+
+  <!-- Datos del cliente -->
+  <div class="client-info">
+    <p><strong>Cliente:</strong> {{clientName}}</p>
+    <p><strong>Producto o servicio:</strong> {{productName}}</p>
+    <p><strong>Fecha:</strong> {{date}}</p>
+  </div>
+  <div class="divider"></div>
+
+  <!-- Tabla de servicios -->
+  <table class="services-table">
+    <thead>
+      <tr>
+        <th>Servicio</th>
+        <th>Precio</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{servicesRows}}
+      <!-- Fila del total -->
+      <tr class="total-row">
+        <td class="total-label">Total</td>
+        <td class="total-value">{{total}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Pie de página -->
+  <div class="footer">
+    <p>Esta cotización es válida por 30 días.</p>
+    <p>powered by actols</p>
+  </div>
+</div>
+</body>
+</html>
