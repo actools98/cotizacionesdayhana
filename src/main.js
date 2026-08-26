@@ -2,6 +2,7 @@
 //  main.js - Con autenticación por contraseña (1998)
 //  + Multi-idioma (ES, FR, EN) y moneda base CHF
 //  + Portafolios con menú contextual
+//  + Manejo de errores detallado
 // ============================================================
 
 import { getModules, addModule, deleteModule, editModule, reorderModules, getCategories, addCategory, editCategory, deleteCategory, reorderCategories, getPortfolios, addPortfolio, editPortfolio, deletePortfolio } from './state.js';
@@ -119,8 +120,8 @@ let currentEditingModuleId = null;
 let currentModules = [];
 let currentCategories = [];
 let currentPortfolios = [];
-let currentCurrency = 'CHF'; // moneda base
-let currentLanguage = 'es';  // idioma por defecto
+let currentCurrency = 'CHF';
+let currentLanguage = 'es';
 let currentCheckedIds = new Set();
 let isEditMode = false;
 let sortableInstances = [];
@@ -377,7 +378,7 @@ async function onAddModule(e) {
     modulePriceInput.value = '';
   } catch (error) {
     console.error('Error al agregar módulo:', error);
-    alert('Error al agregar el módulo.');
+    alert('Error al agregar el módulo: ' + error.message);
   }
 }
 
@@ -437,7 +438,7 @@ async function saveEditModule() {
     currentEditingModuleId = null;
   } catch (error) {
     console.error('Error al editar módulo:', error);
-    alert('Error al editar el módulo.');
+    alert('Error al editar el módulo: ' + error.message);
   }
 }
 
