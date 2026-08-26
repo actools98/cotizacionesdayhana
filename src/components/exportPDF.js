@@ -38,12 +38,12 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
   const totalFormatted = formatCurrency(totalConverted, currency);
   html = html.replace('{{total}}', totalFormatted);
 
-  // 2. Crear iframe oculto con ancho fijo grande
+  // 2. Crear iframe oculto
   const iframe = document.createElement('iframe');
   iframe.style.position = 'fixed';
   iframe.style.top = '-9999px';
   iframe.style.left = '-9999px';
-  iframe.style.width = '1200px';   // Ancho grande para evitar desbordes horizontales
+  iframe.style.width = '794px';
   iframe.style.border = 'none';
   iframe.style.background = '#ffffff';
   document.body.appendChild(iframe);
@@ -78,9 +78,7 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
     const imgWidth = canvas.width;
     const imgHeight = canvas.height;
 
-    // Ancho del PDF en mm (A4)
-    const pdfWidth = 210;
-    // Escala para ajustar el ancho de la imagen al ancho del PDF
+    const pdfWidth = 210; // mm
     const scale = pdfWidth / imgWidth;
     const pdfHeight = imgHeight * scale;
 
