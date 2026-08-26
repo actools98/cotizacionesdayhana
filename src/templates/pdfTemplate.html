@@ -2,13 +2,9 @@
 <html>
 <head>
   <meta charset="UTF-8" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
   <style>
-    /* --- Estilos generales (ajusta según tu diseño en Penpot) --- */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin:0; padding:0; box-sizing:border-box; }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: #ffffff;
@@ -20,7 +16,6 @@
       font-size: 12pt;
       line-height: 1.6;
     }
-    /* Encabezado */
     .header {
       text-align: center;
       margin-bottom: 24px;
@@ -28,7 +23,7 @@
     .header h1 {
       font-size: 28pt;
       font-weight: 700;
-      color: #ddb2ca; /* rosado principal */
+      color: #ddb2ca;
       letter-spacing: -0.02em;
       margin-bottom: 4px;
     }
@@ -45,7 +40,6 @@
       border-top: 1px solid #e0d6e8;
       margin: 16px 0;
     }
-    /* Datos del cliente */
     .client-info {
       margin-bottom: 16px;
     }
@@ -56,7 +50,6 @@
       font-weight: 600;
       color: #20183e;
     }
-    /* Lista de servicios */
     .services {
       margin: 16px 0;
     }
@@ -86,7 +79,6 @@
       padding-left: 8px;
       border-left: 2px solid #ddb2ca;
     }
-    /* Total */
     .total {
       text-align: right;
       font-size: 18pt;
@@ -94,7 +86,6 @@
       margin-top: 20px;
       color: #20183e;
     }
-    /* Pie de página */
     .footer {
       margin-top: 40px;
       font-size: 9pt;
@@ -106,39 +97,25 @@
     .footer p {
       margin: 2px 0;
     }
-    /* Ajustes para impresión */
-    @media print {
-      body { padding: 0; }
-      .pdf-container { margin: 0; }
-    }
   </style>
 </head>
 <body>
 <div class="pdf-container">
-  <!-- Encabezado -->
   <div class="header">
     <h1>actols</h1>
     <span class="badge">Cotización</span>
   </div>
   <div class="divider"></div>
-
-  <!-- Datos del cliente -->
   <div class="client-info">
     <p><strong>Cliente:</strong> {{clientName}}</p>
     <p><strong>Producto o servicio:</strong> {{productName}}</p>
     <p><strong>Fecha:</strong> {{date}}</p>
   </div>
   <div class="divider"></div>
-
-  <!-- Lista de servicios (se inyecta con JS) -->
   <div class="services">
     {{services}}
   </div>
-
-  <!-- Total -->
   <div class="total">Total: {{total}}</div>
-
-  <!-- Pie de página -->
   <div class="footer">
     <p>Esta cotización es válida por 30 días.</p>
     <p>powered by actols</p>
