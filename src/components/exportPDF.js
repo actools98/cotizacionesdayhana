@@ -1,9 +1,10 @@
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import templateHtml from '../templates/pdfTemplate.html?raw';
 import { formatCurrency } from '../utils/formatters.js';
 import { convertCurrency } from './currencyConverter.js';
 
 export async function generateQuotePDF(clientName, productName, selectedModules, currency, totalCHF, lang = 'es') {
-  // 1. Rellenar plantilla
   let html = templateHtml
     .replace(/\{\{clientName\}\}/g, clientName)
     .replace(/\{\{productName\}\}/g, productName)
@@ -36,90 +37,63 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
   const totalFormatted = formatCurrency(totalConverted, currency);
   html = html.replace('{{total}}', totalFormatted);
 
-  // 2. Extraer los estilos de la plantilla
-  const styleMatch = html.match(/<style>([\s\S]*?)<\/style>/);
-  const styles = styleMatch ? styleMatch[1] : '';
+  const iframe = document.createElement('iframe');
+  iframe.style.position = 'fixed';
+  iframe.style.top = '-9999px';
+  iframe.style.left = '-9999px';
+  iframe.style.width = '794px';
+  iframe.style.border = 'none';
+  iframe.style.background = '#ffffff';
+  document.body.appendChild(iframe);
 
-  // 3. Crear el documento HTML completo para la nueva pestaña
-  const fullHtml = `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cotización - actols</title>
-  <!-- Cargar html2pdf desde CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <style>
-    ${styles}
-    /* Asegurar que el body ocupe todo el ancho disponible */
-    body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      background: #ffffff;
+  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+  iframeDoc.open();
+  iframeDoc.write(html);
+  iframeDoc.close();
+
+  await new Promise(resolve => {
+    iframe.onload = resolve;
+    if (iframe.contentWindow && iframe.contentWindow.document.readyState === 'complete') {
+      resolve();
     }
-    .pdf-container {
-      max-width: 100%;
-      width: 100%;
-    }
-  </style>
-</head>
-<body>
-  ${html}
-  <script>
-    // Ejecutar html2pdf automáticamente cuando la página cargue
-    window.onload = function() {
-      const container = document.querySelector('.pdf-container');
-      if (!container) {
-        console.error('No se encontró el contenedor .pdf-container');
-        return;
-      }
+  });
+  await new Promise(resolve => setTimeout(resolve, 500));
 
-      const opt = {
-        margin:        [0, 0, 0, 0],
-        filename:      '${`Cotizacion_${clientName.replace(/\s+/g, '_')}.pdf`}',
-        image:         { type: 'jpeg', quality: 0.95 },
-        html2canvas:   {
-          scale: 2,
-          useCORS: true,
-          logging: false,
-          allowTaint: false,
-          backgroundColor: '#ffffff',
-          width: container.scrollWidth,
-          height: container.scrollHeight,
-        },
-        jsPDF:         {
-          unit: 'mm',
-          format: 'a4',
-          orientation: 'portrait'
-        },
-        pagebreak:     { mode: ['avoid-all', 'css', 'legacy'] }
-      };
+  try {
+    const body = iframe.contentDocument.body;
+    iframe.style.height = body.scrollHeight + 'px';
 
-      html2pdf().set(opt).from(container).save().then(() => {
-        // Cerrar la pestaña después de guardar (con un pequeño retraso para asegurar la descarga)
-        setTimeout(() => window.close(), 500);
-      }).catch((error) => {
-        console.error('Error al generar PDF:', error);
-        alert('Error al generar el PDF. Revisa la consola para más detalles.');
-      });
-    };
-  </script>
-</body>
-</html>
-  `;
+    const canvas = await html2canvas(body, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#ffffff',
+      logging: false,
+      allowTaint: false,
+      width: body.scrollWidth,
+      height: body.scrollHeight,
+    });
 
-  // 4. Abrir una nueva pestaña con el contenido
-  const newWindow = window.open('', '_blank', 'width=1024,height=768');
-  if (!newWindow) {
-    throw new Error('No se pudo abrir la nueva ventana. Por favor, permite ventanas emergentes para este sitio.');
+    const imgWidth = canvas.width;
+    const imgHeight = canvas.height;
+
+    const pdfWidth = 210;
+    const scale = pdfWidth / imgWidth;
+    const pdfHeight = imgHeight * scale;
+
+    const pdf = new jsPDF({
+      orientation: 'p',
+      unit: 'mm',
+      format: [pdfWidth, pdfHeight]
+    });
+
+    pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pdfWidth, pdfHeight);
+
+    pdf.save(`Cotizacion_${clientName.replace(/\s+/g, '_')}.pdf`);
+
+  } catch (error) {
+    console.error('Error al generar PDF:', error);
+    throw error;
+  } finally {
+    document.body.removeChild(iframe);
   }
-
-  // Escribir el HTML en la nueva ventana
-  newWindow.document.write(fullHtml);
-  newWindow.document.close();
 }
