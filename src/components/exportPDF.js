@@ -41,8 +41,8 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
   iframe.style.position = 'fixed';
   iframe.style.top = '-9999px';
   iframe.style.left = '-9999px';
-  // Le damos margen de sobra al iframe para que no interfiera con el ancho del contenedor
-  iframe.style.width = '850px';
+  // Igualamos el ancho del iframe al del contenedor exacto
+  iframe.style.width = '794px';
   iframe.style.border = 'none';
   iframe.style.background = '#ffffff';
   document.body.appendChild(iframe);
@@ -58,24 +58,29 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
       resolve();
     }
   });
+  
   await new Promise(resolve => setTimeout(resolve, 500));
 
   try {
     const body = iframe.contentDocument.body;
-    // Seleccionamos específicamente el contenedor en lugar de todo el body
     const container = iframe.contentDocument.querySelector('.pdf-container');
     
-    // Damos un poco de holgura vertical al iframe
-    iframe.style.height = (body.scrollHeight + 50) + 'px';
+    iframe.style.height = body.scrollHeight + 'px';
+    iframe.contentDocument.documentElement.style.overflow = 'hidden';
 
-    // Apuntamos html2canvas directo a .pdf-container
     const canvas = await html2canvas(container, {
       scale: 2,
       useCORS: true,
       backgroundColor: '#ffffff',
       logging: false,
       allowTaint: false,
-      // Ya no necesitamos forzar width/windowWidth porque el div ya mide 794px exactos
+      // Forzamos el punto de inicio de la captura a la coordenada cero
+      x: 0,
+      y: 0,
+      scrollX: 0,
+      scrollY: 0,
+      width: 794,
+      windowWidth: 794,
     });
 
     const imgWidth = canvas.width;
