@@ -5,7 +5,7 @@ import { formatCurrency } from '../utils/formatters.js';
 import { convertCurrency } from './currencyConverter.js';
 
 export async function generateQuotePDF(clientName, productName, selectedModules, currency, totalCOP) {
-  // 1. Rellenar datos del cliente
+  // 1. Datos del cliente
   let html = templateHtml
     .replace(/\{\{clientName\}\}/g, clientName)
     .replace(/\{\{productName\}\}/g, productName)
@@ -15,23 +15,22 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
   const servicesRowsHtml = selectedModules.map(mod => {
     const price = convertCurrency(mod.price, currency);
     const priceFormatted = formatCurrency(price, currency);
-    // Convertir saltos de línea (\n) a <br> para que se muestren en el PDF
+
+    // Detalle: convertir saltos de línea a <br> y envolver en <span class="service-detail">
     let detailHtml = '';
-    if (mod.detail) {
-      // Reemplazar \n por <br> y también \r\n por <br>
+    if (mod.detail && mod.detail.trim() !== '') {
       const detailWithBreaks = mod.detail.replace(/\r?\n/g, '<br>');
-      detailHtml = `
-        <tr class="detail-row">
-          <td colspan="2">${detailWithBreaks}</td>
-        </tr>
-      `;
+      detailHtml = `<span class="service-detail">${detailWithBreaks}</span>`;
     }
+
     return `
       <tr class="service-row">
-        <td class="service-name">${mod.description}</td>
+        <td>
+          <span class="service-name">${mod.description}</span>
+          ${detailHtml}
+        </td>
         <td class="service-price">${priceFormatted}</td>
       </tr>
-      ${detailHtml}
     `;
   }).join('');
 
