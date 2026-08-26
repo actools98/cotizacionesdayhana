@@ -66,6 +66,7 @@
       font-size: 12pt;
     }
 
+    /* Cabecera */
     .services-table th {
       background-color: #1e3a8a;
       color: #ffffff;
@@ -74,42 +75,44 @@
       text-align: left;
       border: 1px solid #1e3a8a;
     }
-
     .services-table th:last-child {
       text-align: right;
     }
 
-    /* Fila del servicio (nombre + precio) con fondo azul */
+    /* Fila de servicio */
     .service-row td {
       background-color: #dbeafe; /* azul claro */
       padding: 8px 12px;
       border: 1px solid #93c5fd;
+      vertical-align: top;
     }
 
-    .service-row .service-name {
+    .service-name {
       font-weight: 700;
       color: #1e3a8a;
-      word-wrap: break-word;
-      white-space: normal;
+      display: block;
+      margin-bottom: 4px;
     }
-    .service-row .service-price {
+
+    .service-detail {
+      font-size: 10pt;
+      color: #374151;
+      white-space: pre-wrap;   /* respeta saltos de línea */
+      word-wrap: break-word;
+      background-color: #ffffff;
+      padding: 6px 10px;
+      border-radius: 4px;
+      border-left: 3px solid #93c5fd;
+      margin-top: 4px;
+      display: block;
+    }
+
+    .service-price {
       font-weight: 700;
       color: #1e3a8a;
       text-align: right;
       white-space: nowrap;
-    }
-
-    /* Fila del detalle (ocupa ambas columnas) */
-    .detail-row td {
-      background-color: #f9fafb; /* gris muy claro */
-      padding: 8px 12px;
-      border-left: 1px solid #e5e7eb;
-      border-right: 1px solid #e5e7eb;
-      border-bottom: 1px solid #e5e7eb;
-      color: #374151;
-      font-size: 10pt;
-      white-space: pre-wrap;    /* respeta saltos de línea */
-      word-wrap: break-word;
+      display: block;
     }
 
     /* Fila del total */
