@@ -16,9 +16,9 @@
     }
     .pdf-container {
       width: 794px;
+      min-height: 1123px; /* Tu excelente idea: forzar altura mínima de A4 */
       padding: 48px;
       background: #ffffff;
-      /* Anclamos el contenedor arriba a la izquierda para evitar el offset */
       position: absolute;
       top: 0;
       left: 0;
@@ -148,7 +148,7 @@
 
     @media print {
       body { padding: 0; }
-      .pdf-container { margin: 0; position: static; }
+      .pdf-container { margin: 0; position: static; min-height: auto; }
     }
   </style>
 </head>
