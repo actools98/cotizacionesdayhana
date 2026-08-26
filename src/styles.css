@@ -1748,3 +1748,30 @@ dialog::backdrop {
     height: 80px;
   }
 }
+/* Forzar que la tabla no se desborde horizontalmente */
+.services-table {
+  table-layout: fixed;   /* Fija el ancho de las columnas */
+  width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.services-table th,
+.services-table td {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 0;          /* Obliga a respetar el ancho de columna */
+}
+
+/* Columna de servicio: ocupa 70% del ancho */
+.services-table th:first-child,
+.services-table td:first-child {
+  width: 70%;
+}
+
+/* Columna de precio: ocupa 30% */
+.services-table th:last-child,
+.services-table td:last-child {
+  width: 30%;
+  text-align: right;
+}
