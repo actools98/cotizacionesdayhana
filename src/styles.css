@@ -1731,7 +1731,7 @@ dialog::backdrop {
    Logo imagen
    ============================================================ */
 .logo-img {
-  height: 40px;           /* Altura fija, la anchura se ajusta automáticamente */
+  height: 80px;           /* Altura fija, la anchura se ajusta automáticamente */
   width: auto;
   display: block;
   object-fit: contain;    /* Para que no se deforme si el contenedor es más pequeño */
