@@ -1378,3 +1378,102 @@ dialog::backdrop {
   border-color: var(--color-primary);
   outline: none;
 }
+/* Estilo unificado para selectores de idioma y moneda */
+.language-selector,
+.currency-selector {
+  display: flex;
+  align-items: center;
+}
+
+#language-select,
+#currency-select {
+  font-family: var(--font-sans);
+  font-size: var(--text-small);
+  font-weight: 500;
+  padding: var(--space-xs) var(--space-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: transparent;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  outline: none;
+  transition: border 0.2s ease;
+  min-height: 44px;
+  appearance: auto; /* mantiene el estilo nativo del sistema */
+}
+
+#language-select:hover,
+#currency-select:hover {
+  border-color: var(--color-primary);
+}
+
+#language-select:focus-visible,
+#currency-select:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+/* Estilos unificados para inputs, selects y textareas */
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  background-color: var(--color-bg-main);
+  color: var(--color-text-primary);
+  transition: border 0.2s ease;
+  box-sizing: border-box;
+}
+
+.form-input,
+.form-select {
+  height: 44px;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+.form-input:focus-visible,
+.form-select:focus-visible,
+.form-textarea:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Ajustes para el diálogo de edición */
+#edit-module-dialog {
+  max-width: 800px;
+  width: 95%;
+  padding: var(--space-lg);
+}
+
+#edit-module-dialog .form-group {
+  margin-bottom: var(--space-xs);
+}
+
+#edit-module-dialog .form-group label {
+  display: block;
+  font-size: var(--text-small);
+  font-weight: 500;
+  margin-bottom: var(--space-xs);
+  color: var(--color-text-secondary);
+}
+
+/* Responsive: en pantallas pequeñas, los grids se apilan */
+@media (max-width: 768px) {
+  #edit-module-dialog > form > div > div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+}
