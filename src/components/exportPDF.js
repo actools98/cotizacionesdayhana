@@ -5,7 +5,6 @@ import { formatCurrency } from '../utils/formatters.js';
 import { convertCurrency } from './currencyConverter.js';
 
 export async function generateQuotePDF(clientName, productName, selectedModules, currency, totalCHF, lang = 'es') {
-  // 1. Rellenar plantilla
   let html = templateHtml
     .replace(/\{\{clientName\}\}/g, clientName)
     .replace(/\{\{productName\}\}/g, productName)
@@ -38,7 +37,6 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
   const totalFormatted = formatCurrency(totalConverted, currency);
   html = html.replace('{{total}}', totalFormatted);
 
-  // 2. Crear iframe oculto
   const iframe = document.createElement('iframe');
   iframe.style.position = 'fixed';
   iframe.style.top = '-9999px';
@@ -78,7 +76,7 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
     const imgWidth = canvas.width;
     const imgHeight = canvas.height;
 
-    const pdfWidth = 210; // mm
+    const pdfWidth = 210;
     const scale = pdfWidth / imgWidth;
     const pdfHeight = imgHeight * scale;
 
