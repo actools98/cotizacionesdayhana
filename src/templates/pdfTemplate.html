@@ -3,9 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <style>
-    /* ==========================================================
-       RESET Y BASE
-       ========================================================== */
     * {
       margin: 0;
       padding: 0;
@@ -23,22 +20,19 @@
       background: #ffffff;
     }
 
-    /* ==========================================================
-       ENCABEZADO: LOGO + BADGE (10pt)
-       ========================================================== */
+    /* Encabezado */
     .header {
       text-align: center;
       margin-bottom: 24px;
     }
     .header .logo-img {
-      height: 80px;            /* Tamaño del logo, ajustable */
+      height: 80px;
       width: auto;
       display: block;
       margin: 0 auto 8px auto;
     }
-    /* Badge "Cotización" - TAMAÑO 10pt */
     .header .badge {
-      font-size: 10pt;          /* <-- BADGE PEQUEÑO */
+      font-size: 10pt;
       font-weight: 600;
       color: #000000;
       background: #e8e8e8;
@@ -48,17 +42,11 @@
       letter-spacing: 0.3px;
     }
 
-    /* ==========================================================
-       DIVISOR
-       ========================================================== */
     .divider {
       border-top: 2px solid #1e3a8a;
       margin: 16px 0;
     }
 
-    /* ==========================================================
-       INFORMACIÓN DEL CLIENTE (11pt)
-       ========================================================== */
     .client-info {
       margin-bottom: 16px;
       font-size: 11pt;
@@ -71,37 +59,51 @@
       color: #000000;
     }
 
-    /* ==========================================================
-       TABLA DE SERVICIOS
-       ========================================================== */
+    /* Tabla con fijación de columnas */
     .services-table {
       width: 100%;
       border-collapse: collapse;
       margin: 16px 0;
-      font-size: 11pt;          /* Base de la tabla (cuerpo) */
+      font-size: 11pt;
+      table-layout: fixed;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
 
-    /* Encabezados de tabla (12pt) */
+    .services-table th,
+    .services-table td {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      max-width: 0;
+      padding: 8px 12px;
+      vertical-align: top;
+    }
+
+    .services-table th:first-child,
+    .services-table td:first-child {
+      width: 70%;
+    }
+    .services-table th:last-child,
+    .services-table td:last-child {
+      width: 30%;
+      text-align: right;
+    }
+
     .services-table th {
       background-color: #000000;
       color: #ffffff;
       font-weight: 600;
       font-size: 12pt;
-      padding: 8px 12px;
       text-align: left;
     }
     .services-table th:last-child {
       text-align: right;
     }
 
-    /* Filas de servicios */
     .service-row td {
       background-color: #ffffff;
-      padding: 8px 12px;
-      vertical-align: top;
     }
 
-    /* Nombre del servicio (11pt) */
     .service-name {
       font-weight: 700;
       color: #000000;
@@ -110,7 +112,6 @@
       font-size: 11pt;
     }
 
-    /* Detalle del servicio (10pt) */
     .service-detail {
       font-size: 10pt;
       color: #333333;
@@ -125,7 +126,6 @@
       line-height: 1.4;
     }
 
-    /* Precio (11pt) */
     .service-price {
       font-weight: 700;
       color: #000000;
@@ -135,7 +135,6 @@
       font-size: 11pt;
     }
 
-    /* Fila total (14pt) */
     .total-row td {
       background-color: #ffffff;
       padding: 10px 12px;
@@ -151,9 +150,6 @@
       white-space: nowrap;
     }
 
-    /* ==========================================================
-       PIE DE PÁGINA (9pt)
-       ========================================================== */
     .footer {
       margin-top: 40px;
       font-size: 9pt;
@@ -166,9 +162,6 @@
       margin: 2px 0;
     }
 
-    /* ==========================================================
-       MEDIA QUERY PARA IMPRESIÓN
-       ========================================================== */
     @media print {
       body { padding: 0; }
       .pdf-container { margin: 0; }
@@ -177,25 +170,17 @@
 </head>
 <body>
 <div class="pdf-container">
-
-  <!-- ENCABEZADO: LOGO + BADGE -->
   <div class="header">
-    <img src="/data/logo2.png" alt="TBA" class="logo-img" />
+    <img src="data:image/png;base64,TU_BASE64_AQUÍ" alt="TBA" class="logo-img" />
     <span class="badge">Cotización</span>
   </div>
-
   <div class="divider"></div>
-
-  <!-- INFORMACIÓN DEL CLIENTE -->
   <div class="client-info">
     <p><strong>Cliente:</strong> {{clientName}}</p>
     <p><strong>Producto o servicio:</strong> {{productName}}</p>
     <p><strong>Fecha:</strong> {{date}}</p>
   </div>
-
   <div class="divider"></div>
-
-  <!-- TABLA DE SERVICIOS -->
   <table class="services-table">
     <thead>
       <tr>
@@ -211,13 +196,10 @@
       </tr>
     </tbody>
   </table>
-
-  <!-- PIE DE PÁGINA -->
   <div class="footer">
     <p>Esta cotización es válida por 30 días.</p>
     <p>powered by actols</p>
   </div>
-
 </div>
 </body>
 </html>
