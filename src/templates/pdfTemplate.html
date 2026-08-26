@@ -20,7 +20,6 @@
       background: #ffffff;
     }
 
-    /* Encabezado */
     .header {
       text-align: center;
       margin-bottom: 24px;
@@ -59,34 +58,11 @@
       color: #000000;
     }
 
-    /* Tabla con fijación de columnas */
     .services-table {
       width: 100%;
       border-collapse: collapse;
       margin: 16px 0;
       font-size: 11pt;
-      table-layout: fixed;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-    }
-
-    .services-table th,
-    .services-table td {
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-      max-width: 0;
-      padding: 8px 12px;
-      vertical-align: top;
-    }
-
-    .services-table th:first-child,
-    .services-table td:first-child {
-      width: 70%;
-    }
-    .services-table th:last-child,
-    .services-table td:last-child {
-      width: 30%;
-      text-align: right;
     }
 
     .services-table th {
@@ -94,6 +70,7 @@
       color: #ffffff;
       font-weight: 600;
       font-size: 12pt;
+      padding: 8px 12px;
       text-align: left;
     }
     .services-table th:last-child {
@@ -102,6 +79,8 @@
 
     .service-row td {
       background-color: #ffffff;
+      padding: 8px 12px;
+      vertical-align: top;
     }
 
     .service-name {
@@ -171,7 +150,7 @@
 <body>
 <div class="pdf-container">
   <div class="header">
-    <img src="data:image/png;base64,TU_BASE64_AQUÍ" alt="TBA" class="logo-img" />
+    <img src="/data/logo2.png" alt="TBA" class="logo-img" />
     <span class="badge">Cotización</span>
   </div>
   <div class="divider"></div>
