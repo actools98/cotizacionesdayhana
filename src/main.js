@@ -1,5 +1,6 @@
 // ============================================================
 //  main.js - Con autenticación por contraseña (1998)
+//  + Multi-idioma (ES, FR, EN) y moneda base CHF
 //  + Portafolios con menú contextual
 // ============================================================
 
@@ -63,13 +64,18 @@ logoutBtn.addEventListener('click', () => {
 const modulesContainer = document.getElementById('modules-container');
 const totalDisplay = document.getElementById('total-display');
 const currencySelect = document.getElementById('currency-select');
+const languageSelect = document.getElementById('language-select');
 const toggleModeBtn = document.getElementById('toggle-mode-btn');
 const addModuleContainer = document.getElementById('add-module-container');
 const addModuleForm = document.getElementById('add-module-form');
-const moduleDescInput = document.getElementById('module-desc');
+const moduleDescEs = document.getElementById('module-desc-es');
+const moduleDescFr = document.getElementById('module-desc-fr');
+const moduleDescEn = document.getElementById('module-desc-en');
+const moduleDetailEs = document.getElementById('module-detail-es');
+const moduleDetailFr = document.getElementById('module-detail-fr');
+const moduleDetailEn = document.getElementById('module-detail-en');
 const modulePriceInput = document.getElementById('module-price');
 const moduleCategorySelect = document.getElementById('module-category-select');
-const moduleDetailInput = document.getElementById('module-detail');
 const quoteActionBtn = document.getElementById('quote-action-btn');
 const clientDialog = document.getElementById('client-dialog');
 const clientNameInput = document.getElementById('client-name-input');
@@ -92,11 +98,16 @@ const ratesDialogCancel = document.getElementById('rates-dialog-cancel');
 const ratesDialogReset = document.getElementById('rates-dialog-reset');
 const ratesDialogClose = document.getElementById('rates-dialog-close');
 
+// Edición de módulo
 const editModuleDialog = document.getElementById('edit-module-dialog');
-const editModuleName = document.getElementById('edit-module-name');
+const editModuleNameEs = document.getElementById('edit-module-name-es');
+const editModuleNameFr = document.getElementById('edit-module-name-fr');
+const editModuleNameEn = document.getElementById('edit-module-name-en');
+const editModuleDetailEs = document.getElementById('edit-module-detail-es');
+const editModuleDetailFr = document.getElementById('edit-module-detail-fr');
+const editModuleDetailEn = document.getElementById('edit-module-detail-en');
 const editModulePrice = document.getElementById('edit-module-price');
 const editModuleCategory = document.getElementById('edit-module-category');
-const editModuleDetail = document.getElementById('edit-module-detail');
 const editModuleSave = document.getElementById('edit-module-save');
 const editModuleCancel = document.getElementById('edit-module-cancel');
 
@@ -108,11 +119,12 @@ let currentEditingModuleId = null;
 let currentModules = [];
 let currentCategories = [];
 let currentPortfolios = [];
-let currentCurrency = 'COP';
+let currentCurrency = 'CHF'; // moneda base
+let currentLanguage = 'es';  // idioma por defecto
 let currentCheckedIds = new Set();
 let isEditMode = false;
 let sortableInstances = [];
-let openContextMenuId = null; // ID del portafolio cuyo menú está abierto
+let openContextMenuId = null;
 
 // ============================================================
 //  INICIALIZACIÓN
@@ -122,6 +134,7 @@ async function initApp() {
     await loadData();
     startAutoRefresh();
     currencySelect.value = currentCurrency;
+    languageSelect.value = currentLanguage;
     setEditMode(false);
     bindEvents();
     renderPortfoliosModal();
@@ -169,6 +182,7 @@ function populateEditCategorySelect() {
 function bindEvents() {
   modulesContainer.addEventListener('change', onModuleCheckChange);
   currencySelect.addEventListener('change', onCurrencyChange);
+  languageSelect.addEventListener('change', onLanguageChange);
   toggleModeBtn.addEventListener('click', onToggleMode);
   addModuleForm.addEventListener('submit', onAddModule);
   quoteActionBtn.addEventListener('click', onQuoteAction);
@@ -204,12 +218,29 @@ function bindEvents() {
 // ============================================================
 function renderAll() {
   if (isEditMode) {
-    renderAdminModulesByCategory(modulesContainer, currentModules, currentCategories, handleDeleteModule, handleEditModule, handleEditCategory, handleDeleteCategory);
+    renderAdminModulesByCategory(
+      modulesContainer,
+      currentModules,
+      currentCategories,
+      currentLanguage,
+      handleDeleteModule,
+      handleEditModule,
+      handleEditCategory,
+      handleDeleteCategory
+    );
     addModuleContainer.style.display = 'block';
     document.getElementById('total-card').style.display = 'none';
     renderCategoryControls();
   } else {
-    renderModulesByCategory(modulesContainer, currentModules, currentCategories, currentCurrency, convertCurrency, formatCurrency);
+    renderModulesByCategory(
+      modulesContainer,
+      currentModules,
+      currentCategories,
+      currentLanguage,
+      currentCurrency,
+      convertCurrency,
+      formatCurrency
+    );
     addModuleContainer.style.display = 'none';
     document.getElementById('total-card').style.display = 'flex';
     const catControls = document.getElementById('category-controls');
@@ -257,8 +288,8 @@ function updateTotal() {
     const checkedIds = Array.from(checkboxes).map(cb => cb.dataset.id);
     currentCheckedIds = new Set(checkedIds);
   }
-  const totalCOP = calculateTotal(Array.from(currentCheckedIds), currentModules);
-  const totalConverted = convertCurrency(totalCOP, currentCurrency);
+  const totalCHF = calculateTotal(Array.from(currentCheckedIds), currentModules);
+  const totalConverted = convertCurrency(totalCHF, currentCurrency);
   totalDisplay.textContent = formatCurrency(totalConverted, currentCurrency);
 }
 
@@ -314,25 +345,36 @@ function destroySortable() {
 }
 
 // ============================================================
-//  CRUD: MÓDULOS
+//  CRUD: MÓDULOS (multi-idioma)
 // ============================================================
 async function onAddModule(e) {
   e.preventDefault();
-  const desc = moduleDescInput.value.trim();
+  const desc_es = moduleDescEs.value.trim();
+  const desc_fr = moduleDescFr.value.trim();
+  const desc_en = moduleDescEn.value.trim();
+  const detail_es = moduleDetailEs.value.trim() || null;
+  const detail_fr = moduleDetailFr.value.trim() || null;
+  const detail_en = moduleDetailEn.value.trim() || null;
   const price = parseFloat(modulePriceInput.value);
-  const detail = moduleDetailInput.value.trim() || null;
-  if (!desc || isNaN(price) || price <= 0) {
-    alert('Ingrese nombre y precio válido.');
+  const categoryId = moduleCategorySelect.value || currentCategories[0]?.id || null;
+
+  if (!desc_es || !desc_fr || !desc_en || isNaN(price) || price <= 0) {
+    alert('Complete los campos obligatorios (nombre en los 3 idiomas y precio en CHF).');
     return;
   }
-  const categoryId = moduleCategorySelect.value || currentCategories[0]?.id || null;
+
   try {
-    await addModule(desc, price, categoryId, detail);
+    await addModule(desc_es, desc_fr, desc_en, price, categoryId, detail_es, detail_fr, detail_en);
     await loadData();
     renderAll();
-    moduleDescInput.value = '';
+    // Limpiar campos
+    moduleDescEs.value = '';
+    moduleDescFr.value = '';
+    moduleDescEn.value = '';
+    moduleDetailEs.value = '';
+    moduleDetailFr.value = '';
+    moduleDetailEn.value = '';
     modulePriceInput.value = '';
-    moduleDetailInput.value = '';
   } catch (error) {
     console.error('Error al agregar módulo:', error);
     alert('Error al agregar el módulo.');
@@ -355,13 +397,17 @@ function handleEditModule(id) {
   const module = currentModules.find(m => m.id === id);
   if (!module) return;
   currentEditingModuleId = id;
-  editModuleName.value = module.description;
+  editModuleNameEs.value = module.description_es || '';
+  editModuleNameFr.value = module.description_fr || '';
+  editModuleNameEn.value = module.description_en || '';
+  editModuleDetailEs.value = module.detail_es || '';
+  editModuleDetailFr.value = module.detail_fr || '';
+  editModuleDetailEn.value = module.detail_en || '';
   editModulePrice.value = module.price;
-  editModuleDetail.value = module.detail || '';
-  const catSelect = editModuleCategory;
-  for (let opt of catSelect.options) {
+  // Seleccionar categoría
+  for (let opt of editModuleCategory.options) {
     if (opt.value === module.category_id) {
-      catSelect.value = module.category_id;
+      editModuleCategory.value = module.category_id;
       break;
     }
   }
@@ -369,16 +415,22 @@ function handleEditModule(id) {
 }
 
 async function saveEditModule() {
-  const name = editModuleName.value.trim();
+  const name_es = editModuleNameEs.value.trim();
+  const name_fr = editModuleNameFr.value.trim();
+  const name_en = editModuleNameEn.value.trim();
+  const detail_es = editModuleDetailEs.value.trim() || null;
+  const detail_fr = editModuleDetailFr.value.trim() || null;
+  const detail_en = editModuleDetailEn.value.trim() || null;
   const price = parseFloat(editModulePrice.value);
-  const detail = editModuleDetail.value.trim() || null;
   const categoryId = editModuleCategory.value || currentCategories[0]?.id || null;
-  if (!name || isNaN(price) || price <= 0) {
+
+  if (!name_es || !name_fr || !name_en || isNaN(price) || price <= 0) {
     alert('Complete los campos obligatorios.');
     return;
   }
+
   try {
-    await editModule(currentEditingModuleId, name, price, categoryId, detail);
+    await editModule(currentEditingModuleId, name_es, name_fr, name_en, price, categoryId, detail_es, detail_fr, detail_en);
     await loadData();
     renderAll();
     editModuleDialog.close();
@@ -442,14 +494,13 @@ async function handleDeleteCategory(id) {
 // ============================================================
 //  PORTAFOLIOS - CON MENÚ CONTEXTUAL Y FORMULARIO
 // ============================================================
-
 function openPortfoliosDialog() {
   renderPortfoliosModal();
   portfoliosDialog.showModal();
 }
 
 function closePortfoliosDialog() {
-  closeContextMenu(); // cerrar menú si estaba abierto
+  closeContextMenu();
   portfoliosDialog.close();
 }
 
@@ -470,7 +521,6 @@ function renderPortfoliosModal() {
       wrapper.style.position = 'relative';
       wrapper.style.marginBottom = '8px';
 
-      // Botón principal
       const btn = document.createElement('button');
       btn.className = 'pf-button';
       btn.dataset.id = pf.id;
@@ -501,7 +551,6 @@ function renderPortfoliosModal() {
         toggleContextMenu(pf.id);
       });
 
-      // Menú contextual
       const menu = document.createElement('div');
       menu.className = 'pf-context-menu';
       menu.dataset.id = pf.id;
@@ -614,7 +663,6 @@ function renderPortfoliosModal() {
     await onAddPortfolio(name, link);
     nameInput.value = '';
     linkInput.value = '';
-    // Re-renderizar
     renderPortfoliosModal();
   });
 
@@ -628,7 +676,7 @@ function toggleContextMenu(id) {
     closeContextMenu();
     return;
   }
-  closeContextMenu(); // cerrar cualquier otro abierto
+  closeContextMenu();
   const menu = document.querySelector(`.pf-context-menu[data-id="${id}"]`);
   if (menu) {
     menu.style.display = 'block';
@@ -648,7 +696,6 @@ function copyLink(link) {
   navigator.clipboard.writeText(link).then(() => {
     alert('Enlace copiado al portapapeles');
   }).catch(() => {
-    // Fallback
     const textarea = document.createElement('textarea');
     textarea.value = link;
     document.body.appendChild(textarea);
@@ -713,8 +760,8 @@ async function onDeletePortfolio(id) {
 function openRatesDialog() {
   const rates = getCurrentRates();
   if (rates) {
-    rateUsdInput.value = rates.USD * 1000;
-    rateEurInput.value = rates.EUR * 1000;
+    rateUsdInput.value = rates.USD;
+    rateEurInput.value = rates.EUR;
   } else {
     rateUsdInput.value = '';
     rateEurInput.value = '';
@@ -730,10 +777,10 @@ function onSaveRates() {
   const usd = parseFloat(rateUsdInput.value);
   const eur = parseFloat(rateEurInput.value);
   if (isNaN(usd) || isNaN(eur) || usd <= 0 || eur <= 0) {
-    alert('Ingrese valores numéricos positivos.');
+    alert('Ingrese valores numéricos positivos (1 CHF = ? USD, ? EUR).');
     return;
   }
-  saveManualRates(usd / 1000, eur / 1000);
+  saveManualRates(usd, eur);
   closeRatesDialog();
   alert('Tasas guardadas correctamente.');
 }
@@ -769,10 +816,10 @@ async function onDialogConfirm(e) {
     alert('Complete todos los campos.');
     return;
   }
-  const totalCOP = calculateTotal(Array.from(currentCheckedIds), currentModules);
+  const totalCHF = calculateTotal(Array.from(currentCheckedIds), currentModules);
   try {
     const selectedModules = getSelectedModules(Array.from(currentCheckedIds), currentModules);
-    await generateQuotePDF(clientName, productName, selectedModules, currentCurrency, totalCOP);
+    await generateQuotePDF(clientName, productName, selectedModules, currentCurrency, totalCHF, currentLanguage);
     clientDialog.close();
   } catch (error) {
     console.error('Error al generar PDF:', error);
@@ -790,6 +837,11 @@ function onModuleCheckChange() {
 async function onCurrencyChange(e) {
   currentCurrency = e.target.value;
   await fetchExchangeRates(true);
+  renderAll();
+}
+
+function onLanguageChange(e) {
+  currentLanguage = e.target.value;
   renderAll();
 }
 
