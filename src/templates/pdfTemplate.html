@@ -15,13 +15,16 @@
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
       background: #ffffff;
       color: #000000;
-      padding: 48px;
+      padding: 0;
+      margin: 0;
       line-height: 1.5;
     }
     .pdf-container {
+      width: 100%;
       max-width: 100%;
-      min-width: 100%; /* Asegura que ocupe todo el ancho del body */
       background: #ffffff;
+      padding: 48px; /* Márgenes de 48px a todos los lados */
+      box-sizing: border-box;
     }
 
     /* ==========================================================
@@ -36,6 +39,7 @@
       width: auto;
       display: block;
       margin: 0 auto 8px auto;
+      max-width: 100%;
     }
     .header .badge {
       font-size: 10pt;
@@ -190,7 +194,8 @@
 <body>
 <div class="pdf-container">
   <div class="header">
-    <img src="data:image/png;base64,TU_BASE64_AQUÍ" alt="TBA" class="logo-img" />
+    <!-- EL LOGO CON RUTA RELATIVA: /logo2.png -->
+    <img src="/logo2.png" alt="TBA" class="logo-img" />
     <span class="badge">Cotización</span>
   </div>
   <div class="divider"></div>
