@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <style>
+    /* ==========================================================
+       RESET Y BASE
+       ========================================================== */
     * {
       margin: 0;
       padding: 0;
@@ -16,11 +19,14 @@
       line-height: 1.5;
     }
     .pdf-container {
-  max-width: 100%;
-  background: #ffffff;
-  min-width: 100%; /* Asegura que ocupe todo el ancho del body */
-}
+      max-width: 100%;
+      min-width: 100%; /* Asegura que ocupe todo el ancho del body */
+      background: #ffffff;
+    }
 
+    /* ==========================================================
+       ENCABEZADO: LOGO + BADGE (10pt)
+       ========================================================== */
     .header {
       text-align: center;
       margin-bottom: 24px;
@@ -42,11 +48,17 @@
       letter-spacing: 0.3px;
     }
 
+    /* ==========================================================
+       DIVISOR
+       ========================================================== */
     .divider {
       border-top: 2px solid #1e3a8a;
       margin: 16px 0;
     }
 
+    /* ==========================================================
+       INFORMACIÓN DEL CLIENTE (11pt)
+       ========================================================== */
     .client-info {
       margin-bottom: 16px;
       font-size: 11pt;
@@ -59,11 +71,36 @@
       color: #000000;
     }
 
+    /* ==========================================================
+       TABLA DE SERVICIOS
+       ========================================================== */
     .services-table {
       width: 100%;
       border-collapse: collapse;
       margin: 16px 0;
       font-size: 11pt;
+      table-layout: fixed;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .services-table th,
+    .services-table td {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      max-width: 0;
+      padding: 8px 12px;
+      vertical-align: top;
+    }
+
+    .services-table th:first-child,
+    .services-table td:first-child {
+      width: 70%;
+    }
+    .services-table th:last-child,
+    .services-table td:last-child {
+      width: 30%;
+      text-align: right;
     }
 
     .services-table th {
@@ -71,7 +108,6 @@
       color: #ffffff;
       font-weight: 600;
       font-size: 12pt;
-      padding: 8px 12px;
       text-align: left;
     }
     .services-table th:last-child {
@@ -80,8 +116,6 @@
 
     .service-row td {
       background-color: #ffffff;
-      padding: 8px 12px;
-      vertical-align: top;
     }
 
     .service-name {
@@ -90,6 +124,8 @@
       display: block;
       margin-bottom: 4px;
       font-size: 11pt;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
 
     .service-detail {
@@ -130,6 +166,9 @@
       white-space: nowrap;
     }
 
+    /* ==========================================================
+       PIE DE PÁGINA (9pt)
+       ========================================================== */
     .footer {
       margin-top: 40px;
       font-size: 9pt;
@@ -151,7 +190,7 @@
 <body>
 <div class="pdf-container">
   <div class="header">
-    <img src="/data/logo2.png" alt="TBA" class="logo-img" />
+    <img src="data:image/png;base64,TU_BASE64_AQUÍ" alt="TBA" class="logo-img" />
     <span class="badge">Cotización</span>
   </div>
   <div class="divider"></div>
