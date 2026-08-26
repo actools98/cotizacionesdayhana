@@ -5,7 +5,7 @@ import { formatCurrency } from '../utils/formatters.js';
 import { convertCurrency } from './currencyConverter.js';
 
 export async function generateQuotePDF(clientName, productName, selectedModules, currency, totalCOP) {
-  // 1. Datos del cliente
+  // 1. Rellenar plantilla
   let html = templateHtml
     .replace(/\{\{clientName\}\}/g, clientName)
     .replace(/\{\{productName\}\}/g, productName)
@@ -15,14 +15,12 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
   const servicesRowsHtml = selectedModules.map(mod => {
     const price = convertCurrency(mod.price, currency);
     const priceFormatted = formatCurrency(price, currency);
-
-    // Detalle: convertir saltos de línea a <br> y envolver en <span class="service-detail">
     let detailHtml = '';
     if (mod.detail && mod.detail.trim() !== '') {
+      // Convertir saltos de línea a <br>
       const detailWithBreaks = mod.detail.replace(/\r?\n/g, '<br>');
       detailHtml = `<span class="service-detail">${detailWithBreaks}</span>`;
     }
-
     return `
       <tr class="service-row">
         <td>
@@ -47,7 +45,7 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
   iframe.style.top = '-9999px';
   iframe.style.left = '-9999px';
   iframe.style.width = '794px';
-  iframe.style.height = '1123px';
+  iframe.style.height = 'auto'; // altura automática según contenido
   iframe.style.border = 'none';
   document.body.appendChild(iframe);
 
@@ -56,41 +54,46 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
   iframeDoc.write(html);
   iframeDoc.close();
 
+  // Esperar a que cargue y renderice
   await new Promise(resolve => {
     iframe.onload = resolve;
     if (iframe.contentWindow && iframe.contentWindow.document.readyState === 'complete') {
       resolve();
     }
   });
-  await new Promise(resolve => setTimeout(resolve, 300));
+  await new Promise(resolve => setTimeout(resolve, 400));
 
   try {
-    const body = iframe.contentDocument.body;
-    const canvas = await html2canvas(body, {
+    // Capturar el contenedor .pdf-container (no el body)
+    const container = iframe.contentDocument.querySelector('.pdf-container');
+    const canvas = await html2canvas(container, {
       scale: 2,
       useCORS: true,
       backgroundColor: '#ffffff',
       logging: false,
       allowTaint: false,
       width: 794,
-      height: body.scrollHeight,
+      height: container.scrollHeight,
     });
 
     const imgData = canvas.toDataURL('image/jpeg', 0.95);
     const pdf = new jsPDF('p', 'mm', 'a4');
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
+    const pdfWidth = pdf.internal.pageSize.getWidth();  // 210 mm
+    const pdfHeight = pdf.internal.pageSize.getHeight(); // 297 mm
 
     const imgWidth = canvas.width;
     const imgHeight = canvas.height;
 
+    // Escala para ajustar el ancho de la imagen al ancho de la página
     const scale = pdfWidth / imgWidth;
     const scaledHeight = imgHeight * scale;
 
     if (scaledHeight <= pdfHeight) {
+      // Una sola página
       pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, scaledHeight);
     } else {
-      const pageHeightPx = pdfHeight / scale;
+      // Múltiples páginas
+      const pageHeightPx = pdfHeight / scale; // altura en píxeles de la imagen por página
       let remainingHeight = imgHeight;
       let yOffset = 0;
 
@@ -98,6 +101,7 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
         const srcY = yOffset;
         const srcHeight = Math.min(pageHeightPx, remainingHeight);
 
+        // Crear canvas temporal para la porción
         const tempCanvas = document.createElement('canvas');
         tempCanvas.width = imgWidth;
         tempCanvas.height = srcHeight;
