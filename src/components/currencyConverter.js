@@ -1,6 +1,6 @@
-// currencyConverter.js - Conexión a API + tasas manuales
+// currencyConverter.js - Conexión a API + tasas manuales (base: CHF)
 
-const API_URL = 'https://api.exchangerate-api.com/v4/latest/COP';
+const API_URL = 'https://api.exchangerate-api.com/v4/latest/CHF';
 const STORAGE_KEY_RATES = 'actols_manual_rates';
 
 let exchangeRates = null;
@@ -21,11 +21,10 @@ function loadManualRates() {
   return null;
 }
 
-// Guardar tasas manuales
+// Guardar tasas manuales (tasas directas: 1 CHF = ? USD, 1 CHF = ? EUR)
 export function saveManualRates(usdRate, eurRate) {
   const rates = { USD: usdRate, EUR: eurRate };
   localStorage.setItem(STORAGE_KEY_RATES, JSON.stringify(rates));
-  // Actualizar en memoria
   if (exchangeRates) {
     exchangeRates.USD = usdRate;
     exchangeRates.EUR = eurRate;
@@ -36,19 +35,16 @@ export function saveManualRates(usdRate, eurRate) {
 
 // Obtener tasas (prioriza manuales si existen)
 export async function fetchExchangeRates(force = false) {
-  // Verificar si hay tasas manuales guardadas
   const manual = loadManualRates();
   if (manual) {
-    // Usar tasas manuales
     if (!exchangeRates || force) {
       exchangeRates = { ...manual };
       lastFetchTime = Date.now();
-      console.log('💱 Usando tasas manuales:', exchangeRates);
+      console.log('💱 Usando tasas manuales (CHF base):', exchangeRates);
     }
     return exchangeRates;
   }
 
-  // Si no hay manuales, usar API
   const now = Date.now();
   if (!force && exchangeRates && (now - lastFetchTime) < REFRESH_INTERVAL) {
     return exchangeRates;
@@ -60,26 +56,26 @@ export async function fetchExchangeRates(force = false) {
     const data = await response.json();
     exchangeRates = data.rates;
     lastFetchTime = now;
-    console.log('💱 Tasas de cambio actualizadas (API)');
+    console.log('💱 Tasas de cambio actualizadas (API, CHF base)');
     return exchangeRates;
   } catch (error) {
     console.error('API de divisas falló:', error);
     if (!exchangeRates) {
-      exchangeRates = { USD: 0.00025, EUR: 0.00023 };
+      exchangeRates = { USD: 1.10, EUR: 0.95 }; // valores aproximados
     }
     return exchangeRates;
   }
 }
 
-export function convertCurrency(amountCOP, currency) {
-  if (currency === 'COP') return amountCOP;
+export function convertCurrency(amountCHF, currency) {
+  if (currency === 'CHF') return amountCHF;
   if (!exchangeRates) {
-    console.warn('Tasas no cargadas, usando COP por defecto');
-    return amountCOP;
+    console.warn('Tasas no cargadas, usando CHF por defecto');
+    return amountCHF;
   }
   const rate = exchangeRates[currency];
-  if (!rate) return amountCOP;
-  return amountCOP * rate;
+  if (!rate) return amountCHF;
+  return amountCHF * rate;
 }
 
 // Obtener tasas actuales (para mostrar en el diálogo)
