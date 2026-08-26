@@ -57,11 +57,16 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
       resolve();
     }
   });
+  
+  // Pequeña pausa para asegurar renderizado de fuentes o imágenes
   await new Promise(resolve => setTimeout(resolve, 500));
 
   try {
     const body = iframe.contentDocument.body;
     iframe.style.height = body.scrollHeight + 'px';
+
+    // CORRECCIÓN 1: Ocultar overflow para evitar barras de desplazamiento que alteren la medida
+    iframe.contentDocument.documentElement.style.overflow = 'hidden';
 
     const canvas = await html2canvas(body, {
       scale: 2,
@@ -69,7 +74,9 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
       backgroundColor: '#ffffff',
       logging: false,
       allowTaint: false,
-      width: body.scrollWidth,
+      // CORRECCIÓN 2: Fijar explícitamente el ancho en lugar de usar body.scrollWidth
+      width: 794,
+      windowWidth: 794,
       height: body.scrollHeight,
     });
 
