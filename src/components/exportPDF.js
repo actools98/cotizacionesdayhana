@@ -11,6 +11,7 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
     .replace(/\{\{productName\}\}/g, productName)
     .replace(/\{\{date\}\}/g, new Date().toLocaleDateString('es-CO'));
 
+  // 2. Generar filas de servicios
   const servicesRowsHtml = selectedModules.map(mod => {
     const price = convertCurrency(mod.price, currency);
     const priceFormatted = formatCurrency(price, currency);
@@ -36,7 +37,7 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
   const totalFormatted = formatCurrency(totalConverted, currency);
   html = html.replace('{{total}}', totalFormatted);
 
-  // 2. Crear iframe
+  // 3. Crear iframe
   const iframe = document.createElement('iframe');
   iframe.style.position = 'fixed';
   iframe.style.top = '-9999px';
@@ -61,10 +62,8 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
 
   try {
     const body = iframe.contentDocument.body;
-    // Ajustar altura del iframe al contenido
     iframe.style.height = body.scrollHeight + 'px';
 
-    // Capturar el body completo (incluye el padding)
     const canvas = await html2canvas(body, {
       scale: 2,
       useCORS: true,
@@ -77,13 +76,12 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
 
     const imgData = canvas.toDataURL('image/jpeg', 0.95);
     const pdf = new jsPDF('p', 'mm', 'a4');
-    const pdfWidth = pdf.internal.pageSize.getWidth();  // 210 mm
-    const pdfHeight = pdf.internal.pageSize.getHeight(); // 297 mm
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
 
     const imgWidth = canvas.width;
     const imgHeight = canvas.height;
 
-    // Escala para ajustar el ancho de la imagen al ancho de la página
     const scale = pdfWidth / imgWidth;
     const scaledHeight = imgHeight * scale;
 
