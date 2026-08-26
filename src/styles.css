@@ -1775,3 +1775,8 @@ dialog::backdrop {
   width: 30%;
   text-align: right;
 }
+#demo-counter {
+  font-size: var(--text-small);
+  letter-spacing: 0.02em;
+  margin-bottom: 0.25rem;
+}
