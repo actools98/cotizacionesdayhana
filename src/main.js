@@ -1,6 +1,6 @@
 // ============================================================
 //  main.js - Con autenticación por contraseña (1998)
-//  + Detalle en módulos y edición con diálogo
+//  + Portafolios con menú contextual
 // ============================================================
 
 import { getModules, addModule, deleteModule, editModule, reorderModules, getCategories, addCategory, editCategory, deleteCategory, reorderCategories, getPortfolios, addPortfolio, editPortfolio, deletePortfolio } from './state.js';
@@ -92,7 +92,6 @@ const ratesDialogCancel = document.getElementById('rates-dialog-cancel');
 const ratesDialogReset = document.getElementById('rates-dialog-reset');
 const ratesDialogClose = document.getElementById('rates-dialog-close');
 
-// Edición de módulo
 const editModuleDialog = document.getElementById('edit-module-dialog');
 const editModuleName = document.getElementById('edit-module-name');
 const editModulePrice = document.getElementById('edit-module-price');
@@ -113,7 +112,7 @@ let currentCurrency = 'COP';
 let currentCheckedIds = new Set();
 let isEditMode = false;
 let sortableInstances = [];
-let openPortfolioId = null;
+let openContextMenuId = null; // ID del portafolio cuyo menú está abierto
 
 // ============================================================
 //  INICIALIZACIÓN
@@ -188,11 +187,13 @@ function bindEvents() {
   editModuleSave.addEventListener('click', saveEditModule);
   editModuleCancel.addEventListener('click', () => editModuleDialog.close());
 
+  // Cerrar menú contextual al hacer clic fuera
   document.addEventListener('click', (e) => {
-    if (openPortfolioId) {
-      const item = document.querySelector(`.portfolio-item-modal[data-id="${openPortfolioId}"]`);
-      if (item && !item.contains(e.target)) {
-        closePortfolioActions();
+    if (openContextMenuId) {
+      const menu = document.querySelector(`.pf-context-menu[data-id="${openContextMenuId}"]`);
+      const button = document.querySelector(`.pf-button[data-id="${openContextMenuId}"]`);
+      if (menu && !menu.contains(e.target) && button && !button.contains(e.target)) {
+        closeContextMenu();
       }
     }
   });
@@ -439,7 +440,7 @@ async function handleDeleteCategory(id) {
 }
 
 // ============================================================
-//  PORTAFOLIOS - IMPLEMENTACIÓN COMPLETA
+//  PORTAFOLIOS - CON MENÚ CONTEXTUAL Y FORMULARIO
 // ============================================================
 
 function openPortfoliosDialog() {
@@ -448,6 +449,7 @@ function openPortfoliosDialog() {
 }
 
 function closePortfoliosDialog() {
+  closeContextMenu(); // cerrar menú si estaba abierto
   portfoliosDialog.close();
 }
 
@@ -455,6 +457,7 @@ function renderPortfoliosModal() {
   if (!portfoliosListModal) return;
   portfoliosListModal.innerHTML = '';
 
+  // --- Lista de portafolios como botones ---
   if (!currentPortfolios || currentPortfolios.length === 0) {
     const emptyMsg = document.createElement('p');
     emptyMsg.textContent = 'No hay portafolios. Agrega uno.';
@@ -463,118 +466,211 @@ function renderPortfoliosModal() {
     portfoliosListModal.appendChild(emptyMsg);
   } else {
     currentPortfolios.forEach(pf => {
-      const item = document.createElement('div');
-      item.className = 'portfolio-item-modal';
-      item.dataset.id = pf.id;
+      const wrapper = document.createElement('div');
+      wrapper.style.position = 'relative';
+      wrapper.style.marginBottom = '8px';
 
-      // Nombre del portafolio (enlace)
-      const nameLink = document.createElement('a');
-      nameLink.href = pf.link;
-      nameLink.target = '_blank';
-      nameLink.textContent = pf.name;
-      nameLink.style.color = 'var(--color-primary)';
-      nameLink.style.fontWeight = '600';
-      nameLink.style.display = 'block';
-      nameLink.style.marginBottom = '4px';
+      // Botón principal
+      const btn = document.createElement('button');
+      btn.className = 'pf-button';
+      btn.dataset.id = pf.id;
+      btn.textContent = pf.name;
+      btn.style.width = '100%';
+      btn.style.padding = '10px 12px';
+      btn.style.background = 'var(--color-bg-surface)';
+      btn.style.border = '1px solid var(--color-border)';
+      btn.style.borderRadius = 'var(--radius-sm)';
+      btn.style.color = 'var(--color-text-primary)';
+      btn.style.fontSize = 'var(--text-body)';
+      btn.style.fontWeight = '500';
+      btn.style.cursor = 'pointer';
+      btn.style.transition = 'all 0.2s ease';
+      btn.style.textAlign = 'left';
 
-      // Botones de acción
-      const actions = document.createElement('div');
-      actions.className = 'pf-actions-modal';
+      btn.addEventListener('mouseenter', () => {
+        btn.style.background = 'var(--color-primary-muted)';
+        btn.style.borderColor = 'var(--color-primary)';
+      });
+      btn.addEventListener('mouseleave', () => {
+        btn.style.background = 'var(--color-bg-surface)';
+        btn.style.borderColor = 'var(--color-border)';
+      });
 
-      const editBtn = document.createElement('button');
-      editBtn.className = 'btn btn-secondary';
-      editBtn.textContent = 'Editar';
-      editBtn.style.marginRight = '8px';
-      editBtn.addEventListener('click', (e) => {
+      btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        startEditPortfolio(pf.id);
+        toggleContextMenu(pf.id);
       });
 
-      const deleteBtn = document.createElement('button');
-      deleteBtn.className = 'btn btn-danger';
-      deleteBtn.textContent = 'Eliminar';
-      deleteBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        onDeletePortfolio(pf.id);
+      // Menú contextual
+      const menu = document.createElement('div');
+      menu.className = 'pf-context-menu';
+      menu.dataset.id = pf.id;
+      menu.style.display = 'none';
+      menu.style.position = 'absolute';
+      menu.style.top = 'calc(100% + 4px)';
+      menu.style.left = '0';
+      menu.style.right = '0';
+      menu.style.background = 'var(--color-bg-surface)';
+      menu.style.border = '1px solid var(--color-border)';
+      menu.style.borderRadius = 'var(--radius-sm)';
+      menu.style.boxShadow = 'var(--shadow-floating)';
+      menu.style.zIndex = '1000';
+      menu.style.padding = '4px 0';
+      menu.style.minWidth = '180px';
+
+      const options = [
+        { label: '📋 Copiar enlace', action: () => copyLink(pf.link) },
+        { label: '🔗 Abrir enlace', action: () => openLink(pf.link) },
+        { label: '✏️ Editar', action: () => startEditPortfolio(pf.id) },
+        { label: '🗑️ Borrar', action: () => onDeletePortfolio(pf.id), danger: true }
+      ];
+
+      options.forEach(opt => {
+        const item = document.createElement('button');
+        item.textContent = opt.label;
+        item.style.display = 'block';
+        item.style.width = '100%';
+        item.style.padding = '8px 12px';
+        item.style.background = 'transparent';
+        item.style.border = 'none';
+        item.style.textAlign = 'left';
+        item.style.fontSize = 'var(--text-small)';
+        item.style.color = opt.danger ? 'var(--color-danger)' : 'var(--color-text-primary)';
+        item.style.cursor = 'pointer';
+        item.style.transition = 'background 0.15s ease';
+        item.addEventListener('mouseenter', () => {
+          item.style.background = 'var(--color-primary-muted)';
+        });
+        item.addEventListener('mouseleave', () => {
+          item.style.background = 'transparent';
+        });
+        item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          opt.action();
+          closeContextMenu();
+        });
+        menu.appendChild(item);
       });
 
-      actions.appendChild(editBtn);
-      actions.appendChild(deleteBtn);
-
-      // Formulario de edición (oculto)
-      const editForm = document.createElement('div');
-      editForm.className = 'pf-edit-form';
-      editForm.style.display = 'none';
-      editForm.dataset.id = pf.id;
-
-      const nameInput = document.createElement('input');
-      nameInput.type = 'text';
-      nameInput.value = pf.name;
-      nameInput.placeholder = 'Nombre';
-
-      const linkInput = document.createElement('input');
-      linkInput.type = 'url';
-      linkInput.value = pf.link;
-      linkInput.placeholder = 'Enlace (URL)';
-
-      const saveEditBtn = document.createElement('button');
-      saveEditBtn.className = 'btn btn-primary';
-      saveEditBtn.textContent = 'Guardar';
-      saveEditBtn.addEventListener('click', () => {
-        const newName = nameInput.value.trim();
-        const newLink = linkInput.value.trim();
-        if (!newName || !newLink) {
-          alert('Nombre y enlace son obligatorios.');
-          return;
-        }
-        onEditPortfolio(pf.id, newName, newLink);
-      });
-
-      const cancelEditBtn = document.createElement('button');
-      cancelEditBtn.className = 'btn btn-secondary';
-      cancelEditBtn.textContent = 'Cancelar';
-      cancelEditBtn.addEventListener('click', () => {
-        editForm.style.display = 'none';
-        actions.style.display = 'flex';
-      });
-
-      editForm.appendChild(nameInput);
-      editForm.appendChild(linkInput);
-      editForm.appendChild(saveEditBtn);
-      editForm.appendChild(cancelEditBtn);
-
-      item.appendChild(nameLink);
-      item.appendChild(actions);
-      item.appendChild(editForm);
-      portfoliosListModal.appendChild(item);
+      wrapper.appendChild(btn);
+      wrapper.appendChild(menu);
+      portfoliosListModal.appendChild(wrapper);
     });
   }
 
-  // Botón para agregar nuevo portafolio
-  const addContainer = document.createElement('div');
-  addContainer.className = 'add-portfolio-container';
-  const addBtn = document.createElement('button');
-  addBtn.className = 'btn btn-primary';
-  addBtn.textContent = '+ Agregar portafolio';
-  addBtn.addEventListener('click', () => {
-    const name = prompt('Nombre del portafolio:');
-    if (!name) return;
-    const link = prompt('Enlace (URL):');
-    if (!link) return;
-    onAddPortfolio(name, link);
+  // --- Formulario para agregar ---
+  const addForm = document.createElement('div');
+  addForm.style.marginTop = '16px';
+  addForm.style.paddingTop = '16px';
+  addForm.style.borderTop = '1px solid var(--color-border)';
+
+  const form = document.createElement('form');
+  form.id = 'add-portfolio-form';
+
+  const nameInput = document.createElement('input');
+  nameInput.type = 'text';
+  nameInput.placeholder = 'Nombre del portafolio';
+  nameInput.required = true;
+  nameInput.style.width = '100%';
+  nameInput.style.padding = '8px 12px';
+  nameInput.style.marginBottom = '8px';
+  nameInput.style.border = '1px solid var(--color-border)';
+  nameInput.style.borderRadius = 'var(--radius-sm)';
+  nameInput.style.background = 'var(--color-bg-main)';
+  nameInput.style.color = 'var(--color-text-primary)';
+  nameInput.style.fontSize = 'var(--text-body)';
+
+  const linkInput = document.createElement('input');
+  linkInput.type = 'url';
+  linkInput.placeholder = 'Enlace (URL)';
+  linkInput.required = true;
+  linkInput.style.width = '100%';
+  linkInput.style.padding = '8px 12px';
+  linkInput.style.marginBottom = '8px';
+  linkInput.style.border = '1px solid var(--color-border)';
+  linkInput.style.borderRadius = 'var(--radius-sm)';
+  linkInput.style.background = 'var(--color-bg-main)';
+  linkInput.style.color = 'var(--color-text-primary)';
+  linkInput.style.fontSize = 'var(--text-body)';
+
+  const submitBtn = document.createElement('button');
+  submitBtn.type = 'submit';
+  submitBtn.className = 'btn btn-primary';
+  submitBtn.textContent = 'Agregar portafolio';
+  submitBtn.style.width = '100%';
+
+  form.appendChild(nameInput);
+  form.appendChild(linkInput);
+  form.appendChild(submitBtn);
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = nameInput.value.trim();
+    const link = linkInput.value.trim();
+    if (!name || !link) {
+      alert('Nombre y enlace son obligatorios.');
+      return;
+    }
+    await onAddPortfolio(name, link);
+    nameInput.value = '';
+    linkInput.value = '';
+    // Re-renderizar
+    renderPortfoliosModal();
   });
-  addContainer.appendChild(addBtn);
-  portfoliosListModal.appendChild(addContainer);
+
+  addForm.appendChild(form);
+  portfoliosListModal.appendChild(addForm);
 }
 
-// Funciones de acciones de portafolios
+// Funciones auxiliares del menú contextual
+function toggleContextMenu(id) {
+  if (openContextMenuId === id) {
+    closeContextMenu();
+    return;
+  }
+  closeContextMenu(); // cerrar cualquier otro abierto
+  const menu = document.querySelector(`.pf-context-menu[data-id="${id}"]`);
+  if (menu) {
+    menu.style.display = 'block';
+    openContextMenuId = id;
+  }
+}
+
+function closeContextMenu() {
+  if (openContextMenuId) {
+    const menu = document.querySelector(`.pf-context-menu[data-id="${openContextMenuId}"]`);
+    if (menu) menu.style.display = 'none';
+    openContextMenuId = null;
+  }
+}
+
+function copyLink(link) {
+  navigator.clipboard.writeText(link).then(() => {
+    alert('Enlace copiado al portapapeles');
+  }).catch(() => {
+    // Fallback
+    const textarea = document.createElement('textarea');
+    textarea.value = link;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    alert('Enlace copiado al portapapeles');
+  });
+}
+
+function openLink(link) {
+  window.open(link, '_blank');
+}
+
 function startEditPortfolio(id) {
-  const item = document.querySelector(`.portfolio-item-modal[data-id="${id}"]`);
-  if (!item) return;
-  const actions = item.querySelector('.pf-actions-modal');
-  const editForm = item.querySelector('.pf-edit-form');
-  if (actions) actions.style.display = 'none';
-  if (editForm) editForm.style.display = 'flex';
+  const portfolio = currentPortfolios.find(p => p.id === id);
+  if (!portfolio) return;
+  const newName = prompt('Nuevo nombre:', portfolio.name);
+  if (newName === null || newName.trim() === '') return;
+  const newLink = prompt('Nuevo enlace:', portfolio.link);
+  if (newLink === null || newLink.trim() === '') return;
+  onEditPortfolio(id, newName.trim(), newLink.trim());
 }
 
 async function onAddPortfolio(name, link) {
@@ -611,26 +707,13 @@ async function onDeletePortfolio(id) {
   }
 }
 
-// Funciones auxiliares para menú contextual (no usadas en este modal, pero las dejamos vacías)
-function togglePortfolioActions(id) {
-  // No se usa en esta implementación
-}
-
-function closePortfolioActions() {
-  // No se usa en esta implementación
-}
-
-function handlePortfolioAction(action, id) {
-  // No se usa en esta implementación
-}
-
 // ============================================================
 //  TASAS
 // ============================================================
 function openRatesDialog() {
   const rates = getCurrentRates();
   if (rates) {
-    rateUsdInput.value = rates.USD * 1000; // mostramos por 1000 COP
+    rateUsdInput.value = rates.USD * 1000;
     rateEurInput.value = rates.EUR * 1000;
   } else {
     rateUsdInput.value = '';
