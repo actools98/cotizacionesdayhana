@@ -1,7 +1,10 @@
 // domHelpers.js - Funciones para creación y manipulación del DOM
 
-export function createModuleCard(module, currency, convertFn, formatFn) {
-  const { id, description, price } = module;
+export function createModuleCard(module, lang, currency, convertFn, formatFn) {
+  const { id, price } = module;
+  const description = module[`description_${lang}`] || module.description_es;
+  const detail = module[`detail_${lang}`] || module.detail_es;
+
   const priceConverted = convertFn(price, currency);
   const priceFormatted = formatFn(priceConverted, currency);
 
@@ -32,7 +35,7 @@ export function createModuleCard(module, currency, convertFn, formatFn) {
   return card;
 }
 
-export function renderModulesByCategory(container, modules, categories, currency, convertFn, formatFn) {
+export function renderModulesByCategory(container, modules, categories, lang, currency, convertFn, formatFn) {
   container.innerHTML = '';
   if (!categories || categories.length === 0) {
     const msg = document.createElement('p');
@@ -71,7 +74,7 @@ export function renderModulesByCategory(container, modules, categories, currency
       list.appendChild(empty);
     } else {
       mods.forEach(mod => {
-        const card = createModuleCard(mod, currency, convertFn, formatFn);
+        const card = createModuleCard(mod, lang, currency, convertFn, formatFn);
         list.appendChild(card);
       });
     }
@@ -80,8 +83,12 @@ export function renderModulesByCategory(container, modules, categories, currency
   }
 }
 
-export function createAdminModuleCard(module, onDelete, onEdit) {
-  const { id, description, price } = module;
+export function createAdminModuleCard(module, lang, onDelete, onEdit) {
+  const { id, price } = module;
+  const description = module[`description_${lang}`] || module.description_es;
+  // En modo administración mostramos el precio en CHF (sin conversión)
+  const priceFormatted = `CHF ${Number(price).toLocaleString('es-CH')}`;
+
   const card = document.createElement('div');
   card.className = 'module-card admin-mode';
   card.dataset.id = id;
@@ -93,7 +100,7 @@ export function createAdminModuleCard(module, onDelete, onEdit) {
 
   const priceSpan = document.createElement('span');
   priceSpan.className = 'module-price';
-  priceSpan.textContent = `$ ${Number(price).toLocaleString('es-CO')}`;
+  priceSpan.textContent = priceFormatted;
 
   const actions = document.createElement('div');
   actions.className = 'admin-actions';
@@ -124,7 +131,7 @@ export function createAdminModuleCard(module, onDelete, onEdit) {
   return card;
 }
 
-export function renderAdminModulesByCategory(container, modules, categories, onDeleteModule, onEditModule, onEditCategory, onDeleteCategory) {
+export function renderAdminModulesByCategory(container, modules, categories, lang, onDeleteModule, onEditModule, onEditCategory, onDeleteCategory) {
   container.innerHTML = '';
   if (!categories || categories.length === 0) {
     const msg = document.createElement('p');
@@ -187,7 +194,7 @@ export function renderAdminModulesByCategory(container, modules, categories, onD
       list.appendChild(empty);
     } else {
       mods.forEach(mod => {
-        const card = createAdminModuleCard(mod, onDeleteModule, onEditModule);
+        const card = createAdminModuleCard(mod, lang, onDeleteModule, onEditModule);
         list.appendChild(card);
       });
     }
