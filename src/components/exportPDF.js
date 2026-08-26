@@ -66,13 +66,14 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
   try {
     const body = iframe.contentDocument.body;
     const container = iframe.contentDocument.querySelector('.pdf-container');
+    const table = iframe.contentDocument.querySelector('.services-table');
 
-    // FORZAR: body y contenedor deben tener EXACTAMENTE 1080px de ancho
+    // FORZAR: todo debe tener EXACTAMENTE 1080px de ancho
     body.style.width = IFRAME_WIDTH + 'px';
     body.style.margin = '0';
     body.style.padding = '0';
     body.style.boxSizing = 'border-box';
-    body.style.overflow = 'hidden'; // Evita desbordes
+    body.style.overflow = 'hidden';
 
     if (container) {
       container.style.width = '100%';
@@ -82,31 +83,34 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
       container.style.overflow = 'hidden';
     }
 
+    if (table) {
+      table.style.width = '100%';
+      table.style.maxWidth = '100%';
+      table.style.tableLayout = 'fixed';
+    }
+
     // Ajustar altura del iframe al contenido
     iframe.style.height = body.scrollHeight + 'px';
 
-    // 3. Capturar el contenedor (o body si no hay contenedor)
+    // 3. Capturar el contenedor (o body) con ANCHO FIJO DE 1080px
     const targetElement = container || body;
     const canvas = await html2canvas(targetElement, {
-      scale: 2,
+      scale: 1, // ESCALA 1: la imagen tendrá 1080px de ancho
       useCORS: true,
       backgroundColor: '#ffffff',
       logging: false,
       allowTaint: false,
-      width: targetElement.scrollWidth, // = 1080px
+      width: IFRAME_WIDTH, // FORZAR: 1080px exactos
       height: targetElement.scrollHeight,
     });
 
-    const imgWidth = canvas.width;    // = 2160px (1080 * 2)
+    const imgWidth = canvas.width;    // = 1080px
     const imgHeight = canvas.height;
 
     // 4. Crear PDF con el ancho EXACTO de la imagen en puntos (1px = 1pt)
-    const widthPt = imgWidth;    // 2160 puntos
-    const heightPt = imgHeight;  // altura variable en puntos
-
-    // Convertir puntos a milímetros para jsPDF (1pt = 0.352778 mm)
-    const widthMm = widthPt * 0.352778;
-    const heightMm = heightPt * 0.352778;
+    // 1pt = 0.352778 mm
+    const widthMm = imgWidth * 0.352778;   // 1080 * 0.352778 = 381 mm
+    const heightMm = imgHeight * 0.352778;
 
     const pdf = new jsPDF({
       orientation: 'portrait',
