@@ -15,15 +15,15 @@
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
       background: #ffffff;
       color: #000000;
-      padding: 0;
       margin: 0;
+      padding: 0;
       line-height: 1.5;
     }
     .pdf-container {
       width: 100%;
       max-width: 100%;
       background: #ffffff;
-      padding: 48px; /* Márgenes de 48px a todos los lados */
+      padding: 48px; /* Márgenes internos de 48px */
       box-sizing: border-box;
     }
 
@@ -153,6 +153,8 @@
       white-space: nowrap;
       display: block;
       font-size: 11pt;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .total-row td {
@@ -194,7 +196,7 @@
 <body>
 <div class="pdf-container">
   <div class="header">
-    <!-- EL LOGO CON RUTA RELATIVA: /logo2.png -->
+    <!-- LOGO CON RUTA RELATIVA -->
     <img src="/logo2.png" alt="TBA" class="logo-img" />
     <span class="badge">Cotización</span>
   </div>
