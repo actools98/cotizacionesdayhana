@@ -28,7 +28,7 @@ async function initDb() {
     driver: sqlite3.Database
   });
 
-  // Tabla categorías (sin cambios)
+  // 1. Crear tabla categories (sin cambios)
   await db.exec(`
     CREATE TABLE IF NOT EXISTS categories (
       id TEXT PRIMARY KEY,
@@ -37,16 +37,15 @@ async function initDb() {
     )
   `);
 
-  // Tabla módulos con soporte multi-idioma
-  // Verificar si la tabla existe y tiene la estructura antigua
-  const tableInfo = await db.all(`PRAGMA table_info(modules)`);
-  const hasDescription = tableInfo.some(col => col.name === 'description');
-  const hasDetail = tableInfo.some(col => col.name === 'detail');
+  // 2. Verificar si la tabla modules existe y su estructura
+  const tableExists = await db.get(
+    `SELECT name FROM sqlite_master WHERE type='table' AND name='modules'`
+  );
 
-  if (!hasDescription && !hasDetail) {
-    // Tabla nueva: crear directamente
+  if (!tableExists) {
+    // Crear tabla desde cero con multi-idioma
     await db.exec(`
-      CREATE TABLE IF NOT EXISTS modules (
+      CREATE TABLE modules (
         id TEXT PRIMARY KEY,
         description_es TEXT NOT NULL,
         description_fr TEXT NOT NULL,
@@ -61,29 +60,63 @@ async function initDb() {
     `);
     console.log('📦 Tabla modules creada con multi-idioma');
   } else {
-    // Migración: añadir nuevas columnas
-    console.log('🔄 Migrando tabla modules a multi-idioma...');
-    try {
-      await db.exec(`ALTER TABLE modules ADD COLUMN description_es TEXT`);
-      await db.exec(`ALTER TABLE modules ADD COLUMN description_fr TEXT`);
-      await db.exec(`ALTER TABLE modules ADD COLUMN description_en TEXT`);
-      await db.exec(`ALTER TABLE modules ADD COLUMN detail_es TEXT`);
-      await db.exec(`ALTER TABLE modules ADD COLUMN detail_fr TEXT`);
-      await db.exec(`ALTER TABLE modules ADD COLUMN detail_en TEXT`);
-      
-      // Copiar datos existentes a description_es (asumiendo que están en español)
-      await db.exec(`UPDATE modules SET description_es = description, detail_es = detail`);
-      // Para fr y en, si no hay datos, dejamos vacío o copiamos también
-      await db.exec(`UPDATE modules SET description_fr = description, description_en = description`);
-      await db.exec(`UPDATE modules SET detail_fr = detail, detail_en = detail`);
-      
-      console.log('✅ Migración completada');
-    } catch (e) {
-      console.error('❌ Error en migración:', e);
+    // Verificar columnas existentes
+    const columns = await db.all(`PRAGMA table_info(modules)`);
+    const colNames = columns.map(c => c.name);
+
+    // Columnas requeridas
+    const required = [
+      'description_es', 'description_fr', 'description_en',
+      'detail_es', 'detail_fr', 'detail_en'
+    ];
+
+    let needsMigration = false;
+    for (const col of required) {
+      if (!colNames.includes(col)) {
+        needsMigration = true;
+        break;
+      }
+    }
+
+    if (needsMigration) {
+      console.log('🔄 Migrando tabla modules a multi-idioma...');
+      try {
+        // Agregar columnas una por una si no existen
+        if (!colNames.includes('description_es')) {
+          await db.exec(`ALTER TABLE modules ADD COLUMN description_es TEXT`);
+          // Copiar datos de description si existe
+          await db.exec(`UPDATE modules SET description_es = description`);
+        }
+        if (!colNames.includes('description_fr')) {
+          await db.exec(`ALTER TABLE modules ADD COLUMN description_fr TEXT`);
+          await db.exec(`UPDATE modules SET description_fr = description`);
+        }
+        if (!colNames.includes('description_en')) {
+          await db.exec(`ALTER TABLE modules ADD COLUMN description_en TEXT`);
+          await db.exec(`UPDATE modules SET description_en = description`);
+        }
+        if (!colNames.includes('detail_es')) {
+          await db.exec(`ALTER TABLE modules ADD COLUMN detail_es TEXT`);
+          await db.exec(`UPDATE modules SET detail_es = detail`);
+        }
+        if (!colNames.includes('detail_fr')) {
+          await db.exec(`ALTER TABLE modules ADD COLUMN detail_fr TEXT`);
+          await db.exec(`UPDATE modules SET detail_fr = detail`);
+        }
+        if (!colNames.includes('detail_en')) {
+          await db.exec(`ALTER TABLE modules ADD COLUMN detail_en TEXT`);
+          await db.exec(`UPDATE modules SET detail_en = detail`);
+        }
+        console.log('✅ Migración completada');
+      } catch (e) {
+        console.error('❌ Error en migración:', e);
+      }
+    } else {
+      console.log('✅ Tabla modules ya tiene multi-idioma');
     }
   }
 
-  // Cargar categorías por defecto si no hay
+  // Cargar categorías por defecto (si no hay)
   const catCount = await db.get('SELECT COUNT(*) as count FROM categories');
   if (catCount.count === 0) {
     const defaultCats = [
@@ -99,7 +132,7 @@ async function initDb() {
     console.log('📂 Categorías por defecto creadas');
   }
 
-  // Cargar módulos por defecto si no hay
+  // Cargar módulos por defecto (si no hay)
   const modCount = await db.get('SELECT COUNT(*) as count FROM modules');
   if (modCount.count === 0) {
     const defaultModules = [
@@ -142,8 +175,8 @@ async function initDb() {
           `INSERT INTO modules 
            (id, description_es, description_fr, description_en, detail_es, detail_fr, detail_en, price, category_id, sort_order) 
            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-          [m.id, m.description_es, m.description_fr, m.description_en, 
-           m.detail_es, m.detail_fr, m.detail_en, 
+          [m.id, m.description_es, m.description_fr, m.description_en,
+           m.detail_es, m.detail_fr, m.detail_en,
            m.price, firstCat.id, i]
         );
       }
@@ -233,6 +266,7 @@ app.get('/api/modules', async (req, res) => {
     `);
     res.json(modules);
   } catch (e) {
+    console.error(e);
     res.status(500).json({ error: 'Error al obtener módulos' });
   }
 });
@@ -243,9 +277,12 @@ app.post('/api/modules', async (req, res) => {
     detail_es, detail_fr, detail_en,
     price, category_id 
   } = req.body;
+
+  // Validaciones
   if (!description_es || !description_fr || !description_en || price === undefined) {
-    return res.status(400).json({ error: 'Faltan campos obligatorios' });
+    return res.status(400).json({ error: 'Faltan campos obligatorios (nombre en 3 idiomas y precio)' });
   }
+
   try {
     const id = `mod-${Date.now()}`;
     let catId = category_id;
@@ -260,15 +297,15 @@ app.post('/api/modules', async (req, res) => {
       `INSERT INTO modules 
        (id, description_es, description_fr, description_en, detail_es, detail_fr, detail_en, price, category_id, sort_order) 
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [id, description_es, description_fr, description_en, 
-       detail_es || null, detail_fr || null, detail_en || null, 
+      [id, description_es, description_fr, description_en,
+       detail_es || null, detail_fr || null, detail_en || null,
        price, catId, order]
     );
     const newModule = await db.get('SELECT * FROM modules WHERE id = ?', [id]);
     res.status(201).json(newModule);
   } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: 'Error al agregar módulo' });
+    console.error('Error en POST /api/modules:', e);
+    res.status(500).json({ error: 'Error al agregar módulo: ' + e.message });
   }
 });
 
@@ -296,8 +333,8 @@ app.put('/api/modules/:id', async (req, res) => {
     const updated = await db.get('SELECT * FROM modules WHERE id = ?', [id]);
     res.json(updated);
   } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: 'Error al actualizar módulo' });
+    console.error('Error en PUT /api/modules:', e);
+    res.status(500).json({ error: 'Error al actualizar módulo: ' + e.message });
   }
 });
 
