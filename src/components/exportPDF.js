@@ -5,7 +5,7 @@ import { formatCurrency } from '../utils/formatters.js';
 import { convertCurrency } from './currencyConverter.js';
 
 export async function generateQuotePDF(clientName, productName, selectedModules, currency, totalCOP) {
-  // 1. Rellenar la plantilla
+  // 1. Rellenar plantilla
   let html = templateHtml
     .replace(/\{\{clientName\}\}/g, clientName)
     .replace(/\{\{productName\}\}/g, productName)
@@ -31,67 +31,96 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
   const totalFormatted = formatCurrency(totalConverted, currency);
   html = html.replace('{{total}}', totalFormatted);
 
-  // 2. Crear un iframe oculto
+  // 2. Crear iframe oculto
   const iframe = document.createElement('iframe');
   iframe.style.position = 'fixed';
   iframe.style.top = '-9999px';
   iframe.style.left = '-9999px';
   iframe.style.width = '794px';
-  iframe.style.height = '1123px';
+  iframe.style.height = '1123px'; // altura inicial, pero se ajustará al contenido
   iframe.style.border = 'none';
   document.body.appendChild(iframe);
 
-  // 3. Escribir el HTML en el iframe
   const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
   iframeDoc.open();
   iframeDoc.write(html);
   iframeDoc.close();
 
-  // 4. Esperar a que cargue todo (incluyendo fuentes)
   await new Promise(resolve => {
     iframe.onload = resolve;
-    // Si el contenido ya está cargado, resolver inmediatamente
     if (iframe.contentWindow && iframe.contentWindow.document.readyState === 'complete') {
       resolve();
     }
   });
-  // Esperar un poco más para que el render se estabilice
-  await new Promise(resolve => setTimeout(resolve, 200));
+  await new Promise(resolve => setTimeout(resolve, 300));
 
   try {
-    // 5. Capturar el iframe con html2canvas
-    const canvas = await html2canvas(iframe.contentDocument.body, {
+    // 3. Capturar todo el contenido del iframe
+    const body = iframe.contentDocument.body;
+    const canvas = await html2canvas(body, {
       scale: 2,
       useCORS: true,
       backgroundColor: '#ffffff',
       logging: false,
       allowTaint: false,
       width: 794,
-      height: iframe.contentDocument.body.scrollHeight,
+      height: body.scrollHeight,
     });
 
-    // 6. Generar PDF
+    // 4. Preparar PDF
     const imgData = canvas.toDataURL('image/jpeg', 0.95);
     const pdf = new jsPDF('p', 'mm', 'a4');
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
+    const pdfWidth = pdf.internal.pageSize.getWidth();  // 210 mm
+    const pdfHeight = pdf.internal.pageSize.getHeight(); // 297 mm
 
     const imgWidth = canvas.width;
     const imgHeight = canvas.height;
-    const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-    const imgX = (pdfWidth - imgWidth * ratio) / 2;
-    const imgY = 0;
 
-    pdf.addImage(imgData, 'JPEG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+    // Escala para que el ancho de la imagen se ajuste al ancho de la página
+    const scale = pdfWidth / imgWidth;
+    const scaledHeight = imgHeight * scale;
 
-    // 7. Guardar
+    // Si el contenido cabe en una página
+    if (scaledHeight <= pdfHeight) {
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, scaledHeight);
+    } else {
+      // Dividir en varias páginas
+      const pageHeightPx = pdfHeight / scale; // altura en píxeles de la imagen por página
+      let remainingHeight = imgHeight;
+      let yOffset = 0;
+
+      while (remainingHeight > 0) {
+        // Recortar la porción correspondiente
+        const srcY = yOffset;
+        const srcHeight = Math.min(pageHeightPx, remainingHeight);
+
+        // Crear canvas temporal para la porción
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = imgWidth;
+        tempCanvas.height = srcHeight;
+        const ctx = tempCanvas.getContext('2d');
+        ctx.drawImage(canvas, 0, srcY, imgWidth, srcHeight, 0, 0, imgWidth, srcHeight);
+
+        const portionData = tempCanvas.toDataURL('image/jpeg', 0.95);
+        const portionHeightMm = srcHeight * scale;
+
+        if (pdf.internal.getNumberOfPages() > 1) {
+          pdf.addPage();
+        }
+        pdf.addImage(portionData, 'JPEG', 0, 0, pdfWidth, portionHeightMm);
+
+        remainingHeight -= srcHeight;
+        yOffset += srcHeight;
+      }
+    }
+
+    // 5. Guardar PDF
     pdf.save(`Cotizacion_${clientName.replace(/\s+/g, '_')}.pdf`);
 
   } catch (error) {
     console.error('Error al generar PDF:', error);
     throw error;
   } finally {
-    // Limpiar el iframe
     document.body.removeChild(iframe);
   }
 }
