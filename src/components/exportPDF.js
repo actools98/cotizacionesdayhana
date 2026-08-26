@@ -4,8 +4,40 @@ import { formatCurrency } from '../utils/formatters.js';
 import { convertCurrency } from './currencyConverter.js';
 
 export async function generateQuotePDF(clientName, productName, selectedModules, currency, totalCHF, lang = 'es') {
-  // ... (rellenar html igual que antes) ...
+  // 1. Rellenar plantilla
+  let html = templateHtml
+    .replace(/\{\{clientName\}\}/g, clientName)
+    .replace(/\{\{productName\}\}/g, productName)
+    .replace(/\{\{date\}\}/g, new Date().toLocaleDateString('es-CO'));
 
+  const servicesRowsHtml = selectedModules.map(mod => {
+    const price = convertCurrency(mod.price, currency);
+    const priceFormatted = formatCurrency(price, currency);
+    const description = mod[`description_${lang}`] || mod.description_es;
+    const detail = mod[`detail_${lang}`] || mod.detail_es;
+    let detailHtml = '';
+    if (detail && detail.trim() !== '') {
+      const detailWithBreaks = detail.replace(/\r?\n/g, '<br>');
+      detailHtml = `<span class="service-detail">${detailWithBreaks}</span>`;
+    }
+    return `
+      <tr class="service-row">
+        <td>
+          <span class="service-name">${description}</span>
+          ${detailHtml}
+        </td>
+        <td class="service-price">${priceFormatted}</td>
+      </tr>
+    `;
+  }).join('');
+
+  html = html.replace('{{servicesRows}}', servicesRowsHtml);
+
+  const totalConverted = convertCurrency(totalCHF, currency);
+  const totalFormatted = formatCurrency(totalConverted, currency);
+  html = html.replace('{{total}}', totalFormatted);
+
+  // 2. Crear contenedor en el DOM (visible pero transparente)
   const container = document.createElement('div');
   container.innerHTML = html;
   container.style.position = 'fixed';
@@ -13,6 +45,8 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
   container.style.left = '0';
   container.style.width = '1080px';
   container.style.background = '#ffffff';
+  container.style.opacity = '0.01'; // Casi invisible, pero renderizado
+  container.style.pointerEvents = 'none'; // No bloquea interacciones
   container.style.zIndex = '9999';
   container.style.padding = '0';
   container.style.margin = '0';
@@ -20,16 +54,18 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
   container.style.overflow = 'hidden';
   document.body.appendChild(container);
 
+  // Forzar el renderizado
   await new Promise(resolve => requestAnimationFrame(resolve));
-  await new Promise(resolve => setTimeout(resolve, 200));
+  await new Promise(resolve => setTimeout(resolve, 300));
 
   try {
+    // 3. Configurar opciones de html2pdf
     const opt = {
-      margin: [0, 0, 0, 0],
-      filename: `Cotizacion_${clientName.replace(/\s+/g, '_')}.pdf`,
-      image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: {
-        scale: 2,
+      margin:        [0, 0, 0, 0], // Sin márgenes adicionales (los márgenes están en la plantilla)
+      filename:      `Cotizacion_${clientName.replace(/\s+/g, '_')}.pdf`,
+      image:         { type: 'jpeg', quality: 0.95 },
+      html2canvas:   {
+        scale: 2,                  // Buena resolución
         useCORS: true,
         logging: false,
         allowTaint: false,
@@ -37,17 +73,22 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
         width: container.scrollWidth,
         height: container.scrollHeight,
       },
-      jsPDF: {
+      jsPDF:         {
         unit: 'mm',
-        format: 'a4',
+        format: 'a4',              // A4 estándar (210mm x 297mm)
         orientation: 'portrait'
-      }
+      },
+      pagebreak:     { mode: ['avoid-all', 'css', 'legacy'] } // Evita saltos de página no deseados
     };
+
+    // 4. Generar el PDF
     await html2pdf().set(opt).from(container).save();
+
   } catch (error) {
     console.error('Error al generar PDF:', error);
     throw error;
   } finally {
+    // Limpiar el DOM
     document.body.removeChild(container);
   }
 }
