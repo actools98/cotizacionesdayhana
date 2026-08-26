@@ -38,12 +38,13 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
   const totalFormatted = formatCurrency(totalConverted, currency);
   html = html.replace('{{total}}', totalFormatted);
 
-  // 2. Crear iframe oculto con ancho fijo de 1080px
+  // 2. Crear iframe con ancho fijo de 1080px y altura dinámica
   const iframe = document.createElement('iframe');
   iframe.style.position = 'fixed';
   iframe.style.top = '-9999px';
   iframe.style.left = '-9999px';
   iframe.style.width = '1080px';
+  iframe.style.height = 'auto';
   iframe.style.border = 'none';
   iframe.style.background = '#ffffff';
   document.body.appendChild(iframe);
@@ -63,53 +64,61 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
 
   try {
     const body = iframe.contentDocument.body;
-    
-    // ============================================================
-    // CORRECCIÓN: Forzar el ancho del body a 1080px exactos
-    // para que la captura siempre tenga el mismo ancho y los
-    // márgenes laterales se mantengan consistentes.
-    // ============================================================
-    body.style.width = '1080px';
-    body.style.boxSizing = 'border-box';
-    body.style.margin = '0';
-    body.style.padding = '48px'; // ya está en la plantilla, pero lo reafirmamos
-
-    // Asegurar que el contenedor ocupe todo el ancho disponible
     const container = iframe.contentDocument.querySelector('.pdf-container');
+
+    // Asegurar que el body tenga el ancho exacto y márgenes internos
+    body.style.width = '1080px';
+    body.style.margin = '0';
+    body.style.padding = '0';
+    body.style.boxSizing = 'border-box';
+
+    // El container ya tiene padding de 48px, asegurar que ocupe todo el ancho
     if (container) {
       container.style.width = '100%';
+      container.style.maxWidth = '100%';
       container.style.boxSizing = 'border-box';
     }
 
-    // Ajustar la altura del iframe al contenido
+    // Ajustar altura del iframe al contenido
     iframe.style.height = body.scrollHeight + 'px';
 
-    const canvas = await html2canvas(body, {
+    // 3. Capturar el contenedor completo (no solo el body, para evitar problemas de padding)
+    const targetElement = container || body;
+    const canvas = await html2canvas(targetElement, {
       scale: 2,
       useCORS: true,
       backgroundColor: '#ffffff',
       logging: false,
       allowTaint: false,
-      width: body.scrollWidth,   // ahora será 1080px exactos
-      height: body.scrollHeight,
+      width: targetElement.scrollWidth,
+      height: targetElement.scrollHeight,
     });
 
     const imgWidth = canvas.width;
     const imgHeight = canvas.height;
 
-    // Ancho del PDF en mm (A4)
-    const pdfWidth = 210;
-    // Escala para ajustar el ancho de la imagen al ancho del PDF
-    const scale = pdfWidth / imgWidth;
-    const pdfHeight = imgHeight * scale;
+    // 4. Crear PDF con ancho fijo en puntos (1px = 1pt = 0.352778 mm)
+    // 1080px = 1080pt = 381mm (aproximadamente)
+    // Usamos el ancho de la imagen capturada (que debería ser 1080px * 2 por el scale)
+    const pdfWidthPt = imgWidth; // = 2160px (por el scale 2)
+    const pdfWidthMm = pdfWidthPt * 0.352778; // Convertir puntos a mm
+    const pdfHeightMm = imgHeight * 0.352778;
 
     const pdf = new jsPDF({
-      orientation: 'p',
+      orientation: 'portrait',
       unit: 'mm',
-      format: [pdfWidth, pdfHeight]
+      format: [pdfWidthMm, pdfHeightMm]
     });
 
-    pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pdfWidth, pdfHeight);
+    // Agregar la imagen sin escalar (1:1 en mm)
+    pdf.addImage(
+      canvas.toDataURL('image/jpeg', 0.95),
+      'JPEG',
+      0,
+      0,
+      pdfWidthMm,
+      pdfHeightMm
+    );
 
     pdf.save(`Cotizacion_${clientName.replace(/\s+/g, '_')}.pdf`);
 
