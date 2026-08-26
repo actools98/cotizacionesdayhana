@@ -38,13 +38,20 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
   html = html.replace('{{total}}', totalFormatted);
 
   const iframe = document.createElement('iframe');
+  
+  // EL TRUCO CLAVE: Mantenemos el iframe en la coordenada 0,0 de la pantalla
+  // para que el navegador lo renderice completo, pero lo hacemos invisible.
   iframe.style.position = 'fixed';
-  iframe.style.top = '-9999px';
-  iframe.style.left = '-9999px';
-  // Igualamos el ancho del iframe al del contenedor exacto
+  iframe.style.top = '0px';
+  iframe.style.left = '0px';
   iframe.style.width = '794px';
+  iframe.style.height = '1123px'; // Le damos altura inicial de un A4 aprox
   iframe.style.border = 'none';
   iframe.style.background = '#ffffff';
+  iframe.style.opacity = '0'; // Invisible al ojo humano
+  iframe.style.zIndex = '-9999'; // Detrás de todo el contenido
+  iframe.style.pointerEvents = 'none'; // No se puede interactuar con él
+  
   document.body.appendChild(iframe);
 
   const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
@@ -65,8 +72,8 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
     const body = iframe.contentDocument.body;
     const container = iframe.contentDocument.querySelector('.pdf-container');
     
+    // Ajustamos la altura final basada en el contenido real
     iframe.style.height = body.scrollHeight + 'px';
-    iframe.contentDocument.documentElement.style.overflow = 'hidden';
 
     const canvas = await html2canvas(container, {
       scale: 2,
@@ -74,7 +81,7 @@ export async function generateQuotePDF(clientName, productName, selectedModules,
       backgroundColor: '#ffffff',
       logging: false,
       allowTaint: false,
-      // Forzamos el punto de inicio de la captura a la coordenada cero
+      // Al estar en el punto 0,0, forzamos estas coordenadas para que no tome offsets extra
       x: 0,
       y: 0,
       scrollX: 0,
