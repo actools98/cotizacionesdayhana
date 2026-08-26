@@ -1,184 +1,100 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8" />
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-      background: #ffffff;
-      color: #111827;
-      padding: 48px; /* 0.5 pulgadas */
-      line-height: 1.5;
-    }
-    .pdf-container {
-      max-width: 100%;
-      font-size: 12pt;
-      background: #ffffff;
-    }
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import templateHtml from '../templates/pdfTemplate.html?raw';
+import { formatCurrency } from '../utils/formatters.js';
+import { convertCurrency } from './currencyConverter.js';
 
-    /* Encabezado */
-    .header {
-      text-align: center;
-      margin-bottom: 24px;
-    }
-    .header h1 {
-      font-size: 28pt;
-      font-weight: 700;
-      color: #1e3a8a;
-      letter-spacing: -0.02em;
-      margin-bottom: 4px;
-    }
-    .header .badge {
-      font-size: 10pt;
-      font-weight: 600;
-      color: #1e3a8a;
-      background: #dbeafe;
-      padding: 2px 14px;
-      border-radius: 20px;
-      display: inline-block;
-    }
-    .divider {
-      border-top: 2px solid #1e3a8a;
-      margin: 16px 0;
-    }
+export async function generateQuotePDF(clientName, productName, selectedModules, currency, totalCOP) {
+  // 1. Rellenar plantilla
+  let html = templateHtml
+    .replace(/\{\{clientName\}\}/g, clientName)
+    .replace(/\{\{productName\}\}/g, productName)
+    .replace(/\{\{date\}\}/g, new Date().toLocaleDateString('es-CO'));
 
-    .client-info {
-      margin-bottom: 16px;
+  const servicesRowsHtml = selectedModules.map(mod => {
+    const price = convertCurrency(mod.price, currency);
+    const priceFormatted = formatCurrency(price, currency);
+    let detailHtml = '';
+    if (mod.detail && mod.detail.trim() !== '') {
+      const detailWithBreaks = mod.detail.replace(/\r?\n/g, '<br>');
+      detailHtml = `<span class="service-detail">${detailWithBreaks}</span>`;
     }
-    .client-info p {
-      margin: 4px 0;
-    }
-    .client-info strong {
-      font-weight: 600;
-      color: #1e3a8a;
-    }
-
-    /* Tabla sin bordes */
-    .services-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 16px 0;
-      font-size: 12pt;
-    }
-
-    .services-table th {
-      background-color: #1e3a8a;
-      color: #ffffff;
-      font-weight: 600;
-      padding: 8px 12px;
-      text-align: left;
-    }
-    .services-table th:last-child {
-      text-align: right;
-    }
-
-    .service-row td {
-      background-color: #ffffff;
-      padding: 8px 12px;
-      vertical-align: top;
-    }
-
-    .service-name {
-      font-weight: 700;
-      color: #1e3a8a;
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    .service-detail {
-      font-size: 10pt;
-      color: #374151;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      background-color: #f9fafb;
-      padding: 6px 10px;
-      border-radius: 4px;
-      border-left: 3px solid #93c5fd;
-      margin-top: 4px;
-      display: block;
-    }
-
-    .service-price {
-      font-weight: 700;
-      color: #1e3a8a;
-      text-align: right;
-      white-space: nowrap;
-      display: block;
-    }
-
-    .total-row td {
-      background-color: #ffffff;
-      padding: 10px 12px;
-      font-weight: 700;
-      color: #1e3a8a;
-      font-size: 14pt;
-    }
-    .total-row .total-label {
-      text-align: left;
-    }
-    .total-row .total-value {
-      text-align: right;
-      white-space: nowrap;
-    }
-
-    .footer {
-      margin-top: 40px;
-      font-size: 9pt;
-      color: #6b7280;
-      border-top: 1px solid #d1d5db;
-      padding-top: 12px;
-      text-align: center;
-    }
-    .footer p {
-      margin: 2px 0;
-    }
-
-    @media print {
-      body { padding: 0; }
-      .pdf-container { margin: 0; }
-    }
-  </style>
-</head>
-<body>
-<div class="pdf-container">
-  <div class="header">
-    <h1>actols</h1>
-    <span class="badge">Cotización</span>
-  </div>
-  <div class="divider"></div>
-
-  <div class="client-info">
-    <p><strong>Cliente:</strong> {{clientName}}</p>
-    <p><strong>Producto o servicio:</strong> {{productName}}</p>
-    <p><strong>Fecha:</strong> {{date}}</p>
-  </div>
-  <div class="divider"></div>
-
-  <table class="services-table">
-    <thead>
-      <tr>
-        <th>Servicio</th>
-        <th>Precio</th>
+    return `
+      <tr class="service-row">
+        <td>
+          <span class="service-name">${mod.description}</span>
+          ${detailHtml}
+        </td>
+        <td class="service-price">${priceFormatted}</td>
       </tr>
-    </thead>
-    <tbody>
-      {{servicesRows}}
-      <tr class="total-row">
-        <td class="total-label">Total</td>
-        <td class="total-value">{{total}}</td>
-      </tr>
-    </tbody>
-  </table>
+    `;
+  }).join('');
 
-  <div class="footer">
-    <p>Esta cotización es válida por 30 días.</p>
-    <p>powered by actols</p>
-  </div>
-</div>
-</body>
-</html>
+  html = html.replace('{{servicesRows}}', servicesRowsHtml);
+
+  const totalConverted = convertCurrency(totalCOP, currency);
+  const totalFormatted = formatCurrency(totalConverted, currency);
+  html = html.replace('{{total}}', totalFormatted);
+
+  // 2. Crear iframe oculto
+  const iframe = document.createElement('iframe');
+  iframe.style.position = 'fixed';
+  iframe.style.top = '-9999px';
+  iframe.style.left = '-9999px';
+  iframe.style.width = '794px'; // 210mm a 96dpi
+  iframe.style.height = '1px';
+  iframe.style.border = 'none';
+  document.body.appendChild(iframe);
+
+  const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+  iframeDoc.open();
+  iframeDoc.write(html);
+  iframeDoc.close();
+
+  await new Promise(resolve => {
+    iframe.onload = resolve;
+    if (iframe.contentWindow && iframe.contentWindow.document.readyState === 'complete') {
+      resolve();
+    }
+  });
+  await new Promise(resolve => setTimeout(resolve, 500));
+
+  try {
+    const body = iframe.contentDocument.body;
+    iframe.style.height = body.scrollHeight + 'px';
+
+    const canvas = await html2canvas(body, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#ffffff',
+      logging: false,
+      allowTaint: false,
+      width: body.scrollWidth,
+      height: body.scrollHeight,
+    });
+
+    const imgWidth = canvas.width;
+    const imgHeight = canvas.height;
+
+    // Escalar para que el ancho sea exactamente 210mm (A4)
+    const scaleX = 210 / imgWidth;
+    const finalWidth = 210;
+    const finalHeight = imgHeight * scaleX;
+
+    const pdf = new jsPDF({
+      orientation: 'p',
+      unit: 'mm',
+      format: [finalWidth, finalHeight]
+    });
+
+    pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, finalWidth, finalHeight);
+
+    pdf.save(`Cotizacion_${clientName.replace(/\s+/g, '_')}.pdf`);
+
+  } catch (error) {
+    console.error('Error al generar PDF:', error);
+    throw error;
+  } finally {
+    document.body.removeChild(iframe);
+  }
+}
