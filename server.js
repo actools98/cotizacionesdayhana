@@ -302,7 +302,7 @@ app.patch('/api/categories/reorder', async (req, res) => {
   }
 });
 
-// ---- Rutas para módulos (multi-idioma) ----
+// ---- Rutas para módulos (multi-idioma) con soporte para precio 0 ----
 app.get('/api/modules', async (req, res) => {
   try {
     const modules = await db.all(`
@@ -325,9 +325,9 @@ app.post('/api/modules', async (req, res) => {
     price, category_id
   } = req.body;
 
-  // Validaciones
-  if (!description_es || !description_fr || !description_en || price === undefined) {
-    return res.status(400).json({ error: 'Faltan campos obligatorios (nombre en 3 idiomas y precio)' });
+  // Validación: precio puede ser 0
+  if (!description_es || !description_fr || !description_en || price === undefined || price < 0) {
+    return res.status(400).json({ error: 'Faltan campos obligatorios (nombre en 3 idiomas y precio, puede ser 0 para gratuito)' });
   }
 
   try {
@@ -340,7 +340,6 @@ app.post('/api/modules', async (req, res) => {
     const maxOrder = await db.get('SELECT MAX(sort_order) as max FROM modules WHERE category_id = ?', [catId]);
     const order = (maxOrder?.max ?? -1) + 1;
 
-    // No incluimos la columna 'description' (ya no existe)
     await db.run(
       `INSERT INTO modules 
        (id, description_es, description_fr, description_en, detail_es, detail_fr, detail_en, price, category_id, sort_order) 
@@ -364,8 +363,8 @@ app.put('/api/modules/:id', async (req, res) => {
     detail_es, detail_fr, detail_en,
     price, category_id
   } = req.body;
-  if (!description_es || !description_fr || !description_en || price === undefined) {
-    return res.status(400).json({ error: 'Faltan campos obligatorios' });
+  if (!description_es || !description_fr || !description_en || price === undefined || price < 0) {
+    return res.status(400).json({ error: 'Faltan campos obligatorios (precio puede ser 0)' });
   }
   try {
     await db.run(
